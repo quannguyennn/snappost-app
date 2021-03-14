@@ -1,0 +1,13 @@
+mutation createPost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    id
+    creatorId
+    medias
+    caption
+    createdAt
+    updatedAt
+    creatorInfo {
+      ...UserFragment
+    }
+  }
+}

@@ -1,0 +1,214 @@
+type BasePaginationMeta {
+  itemCount: Float!
+  totalItems: Float!
+  itemsPerPage: Float!
+  totalPages: Float!
+  currentPage: Float!
+}
+
+type User implements Node {
+  id: Float!
+  name: String!
+  nickname: String!
+  intro: String!
+  zaloId: String!
+  avatar: Float
+  isNew: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  avatarFilePath: String
+}
+
+"""
+Node
+"""
+interface Node {
+  id: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserConnection {
+  items: [User!]
+  meta: BasePaginationMeta!
+}
+
+type Follow implements Node {
+  id: Float!
+  creatorId: Float!
+  followUser: Float!
+  status: FollowStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum FollowStatus {
+  WAITING
+  ACCEPT
+}
+
+type Media implements Node {
+  id: Float!
+  fileSize: Int
+  name: String!
+  filePath: String
+  mimeType: String
+  isDeleted: Boolean!
+  ownerId: Float
+  type: FileType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  owner: User
+  capabilities: MediaCapability
+}
+
+enum FileType {
+  FILE
+  DIR
+}
+
+type MediaConnection {
+  items: [Media!]
+  meta: BasePaginationMeta!
+}
+
+type MediaCapability {
+  canCopy: Boolean
+  canDelete: Boolean
+  canDownload: Boolean
+  canEdit: Boolean
+  canRename: Boolean
+}
+
+"""
+AuthConnection
+"""
+type AuthConnection {
+  accessToken: String
+  refreshToken: String
+  user: User!
+}
+
+type Sample implements Node {
+  id: Float!
+  views: Int!
+  title: String!
+  content: String!
+  isPublished: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Post implements Node {
+  id: Float!
+  creatorId: Float!
+  medias: [Float!]
+  caption: String
+  rawCaption: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  postComments: [Comments!]
+  creatorInfo: User
+}
+
+type PostConnection {
+  items: [Post!]
+  meta: BasePaginationMeta!
+}
+
+type Comments implements Node {
+  id: Float!
+  creatorId: Float!
+  postId: String!
+  parentId: Float!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  me: User!
+  user(id: Float!): User
+  searchUser(page: Float!, limit: Float!, isRestricted: Boolean = false, keyword: String!): UserConnection!
+  medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
+  media(id: Float!): Media
+  posts(limit: Int = 15, page: Int = 1): PostConnection
+}
+
+type Mutation {
+  updateUserInfo(input: UpdateUserInput!): User!
+  uploadMedia(provider: String = "LOCAL", parentId: ID, file: Upload!): Media!
+  uploadMediaToS3(parentId: ID, file: Upload!): Media!
+  removeMedia(id: ID): Media!
+  updateMedia(input: UpdateMediaInput!): Media!
+  createDir(parentId: ID, dirName: String!): Media!
+  FollowUser(id: Float!): Boolean!
+  UnFollowUser(id: Float!): Boolean!
+  loginWithSNS(input: NewUserInput!): AuthConnection!
+  logout: Boolean!
+  createComment(input: CreateCommentInput!): Comments!
+  updateComment(input: UpdateCommentInput!): Comments!
+  removeComment(id: ID!): Boolean!
+  createPost(input: CreatePostInput!): Post!
+  updatePost(input: UpdatePostInput!): Post!
+  removePost(id: ID!): Boolean!
+}
+
+input UpdateUserInput {
+  zaloId: String
+  name: String
+  nickname: String
+  intro: String = ""
+  avatar: Float
+  avatarUrl: String
+  isNew: Boolean = true
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input UpdateMediaInput {
+  id: ID!
+  name: String!
+}
+
+input NewUserInput {
+  zaloId: String
+  name: String
+  nickname: String
+  intro: String = ""
+  avatar: Float
+  avatarUrl: String
+  isNew: Boolean = true
+}
+
+input CreateCommentInput {
+  content: String!
+  parentId: Float = 0
+  postId: String!
+}
+
+input UpdateCommentInput {
+  content: String!
+  parentId: Float = 0
+  postId: String!
+  id: Float!
+}
+
+input CreatePostInput {
+  medias: [Float!] = []
+  caption: String = ""
+  rawCaption: String = ""
+}
+
+input UpdatePostInput {
+  medias: [Float!] = []
+  caption: String = ""
+  rawCaption: String = ""
+  id: Float!
+}

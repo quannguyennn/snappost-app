@@ -1,0 +1,7 @@
+{
+  "error": "Error",
+  "result": "{{count}} result",
+  "result_plural": "{{count}} results",
+  "year_experience": "{{count}} yr experience",
+  "year_experience_plural": "{{count}} yrs experience"
+}

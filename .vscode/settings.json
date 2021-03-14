@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "eslint.enable": true,
+  "files.eol": "\n",
+  "typescript.referencesCodeLens.enabled": true,
+  // "typescript.preferences.importModuleSpecifier": "auto",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}

@@ -1,0 +1,58 @@
+stages:
+  - prepare
+  - build
+
+image: node:14.15-alpine
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - ./node_modules/
+    - ./android/.gradle/
+    - ./ios/Pods/
+
+install:
+  stage: prepare
+  only:
+    - debug-android
+    - release-android
+    - release-ios
+  tags:
+    - react-native
+  script:
+    - yarn install
+
+android:debug:build:
+  stage: build
+  image: reactnativecommunity/react-native-android
+  only:
+    - debug-android
+  tags:
+    - react-native
+    - android
+  script:
+    - cd android && ./gradlew assembleDebug
+  artifacts:
+    name: '$CI_PROJECT_NAME-$PLATFORM-$CI_COMMIT_REF_NAME'
+    paths:
+      - ./android/app/build/outputs/
+    expire_in: 3 days
+
+android:release:build:
+  stage: build
+  image: reactnativecommunity/react-native-android
+  only:
+    - release-android
+  tags:
+    - react-native
+    - android
+  before_script:
+    - echo $ANDROID_KEYSTORE > keystore.base64
+    - base64 --decode keystore.base64 > ./android/app/release.keystore
+  script:
+    - cd android && ./gradlew assembleRelease
+  artifacts:
+    name: '$CI_PROJECT_NAME-$PLATFORM-$CI_COMMIT_REF_NAME'
+    paths:
+      - ./android/app/build/outputs/
+    expire_in: 3 days

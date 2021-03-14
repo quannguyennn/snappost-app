@@ -1,0 +1,14 @@
+query searchUser($page: Float!, $limit: Float!, $isRestricted: Boolean, $keyword: String!) {
+  searchUser(page: $page, limit: $limit, isRestricted: $isRestricted, keyword: $keyword) {
+    items {
+      ...UserFragment
+    }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
+    }
+  }
+}

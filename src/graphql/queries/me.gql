@@ -1,0 +1,14 @@
+query me {
+  me {
+    id
+    name
+    nickname
+    intro
+    zaloId
+    avatar
+    isNew
+    createdAt
+    updatedAt
+    avatarFilePath
+  }
+}

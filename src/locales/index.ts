@@ -1,0 +1,32 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import { getLocales } from 'react-native-localize';
+import defaultLang from './en';
+
+export type LangDataTypes = Partial<typeof defaultLang>;
+
+i18n
+  .use({
+    type: 'languageDetector',
+    detect: () => {
+      const [{ languageCode }] = getLocales();
+      return languageCode;
+    },
+    init: Function.prototype,
+    cacheUserLanguage: Function.prototype,
+  })
+  .use(initReactI18next)
+  .init({
+    defaultNS: 'translation',
+    fallbackLng: 'en',
+    debug: false,
+    interpolation: {
+      escapeValue: true,
+    },
+    keySeparator: false,
+    resources: {
+      en: defaultLang,
+    },
+  });
+
+export { i18n };

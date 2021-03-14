@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "allowJs": true,
+    "isolatedModules": true,
+    "jsx": "react-native",
+    "lib": [
+      "es2018"
+    ],
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "target": "esnext",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    /* Additional Checks */
+    "noFallthroughCasesInSwitch": true,
+    /* Module Resolution Options */
+    "moduleResolution": "node",
+    // "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "importsNotUsedAsValues": "error",
+    // "baseUrl": "./"
+  },
+  "exclude": [
+    "node_modules",
+    "__generated__"
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "src/custom.d.ts"
+  ]
+}

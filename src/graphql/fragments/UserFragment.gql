@@ -1,0 +1,9 @@
+fragment UserFragment on User {
+  id
+  avatarFilePath
+  nickname
+  name
+  intro
+  zaloId
+  isNew
+}
