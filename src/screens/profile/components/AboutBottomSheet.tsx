@@ -4,12 +4,12 @@ import { Modalize } from 'react-native-modalize';
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import { ThemeColors } from '../../../types/theme';
 import { ThemeStatic, Typography } from '../../../theme';
-import { AppContext } from '../../../context';
 import Button from '../../../components/shared/controls/Button';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
-import Config from '../../../config';
+import { useRecoilValue } from 'recoil';
+import { themeState } from '../../../recoil/common/atoms';
+import type { ThemeColors } from '../../../types/theme';
 
 const { FontWeights, FontSizes } = Typography;
 // const {
@@ -20,7 +20,8 @@ const { FontWeights, FontSizes } = Typography;
 
 // @ts-ignore
 const AboutAction = ({ iconName, label, onPress }) => {
-  const { theme } = useContext(AppContext);
+  const theme = useRecoilValue(themeState);
+
   const Icon = () => <AntDesign name={iconName} size={20} color={ThemeStatic.accent} />;
 
   return (
@@ -40,7 +41,7 @@ interface AboutBottomSheetProps {
 }
 
 const AboutBottomSheet: React.FC<AboutBottomSheetProps> = React.forwardRef((_, ref) => {
-  const { theme } = useContext(AppContext);
+  const theme = useRecoilValue(themeState);
 
   const openLink = (url: string) => {
     try {
@@ -60,7 +61,7 @@ const AboutBottomSheet: React.FC<AboutBottomSheetProps> = React.forwardRef((_, r
         <Image source={require('../../../assets/images/proximity-logo.png')} style={styles().logoImage} />
         {/*<Text style={styles(theme).versionText}>{version}</Text>*/}
         <Text style={styles(theme).aboutText}>
-          Proximity is an Open Source social media app I designed and developed in my free time, this app is fully open
+          Snappost is an Open Source social media app I designed and developed in my free time, this app is fully open
           source and doesn't use your data against you in any shape or form. The code for mobile apps is open-source on
           Github.
         </Text>
@@ -70,9 +71,9 @@ const AboutBottomSheet: React.FC<AboutBottomSheetProps> = React.forwardRef((_, r
         </Text>
 
         <View style={styles().actions}>
-          {/*<AboutAction iconName="link" label="Contact me" onPress={() => openLink(url)} />*/}
+          <AboutAction iconName="link" label="Contact me" onPress={() => null} />
 
-          {/*<AboutAction iconName="github" label="Source code" onPress={() => openLink(repository)} />*/}
+          <AboutAction iconName="github" label="Source code" onPress={() => null} />
         </View>
       </View>
     </Modalize>
