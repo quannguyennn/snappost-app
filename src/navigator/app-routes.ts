@@ -20,4 +20,5 @@ export enum AppRoutes {
   CONVERSATION_SCREEN = 'ConversationScreen',
   PROFILE_VIEW_SCREEN = 'ProfileViewScreen',
   POST_VIEW_SCREEN = 'PostViewScreen',
+  NOTIFICATION_VIEW_SCREEN = 'NotificationViewScreen',
 }

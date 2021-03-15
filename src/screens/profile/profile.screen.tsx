@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useApolloClient } from '@apollo/client';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../../components/shared/layout/headers/Header';
 import IconButton from '../../components/shared/Iconbutton';
@@ -10,8 +10,6 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/common/atoms';
 import SettingsBottomSheet from './components/SettingsBottomSheet';
-import { Modalize } from 'react-native-modalize';
-import { ThemeColors } from '../../types/theme';
 import ProfileCard from '../../components/shared/ProfileCard';
 import { PostDimensions } from '../../theme';
 import PostThumbnail from '../../components/shared/PostThumbnail';
@@ -20,10 +18,11 @@ import ProfileScreenPlaceholder from '../../components/placeholders/ProfileScree
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import ListEmptyComponent from '../../components/shared/ListEmptyComponent';
 import { FlatGrid } from 'react-native-super-grid';
-import { sortPostsAscendingTime } from '../../utils/shared';
 import ConnectionsBottomSheet from '../../components/shared/ConnectionsBottomSheet';
 import { Connections } from '../../utils/constants';
-import EditProfileBottomSheet from './components/EditProfileBottomSheet';
+import type { Modalize } from 'react-native-modalize';
+import { sortPostsAscendingTime } from '../../utils/shared';
+import type { ThemeColors } from '../../types/theme';
 const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const { navigate } = useNavigation();
   const client = useApolloClient();
@@ -60,25 +59,25 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
     onAboutOpen();
   };
 
-  // const ListHeaderComponent = (props: any) => {
-  //   const {
-  //     user: { avatar, following, followers, name, handle, about },
-  //   } = props;
-  //   return (
-  //     <ProfileCard
-  //       editable
-  //       onEdit={onEdit}
-  //       onFollowingOpen={onFollowingOpen}
-  //       onFollowersOpen={onFollowersOpen}
-  //       avatar={avatar}
-  //       following={following.length}
-  //       followers={followers.length}
-  //       name={name}
-  //       handle={handle}
-  //       about={about}
-  //     />
-  //   );
-  // };
+  const ListHeaderComponent = (props: any) => {
+    // const {
+    //   user: { avatar, following, followers, name, handle, about },
+    // } = props;
+    return (
+      <ProfileCard
+        editable
+        onEdit={onEdit}
+        onFollowingOpen={onFollowingOpen}
+        onFollowersOpen={onFollowersOpen}
+        avatar={'https://images.pexels.com/photos/1838609/pexels-photo-1838609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'}
+        following={10}
+        followers={100}
+        name={'hahah'}
+        handle={'hahaha'}
+        about={'hihi'}
+      />
+    );
+  };
 
   // @ts-ignore
   const renderItem = ({ item }) => {
@@ -151,7 +150,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
       <>
         <FlatGrid
           staticDimension={responsiveWidth(94)}
-          // ListHeaderComponent={ListHeaderComponent}
+          ListHeaderComponent={ListHeaderComponent}
           itemDimension={150}
           data={sortedPosts}
           ListEmptyComponent={() => <ListEmptyComponent listType="posts" spacing={30} />}

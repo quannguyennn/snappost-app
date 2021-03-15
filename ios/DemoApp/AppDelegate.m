@@ -5,9 +5,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
-#import <KakaoOpenSDK/KakaoOpenSDK.h>
 #import "RNBootSplash.h"
-#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 //#import "RNSplashScreen.h"
 
 #if DEBUG
@@ -41,11 +39,10 @@ static void InitializeFlipper(UIApplication *application) {
 #endif
 #endif
 
-  [[NaverThirdPartyLoginConnection getSharedInstance] setIsInAppOauthEnable:YES];
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"Snappost"
+                                                   moduleName:@"DemoApp"
                                             initialProperties:nil];
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
@@ -81,11 +78,4 @@ static void InitializeFlipper(UIApplication *application) {
 - (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {
   return [[ZDKApplicationDelegate sharedInstance] application:application openURL:url options:options];
 }
-
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-  {
-      [KOSession handleDidBecomeActive];
-  }
-
 @end

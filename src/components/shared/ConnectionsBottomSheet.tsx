@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React  from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
-import { AppContext } from '../../context';
 import SvgBanner from './SvgBanner';
-import { image } from 'react-native-image-filter-kit/src/common/inputs';
 import { Images } from '../../assets1/icons';
 import UserCard from '../UserCard';
 import { Connection, Connections } from '../../utils/constants';
 import BottomSheetHeader from './layout/headers/BottomSheetHeader';
-import { ThemeColors } from '../../types/theme';
+import { useRecoilValue } from 'recoil';
+import { themeState } from '../../recoil/common/atoms';
+import type { ThemeColors } from '../../types/theme';
 
 interface ConnectionsBottomSheetProps {
   ref: React.Ref<any>;
@@ -22,7 +22,7 @@ interface ConnectionsBottomSheetProps {
 
 const ConnectionsBottomSheet: React.FC<ConnectionsBottomSheetProps> = React.forwardRef(
   ({ viewMode, handle, data, type }, ref) => {
-    const { theme } = useContext(AppContext);
+    const theme = useRecoilValue(themeState);
 
     let heading: string;
     let subHeading: string;

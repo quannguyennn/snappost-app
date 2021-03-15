@@ -1,11 +1,15 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { ThemeColors } from '../../types/theme';
+
 import { Typography } from '../../theme';
 import { AppContext } from '../../context';
-import { parseConnectionsCount } from '../../utils/shared';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ThemeStatic } from '../../theme';
+import { parseConnectionsCount } from '../../utils/shared';
+import type { ThemeColors } from '../../types/theme';
+import { useRecoilValue } from 'recoil';
+import { themeState } from '../../recoil/common/atoms';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -16,7 +20,8 @@ interface ConnectionsProps {
 }
 
 const Connections: React.FC<ConnectionsProps> = ({ total, type, onPress }) => {
-  const { theme } = useContext(AppContext);
+  const theme = useRecoilValue(themeState);
+
   return (
     <TouchableOpacity activeOpacity={0.95} onPress={onPress} style={styles(theme).connections}>
       <Text style={styles(theme).connectionsText}>{total}</Text>
@@ -30,7 +35,8 @@ interface EditProfileProps {
 }
 
 const EditProfile: React.FC<EditProfileProps> = ({ onEdit }) => {
-  const { theme } = useContext(AppContext);
+  const theme = useRecoilValue(themeState);
+
   return (
     <TouchableOpacity activeOpacity={1} onPress={onEdit} style={styles(theme).editProfile}>
       <MaterialIcons name="edit" size={16} color={ThemeStatic.white} />
@@ -65,7 +71,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   renderInteractions,
   about,
 }) => {
-  const { theme } = useContext(AppContext);
+  const theme = useRecoilValue(themeState);
+
   return (
     <View style={styles(theme).container}>
       <View style={styles(theme).info}>

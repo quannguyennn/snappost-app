@@ -1,4 +1,4 @@
-import { StatusBarStyle } from 'react-native';
+import type { StatusBarStyle } from 'react-native';
 
 export type ThemeStaticType = {
   accent: string;

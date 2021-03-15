@@ -20,7 +20,6 @@ import ZaloKit, { Constants } from 'react-native-zalo-kit';
 import { useLoginWithSnsMutation } from '../../graphql/mutations/loginWithSNS.generated';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import { useUpdateUserInfoMutation } from '../../graphql/mutations/updateUserInfo.generated';
-import { useTestMutation } from '../../graphql/mutations/test.generated';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -42,26 +41,27 @@ const LoginScreen = memo<Props>(() => {
   const [loginWithSns, { loading: loginLoading }] = useLoginWithSnsMutation({
     onCompleted: (res) => {
       if (res.loginWithSNS.user.isNew) {
-        termsConfirmationToggle()
+        termsConfirmationToggle();
       } else {
-        navigate(AppRoutes.APP)
+        navigate(AppRoutes.APP);
       }
     },
     onError: (err) => {
-      somethingWentWrongErrorNotification()
-    }
-  })
+      console.log('loginWithSns', err);
+      somethingWentWrongErrorNotification();
+    },
+  });
 
   const [updateUser, { loading: loadingUpdate }] = useUpdateUserInfoMutation({
     onCompleted: (res) => {
-      termsConfirmationToggle()
-      navigate(AppRoutes.APP)
+      termsConfirmationToggle();
+      navigate(AppRoutes.APP);
     },
     onError: (err) => {
-      somethingWentWrongErrorNotification()
-    }
-  })
-
+      console.log('updateUser', err);
+      somethingWentWrongErrorNotification();
+    },
+  });
 
   const getApplicationHashKey = async () => {
     try {
@@ -88,14 +88,14 @@ const LoginScreen = memo<Props>(() => {
   };
 
   const processNewUser = () => {
-
+    console.log(111);
     updateUser({
       variables: {
         input: {
-          isNew: false
-        }
-      }
-    })
+          isNew: false,
+        },
+      },
+    });
   };
 
   const handleZaloLogin = async () => {
@@ -110,15 +110,13 @@ const LoginScreen = memo<Props>(() => {
             input: {
               zaloId: user.id,
               avatarUrl: user.picture.data.url,
-              name: user.name
-            }
-          }
-        })
+              name: user.name,
+            },
+          },
+        });
       }
 
-      setGoogleLoading(false)
-
-
+      setGoogleLoading(false);
     } catch ({ message }) {
       setGoogleLoading(false);
     }
