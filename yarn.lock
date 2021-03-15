@@ -1290,11 +1290,6 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@invertase/react-native-apple-authentication@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@invertase/react-native-apple-authentication/-/react-native-apple-authentication-2.1.0.tgz#ae58fe8cafa17272e363cbc68f342b9aefd6414c"
-  integrity sha512-9F4aZVS2wpwZS81zi6I4R3OEctrpDUjDfJaJRHaedQ9d3DQjsbFNpKN2eKUMLnJoY2hweE2dRdgwXrJaNaEZ+g==
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -2019,11 +2014,6 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.1.0.tgz#e42b1bef12d2415411519fd528e64b593b1363dc"
   integrity sha512-W/J0fNYVO01tioHjvYWQ9m6RgndVtbElzYozBq1ZPrHO/iCzlqoySHl4gO/fpCl9QEFjvJfjPgtPMTMlsoq5DQ==
 
-"@react-native-community/google-signin@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/google-signin/-/google-signin-5.0.0.tgz#d1d89c697cc214c10017fa283817e84bd03b2d76"
-  integrity sha512-MvFHImmtlmE1kJZgZ9XaULm/OBuQ/AQWOCPr3NzYTUv2cCqyGwfFrealo5PS/fuL/InCGcfqK1k/1dZ+67Hjmg==
-
 "@react-native-community/masked-view@0.1.10":
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
@@ -2033,13 +2023,6 @@
   version "1.9.11"
   resolved "https://registry.yarnpkg.com/@react-native-picker/picker/-/picker-1.9.11.tgz#490c752417c17d687e2941659b3c0bff9cb79b83"
   integrity sha512-E7whvvMIl9Ln1sxgug7OAEVWQ69n82iV0d2OWWp5VV52+RW3azKh1IFm4rxdW5/oByMfl7FFL0eHNelGgY4BMQ==
-
-"@react-native-seoul/naver-login@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@react-native-seoul/naver-login/-/naver-login-2.1.0.tgz#2bcbd1fe9b8d3e0a69545c142d6d9bccd88571b0"
-  integrity sha512-EqoXHcUFEHQKH+aYDEdABPWsC+nIAebZBXWwDffF1H8wtmsrN/nmJCOUfhiTcxZu5iKAskf3UEweK2M4a8ROWA==
-  dependencies:
-    dooboolab-welcome "^1.1.1"
 
 "@react-navigation/bottom-tabs@5.11.2":
   version "5.11.2"
@@ -2385,15 +2368,6 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==
 
-"@types/react-native-calendars@^1.505.0":
-  version "1.505.0"
-  resolved "https://registry.yarnpkg.com/@types/react-native-calendars/-/react-native-calendars-1.505.0.tgz#ee60af5cd131a6b6423eec75fa069949778b21f4"
-  integrity sha512-2Th/n4AG000Yas9IgfOAyobrrvL4lrXcHEMrNwMd9toe+Q4oiPe1wrhh3T6uqQ+n+771Kuq9/sQv3NLBcZUOxg==
-  dependencies:
-    "@types/react" "*"
-    "@types/react-native" "*"
-    "@types/xdate" "*"
-
 "@types/react-native-snap-carousel@^3.8.2":
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.8.2.tgz#31fb91530198183c658db0d23935ca79850419f5"
@@ -2476,11 +2450,6 @@
   integrity sha512-f5WLMpezwVxCLm1xQe/kdPpQIOmL0TXYx2O15VYfYzc7hTIdxiOoOvez+McSIw3b7z/1zGovew9YSL7+h4h7/Q==
   dependencies:
     "@types/node" "*"
-
-"@types/xdate@*":
-  version "0.8.31"
-  resolved "https://registry.yarnpkg.com/@types/xdate/-/xdate-0.8.31.tgz#7bec14a47c9bb30715d507f32bc82ab163149574"
-  integrity sha512-iZYRKKK8UZXoepNh2kwK6TPITMj/dwdv0NzNi9DFMt2foGkU7h+ncaCpGsdD2fp/CXMs9dxPAzV9uddFy7c4QA==
 
 "@types/yargs-parser@*":
   version "20.2.0"
@@ -4344,11 +4313,6 @@ domutils@^1.7.0:
     dom-serializer "0"
     domelementtype "1"
 
-dooboolab-welcome@^1.1.1:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/dooboolab-welcome/-/dooboolab-welcome-1.2.0.tgz#295818ce85a8e97dc90c0ec0510b4008e2d722dc"
-  integrity sha512-XgEbjJHAsKLge/e8jtuHsv84Ovg1Gx0GvnOTOmOlVGV1643nduTAkT3fyo/mxKbzvyXBr47RHaJAY4R2toI0UA==
-
 dot-case@^3.0.3:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/dot-case/-/dot-case-3.0.4.tgz#9b2b670d00a431667a8a75ba29cd1b98809ce751"
@@ -5606,7 +5570,7 @@ hey-listen@^1.0.5:
   resolved "https://registry.yarnpkg.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
   integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
 
-hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
+hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -5756,11 +5720,6 @@ image-size@^0.6.0:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.6.3.tgz#e7e5c65bb534bd7cdcedd6cb5166272a85f75fb2"
   integrity sha512-47xSUiQioGaB96nqtp5/q55m0aBQSQdyIloMOc/x+QVTDZLNmXE892IIDrJ0hM1A5vcNUDD5tDffkSP5lCaIIA==
-
-immutable@^4.0.0-rc.12:
-  version "4.0.0-rc.12"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.12.tgz#ca59a7e4c19ae8d9bf74a97bdf0f6e2f2a5d0217"
-  integrity sha512-0M2XxkZLx/mi3t8NVwIm1g8nHoEmM9p9UBl/G9k4+hm0kBgOVdMV/B3CY5dQ8qG8qc80NN4gDV4HQv6FTJ5q7A==
 
 immutable@~3.7.6:
   version "3.7.6"
@@ -7890,7 +7849,7 @@ mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-moment@^2.24.0, moment@^2.29.1:
+moment@^2.29.1:
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
@@ -8904,19 +8863,6 @@ react-native-bootsplash@3.1.2:
     fs-extra "^9.0.1"
     jimp "^0.16.1"
 
-react-native-calendars@^1.1254.0:
-  version "1.1254.0"
-  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1254.0.tgz#49dfb880c6588188a49ba15ecfb56cace2d3b3fe"
-  integrity sha512-6nnrOdpgyJrnu5BpUq+jfKFtLvBEy+csgmQQJ5XQvvIoeoI110TwPfDlQ2U6dUF9wjcge3Sg0UcnimlFXNj8Zg==
-  dependencies:
-    hoist-non-react-statics "^3.3.1"
-    immutable "^4.0.0-rc.12"
-    lodash "^4.17.15"
-    moment "^2.24.0"
-    prop-types "^15.5.10"
-    react-native-swipe-gestures "^1.0.5"
-    xdate "^0.8.0"
-
 react-native-complete-mentions@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/react-native-complete-mentions/-/react-native-complete-mentions-1.0.9.tgz#01116f1ceca22605422f899765585891924cf6dc"
@@ -9029,11 +8975,6 @@ react-native-modest-checkbox@^3.3.0:
   dependencies:
     prop-types "^15.7.2"
 
-react-native-picker-scrollview@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-picker-scrollview/-/react-native-picker-scrollview-1.0.1.tgz#db2d2ba0f3154767df4651dd76bad4e1849e312b"
-  integrity sha512-6N4IuAwLVDLoO3IUCW0QzWJrafXVi7WylofaPg4PNPfPRFOYAsGKMN5yEPw463tWtmbBxP6vZEIOfGl93d9Aeg==
-
 react-native-picker-select@^8.0.4:
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/react-native-picker-select/-/react-native-picker-select-8.0.4.tgz#3f7f1f42df69b06e7d2c10338288332a6c40fd10"
@@ -9118,11 +9059,6 @@ react-native-svg@^12.1.0:
   dependencies:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"
-
-react-native-swipe-gestures@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.5.tgz#a172cb0f3e7478ccd681fd36b8bfbcdd098bde7c"
-  integrity sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==
 
 react-native-vector-icons@7.1.0:
   version "7.1.0"
@@ -9578,11 +9514,6 @@ rn-color-matrices@^4.1.0:
   integrity sha512-a8++z3Zi4GhA0oWwKS3etdrVuVQ2q/ByTMh6lMxo+vaSv3SRSSg5SzpZk65GS0NCAqMhFT8WSvgSgNhO/F+xag==
   dependencies:
     clamp "^1.0.1"
-
-rn-kakao-login-namdq@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/rn-kakao-login-namdq/-/rn-kakao-login-namdq-1.0.2.tgz#81141df6ae45fb865aab52814bba3a18331271d5"
-  integrity sha512-MBrphwx3wqpfiXq3sg2BQ6aLnKyNxFDTDn6j70Guhw1CSMzuQrPGLX9T7pR9GkPodfEtZA+2YzldfUV4nO3BNw==
 
 rn-material-ui-textfield@^1.0.2:
   version "1.0.2"
@@ -11125,11 +11056,6 @@ xcode@^2.0.0:
   dependencies:
     simple-plist "^1.0.0"
     uuid "^3.3.2"
-
-xdate@^0.8.0:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/xdate/-/xdate-0.8.2.tgz#d7b033c00485d02695baf0044f4eacda3fc961a3"
-  integrity sha1-17AzwASF0CaVuvAET06s2j/JYaM=
 
 xhr@^2.0.1:
   version "2.6.0"

@@ -13,9 +13,13 @@ public class MainActivity extends ReactActivity {
    @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ZaloSDK.Instance.onActivityResult(this, requestCode, resultCode, data);
     RNBootSplash.init(R.drawable.bootsplash, MainActivity.this); // <- display the generated bootsplash.xml drawable over our MainActivity
   }
+  @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      ZaloSDK.Instance.onActivityResult(this, requestCode, resultCode, data);
+    }
   @Override
   protected String getMainComponentName() {
     return "DemoApp";
