@@ -9,13 +9,11 @@ import {
   View,
   Text,
   Platform,
-  Pressable,
 } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import CameraRoll, { PhotoIdentifier } from '@react-native-community/cameraroll';
 import Video from 'react-native-video';
-import Feather from 'react-native-vector-icons/Feather';
 import GoBackHeader from '../../components/shared/layout/headers/GoBackHeader';
 import { AppRoutes } from '../../navigator/app-routes';
 import { themeState } from '../../recoil/theme/atoms';
@@ -24,8 +22,6 @@ import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
 import { LIMIT_MEDIA } from '../../utils/constants';
 import { convertToNormalVideoUri } from '../../utils/shared';
-import ImagePicker from 'react-native-image-crop-picker';
-import moment from 'moment';
 
 const { FontSizes } = Typography;
 
@@ -39,7 +35,7 @@ const UploadScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
   const { navigate } = useNavigation();
 
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [medias, setMedias] = useState<PhotoIdentifier[]>([]);
   const [selectedMedias, setSelectedMedias] = useState<SelectedMedia[]>([]);
   const [lastIndex, setLastIndex] = useState(0);
@@ -69,8 +65,10 @@ const UploadScreen: React.FC = () => {
   useEffect(() => {
     const getMedia = async () => {
       setLoading(true);
-      if (Platform.OS === 'android' && !(await hasAndroidPermission())) return;
-      CameraRoll.getPhotos({ first: page * 50 }).then((res) => {
+      if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+        return;
+      }
+      CameraRoll.getPhotos({ first: page * 50, assetType: 'Photos' }).then((res) => {
         setMedias(res.edges);
         setLoading(false);
       });
@@ -85,7 +83,9 @@ const UploadScreen: React.FC = () => {
   const handleSelectMedia = (index: number, metadata: PhotoIdentifier) => {
     const realIndex = getSelectedIndex(index);
     if (realIndex === -1) {
-      if (selectedMedias.length === LIMIT_MEDIA) return;
+      if (selectedMedias.length === LIMIT_MEDIA) {
+        return;
+      }
       setSelectedMedias([...selectedMedias, { index, metadata }]);
       setLastIndex(index);
     } else {
@@ -96,7 +96,9 @@ const UploadScreen: React.FC = () => {
   };
 
   const renderBigMedia = () => {
-    if (!medias.length) return <View />;
+    if (!medias.length) {
+      return <View />;
+    }
     const mediaToshow = selectedMedias.length ? selectedMedias[selectedMedias.length - 1].metadata : medias[lastIndex];
     if (mediaToshow.node.type === 'image') {
       return (

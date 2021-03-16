@@ -10,12 +10,12 @@ import ImageBanner from '../../../components/shared/ImageBanner';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import UserCard from '../../../components/UserCard';
 import { themeState } from '../../../recoil/theme/atoms';
-import { ThemeColors } from '../../../types/theme';
+import type { ThemeColors } from '../../../types/theme';
 
 interface LikesBottomSheetProps {
   ref: React.Ref<any>;
-  likes: string[];
-  onUserPress: (userId: string) => void;
+  likes: number[];
+  onUserPress: (userId: number) => void;
 }
 
 const LikesBottomSheet: React.FC<LikesBottomSheetProps> = React.forwardRef(({ likes, onUserPress }, ref) => {

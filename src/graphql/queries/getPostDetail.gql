@@ -1,0 +1,37 @@
+query getPostDetail($id: Float!) {
+  getPostDetail(id: $id) {
+    id
+    creatorId
+    medias
+    caption
+    rawCaption
+    createdAt
+    updatedAt
+    postComments {
+      id
+      creatorId
+      postId
+      parentId
+      content
+      createdAt
+      updatedAt
+    }
+    totalLike
+    isLike
+    mediasPath {
+      filePath
+    }
+    creatorInfo {
+      id
+      name
+      nickname
+      intro
+      zaloId
+      avatar
+      isNew
+      createdAt
+      updatedAt
+      avatarFilePath
+    }
+  }
+}

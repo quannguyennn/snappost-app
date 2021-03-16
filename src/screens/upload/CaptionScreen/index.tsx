@@ -58,7 +58,10 @@ const CaptionScreen = React.memo(() => {
   const [keyword, setKeyword] = useState('');
   const debouncedKeyword = useDebounce(keyword, 150);
 
-  const [searchUser, { data: fetchUser, loading: searchLoading, fetchMore }] = useSearchUserLazyQuery({});
+  const [searchUser, { data: fetchUser, loading: searchLoading, fetchMore }] = useSearchUserLazyQuery({
+    fetchPolicy: 'cache-and-network',
+    onError: () => somethingWentWrongErrorNotification(),
+  });
 
   const currentPage =
     Number(fetchUser?.searchUser?.meta.currentPage) >= 0 ? Number(fetchUser?.searchUser?.meta.currentPage) : 1;
@@ -68,7 +71,7 @@ const CaptionScreen = React.memo(() => {
   const suggestedUsers = fetchUser?.searchUser?.items;
 
   useEffect(() => {
-    if (keyword.trim()) {
+    if (debouncedKeyword.trim()) {
       searchUser({
         variables: {
           keyword: debouncedKeyword,
@@ -78,7 +81,7 @@ const CaptionScreen = React.memo(() => {
         },
       });
     }
-  }, [debouncedKeyword]);
+  }, [debouncedKeyword, searchUser]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -110,6 +113,7 @@ const CaptionScreen = React.memo(() => {
       navigate(AppRoutes.HOME_TAB);
     },
     onError: (err) => {
+      console.log(err);
       setLoading(false);
       somethingWentWrongErrorNotification();
     },

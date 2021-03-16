@@ -8,20 +8,22 @@ import LoadingIndicator from '../../../components/shared/LoadingIndicator';
 import NativeImage from '../../../components/shared/NativeImage';
 import { inputLimitErrorNotification } from '../../../helpers/notifications';
 import { createAsyncDelay } from '../../../helpers/utils';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { themeState } from '../../../recoil/theme/atoms';
 import { Typography, ThemeStatic } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
-import { ThemeColors } from '../../../types/theme';
+import type { ThemeColors } from '../../../types/theme';
 
 const { FontWeights, FontSizes } = Typography;
 
 interface CommentInputProps {
-  postId: string;
+  postId: number;
   scrollViewRef: React.MutableRefObject<any>;
 }
 
 const CommentInput: React.FC<CommentInputProps> = ({ postId, scrollViewRef }) => {
   const theme = useRecoilValue(themeState);
+  const user = useCurrentUser();
   const [comment, setComment] = useState('');
   // const [addComment, { loading }] = useMutation(MUTATION_ADD_COMMENT);
 
@@ -57,11 +59,11 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, scrollViewRef }) =>
 
   return (
     <View style={styles().container}>
-      <NativeImage uri="https://i.redd.it/eqkolvkcy2wy.jpg" style={styles(theme).commentAvatarImage} />
+      <NativeImage uri={user?.avatarFilePath ?? ''} style={styles(theme).commentAvatarImage} />
       <TextInput
         style={styles(theme).commentTextInput}
         value={comment}
-        placeholder={'Add a comment as UserName...'}
+        placeholder={`Add a comment as ${user?.name ?? ''}...`}
         placeholderTextColor={theme.text02}
         onChangeText={setComment}
       />

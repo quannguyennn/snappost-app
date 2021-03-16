@@ -21,6 +21,7 @@ import { somethingWentWrongErrorNotification } from '../../helpers/notifications
 import { useUpdateUserInfoMutation } from '../../graphql/mutations/updateUserInfo.generated';
 import { themeState } from '../../recoil/theme/atoms';
 import { isLoginState } from '../../recoil/auth/atoms';
+import { MeDocument } from '../../graphql/queries/me.generated';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -54,6 +55,20 @@ const LoginScreen = memo<Props>(() => {
       console.log('loginWithSns', err);
       setIsLogin(false);
       somethingWentWrongErrorNotification();
+    },
+    update: async (proxy, { data, errors }) => {
+      if (data?.loginWithSNS?.user) {
+        const user = data?.loginWithSNS?.user;
+        proxy.writeQuery({
+          query: MeDocument,
+          data: {
+            me: user,
+          },
+        });
+        if (errors) {
+          return;
+        }
+      }
     },
   });
 

@@ -7,6 +7,7 @@ const { FontWeights, FontSizes } = Typography;
 
 interface ButtonProps {
   Icon?: any;
+  IconComponent?: any;
   label: string;
   onPress: any;
   loading: boolean;
@@ -19,6 +20,7 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({
   Icon,
+  IconComponent,
   label,
   onPress,
   loading,
@@ -32,6 +34,7 @@ const Button: React.FC<ButtonProps> = ({
     content = (
       <>
         {Icon && <Image source={Icon} style={{ height: 30, width: 30 }} />}
+        {IconComponent && IconComponent}
         <Text style={[styles.label, labelStyle, disabled ? { color: ThemeStatic.placeholder } : {}]}>{label}</Text>
       </>
     );
