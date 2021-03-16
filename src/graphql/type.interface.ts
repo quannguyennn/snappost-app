@@ -36,12 +36,15 @@ export type User = Node & {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   avatarFilePath?: Maybe<Scalars['String']>;
+  followStatus?: Maybe<FollowStatus>;
 };
 
 /** Node */
 export type Node = {
   id: Scalars['Float'];
 };
+
+export type FollowStatus = 'WAITING' | 'ACCEPT';
 
 export type UserConnection = {
   __typename?: 'UserConnection';
@@ -58,8 +61,6 @@ export type Follow = Node & {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
 };
-
-export type FollowStatus = 'WAITING' | 'ACCEPT';
 
 export type Media = Node & {
   __typename?: 'Media';
@@ -144,6 +145,7 @@ export type Query = {
   media?: Maybe<Media>;
   getNewFeed: PostConnection;
   getPostDetail: Post;
+  myPost: PostConnection;
 };
 
 export type QueryUserArgs = {
@@ -174,6 +176,11 @@ export type QueryGetNewFeedArgs = {
 
 export type QueryGetPostDetailArgs = {
   id: Scalars['Float'];
+};
+
+export type QueryMyPostArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
 };
 
 export type Mutation = {

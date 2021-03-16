@@ -9,7 +9,7 @@ import { HandleAvailableColor, ThemeStatic } from '../../../theme';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import FormInput from '../../../components/shared/controls/FormInput';
 import Button from '../../../components/shared/controls/Button';
-import { ThemeColors } from '../../../types/theme';
+import type { ThemeColors } from '../../../types/theme';
 
 interface EditProfileBottomSheetProps {
   ref: React.Ref<any>;
