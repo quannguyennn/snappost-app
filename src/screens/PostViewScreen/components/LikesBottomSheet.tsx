@@ -9,7 +9,7 @@ import ConnectionsPlaceholder from '../../../components/placeholders/Connection.
 import ImageBanner from '../../../components/shared/ImageBanner';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import UserCard from '../../../components/UserCard';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { ThemeColors } from '../../../types/theme';
 
 interface LikesBottomSheetProps {

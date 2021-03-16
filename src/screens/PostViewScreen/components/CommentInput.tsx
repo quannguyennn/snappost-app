@@ -8,7 +8,7 @@ import LoadingIndicator from '../../../components/shared/LoadingIndicator';
 import NativeImage from '../../../components/shared/NativeImage';
 import { inputLimitErrorNotification } from '../../../helpers/notifications';
 import { createAsyncDelay } from '../../../helpers/utils';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography, ThemeStatic } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
 import { ThemeColors } from '../../../types/theme';

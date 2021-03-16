@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
 import { ThemeColors } from '../../../types/theme';

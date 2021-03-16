@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { useRecoilValue } from 'recoil';
 import { Placeholder, PlaceholderLine } from 'rn-placeholder';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import PlaceholderAnimation from './PlaceholderAnimation';
 
 const ExploreScreenPlaceholder: React.FC = () => (

@@ -4,7 +4,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Typography } from '../../../theme';
 import { NotificationText, NotificationType } from '../../../types/constants';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { useNavigation } from '@react-navigation/native';
 import { parseTimeElapsed } from '../../../utils/shared';
 import { useMutation } from '@apollo/client';
@@ -63,14 +63,10 @@ const NotificationCard: React.FC<NotificationCardPros> = ({
   //     deleteNotification({ variables: { notificationId } });
   //   }
   // };
-  const onDelete = () => {}
+  const onDelete = () => {};
 
   const renderRightActions = (progress: any, dragX: any) => (
-    <DeleteCardRightActions
-      progress={progress}
-      dragX={dragX}
-      onDelete={onDelete}
-    />
+    <DeleteCardRightActions progress={progress} dragX={dragX} onDelete={onDelete} />
   );
 
   return (

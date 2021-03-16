@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, StyleProp, StyleSheet, Text, TextStyle, View } from 'react-native';
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import Typography from '../../theme/Typography';
 import { ThemeColors } from '../../types/theme';
 

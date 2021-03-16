@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 import FormInput from '../../../components/shared/controls/FormInput';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import { postUpdatedNotification } from '../../../helpers/notifications';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { ThemeStatic } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
 import { ThemeColors } from '../../../types/theme';

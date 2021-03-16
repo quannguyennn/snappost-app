@@ -7,28 +7,32 @@ import { Mention, MentionInput, Tag } from 'react-native-complete-mentions';
 import GoBackHeader from '../../../components/shared/layout/headers/GoBackHeader';
 import { AppRoutes } from '../../../navigator/app-routes';
 import type { UploadStackParamList } from '../../../navigator/upload.navigator';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography, ThemeStatic } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
 import type { ThemeColors } from '../../../types/theme';
 import { useFileUpload } from '../../../hooks/useFileUpload';
 import type { Media } from '../../../graphql/type.interface';
 import { useCreatePostMutation } from '../../../graphql/mutations/createPost.generated';
-import { postUploadedNotification, somethingWentWrongErrorNotification, uploadErrorNotification } from '../../../helpers/notifications';
+import {
+  postUploadedNotification,
+  somethingWentWrongErrorNotification,
+  uploadErrorNotification,
+} from '../../../helpers/notifications';
 import { SearchUserQueryResponse, useSearchUserLazyQuery } from '../../../graphql/queries/searchUser.generated';
 import FastImage from 'react-native-fast-image';
 import useDebounce from '../../../screens/ExploreScreen/hooks/useDebounce';
-import { BarIndicator } from "react-native-indicators";
+import { BarIndicator } from 'react-native-indicators';
 
 const { FontSizes } = Typography;
 
-function UserSuggestion({ data, onPress }: { data: any, onPress: () => void }) {
+function UserSuggestion({ data, onPress }: { data: any; onPress: () => void }) {
   const theme = useRecoilValue(themeState);
   const styles = useStyle(theme);
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.userSuggestionContainer}>
-      <FastImage source={{ uri: data.avatarFilePath ?? "" }} style={styles.suggessAvatar} />
+      <FastImage source={{ uri: data.avatarFilePath ?? '' }} style={styles.suggessAvatar} />
       <View style={{ justifyContent: 'space-between' }}>
         <Text style={{ color: theme.text01 }}>{data.name}</Text>
         <Text style={{ color: theme.text02 }}>{data.name}</Text>
@@ -38,7 +42,7 @@ function UserSuggestion({ data, onPress }: { data: any, onPress: () => void }) {
 }
 
 const CaptionScreen = React.memo(() => {
-  const [uploadMedia] = useFileUpload()
+  const [uploadMedia] = useFileUpload();
 
   const {
     params: { medias },
@@ -47,19 +51,17 @@ const CaptionScreen = React.memo(() => {
   const styles = useStyle(theme);
   const { navigate } = useNavigation();
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [content, setContent] = useState('');
   const [extractValue, setExtractValue] = useState('');
   const [tracking, setTracking] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const debouncedKeyword = useDebounce(keyword, 150)
+  const debouncedKeyword = useDebounce(keyword, 150);
 
-  const [searchUser, { data: fetchUser, loading: searchLoading, fetchMore }] = useSearchUserLazyQuery({})
+  const [searchUser, { data: fetchUser, loading: searchLoading, fetchMore }] = useSearchUserLazyQuery({});
 
   const currentPage =
-    Number(fetchUser?.searchUser?.meta.currentPage) >= 0
-      ? Number(fetchUser?.searchUser?.meta.currentPage)
-      : 1;
+    Number(fetchUser?.searchUser?.meta.currentPage) >= 0 ? Number(fetchUser?.searchUser?.meta.currentPage) : 1;
   const totalPages =
     Number(fetchUser?.searchUser?.meta.totalPages) >= 0 ? Number(fetchUser?.searchUser?.meta.totalPages) : 2;
 
@@ -72,11 +74,11 @@ const CaptionScreen = React.memo(() => {
           keyword: debouncedKeyword,
           isRestricted: true,
           limit: 20,
-          page: 1
-        }
-      })
+          page: 1,
+        },
+      });
     }
-  }, [debouncedKeyword])
+  }, [debouncedKeyword]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -101,19 +103,17 @@ const CaptionScreen = React.memo(() => {
     }
   };
 
-
-
   const [createPost, { loading: createLoading }] = useCreatePostMutation({
     onCompleted: () => {
       setLoading(false);
-      postUploadedNotification()
-      navigate(AppRoutes.HOME_TAB)
+      postUploadedNotification();
+      navigate(AppRoutes.HOME_TAB);
     },
     onError: (err) => {
-      setLoading(false)
-      somethingWentWrongErrorNotification()
-    }
-  })
+      setLoading(false);
+      somethingWentWrongErrorNotification();
+    },
+  });
 
   const renderText = (mention: Mention) => {
     return <Text style={{ color: theme.accent }}>{mention.name}</Text>;
@@ -129,34 +129,39 @@ const CaptionScreen = React.memo(() => {
   };
 
   const handleUpload = async () => {
-    setLoading(true)
-    const mediaProcessPromise: Promise<Media>[] = medias.map(item => {
-      return uploadMedia(item.metadata.node.image)
-    })
+    setLoading(true);
+    const mediaProcessPromise: Promise<Media>[] = medias.map((item) => {
+      return uploadMedia(item.metadata.node.image);
+    });
 
-    Promise.all(mediaProcessPromise).then(res => {
-      const medias = res.map(item => Number(item.id))
-      createPost({
-        variables: {
-          input: {
-            medias,
-            caption: content,
-            rawCaption: extractValue
-          }
-        }
+    Promise.all(mediaProcessPromise)
+      .then((res) => {
+        const medias = res.map((item) => Number(item.id));
+        createPost({
+          variables: {
+            input: {
+              medias,
+              caption: content,
+              rawCaption: extractValue,
+            },
+          },
+        });
       })
-    }).catch(() => {
-      setLoading(false);
-      uploadErrorNotification("Media");
-    })
-  }
+      .catch(() => {
+        setLoading(false);
+        uploadErrorNotification('Media');
+      });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <GoBackHeader
         iconSize={IconSizes.x7}
         IconRight={() => (
-          <TouchableOpacity disabled={createLoading || searchLoading || loading} style={{ flexDirection: 'row', alignItems: 'center' }} onPress={handleUpload}>
+          <TouchableOpacity
+            disabled={createLoading || searchLoading || loading}
+            style={{ flexDirection: 'row', alignItems: 'center' }}
+            onPress={handleUpload}>
             <Text style={{ color: ThemeStatic.accent, ...FontSizes.Label }}>Share</Text>
           </TouchableOpacity>
         )}

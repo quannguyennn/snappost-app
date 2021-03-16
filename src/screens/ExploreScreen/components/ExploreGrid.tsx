@@ -4,7 +4,7 @@ import { FlatGrid } from 'react-native-super-grid';
 import { PrimaryImageGroup, SecondaryImageGroup } from './ExplorePostCard';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { ExplorePost } from '../../../types/utils';
 import { parseGridImages } from '../../../utils/shared';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';

@@ -18,7 +18,7 @@ import Video from 'react-native-video';
 import Feather from 'react-native-vector-icons/Feather';
 import GoBackHeader from '../../components/shared/layout/headers/GoBackHeader';
 import { AppRoutes } from '../../navigator/app-routes';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import { Typography, ThemeStatic } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
@@ -207,8 +207,8 @@ const UploadScreen: React.FC = () => {
               {getSelectedIndex(index) !== -1 ? (
                 <Text style={styles(theme).indexText}>{getSelectedIndex(index) + 1}</Text>
               ) : (
-                  <View style={{ height: IconSizes.x5, width: IconSizes.x5 }} />
-                )}
+                <View style={{ height: IconSizes.x5, width: IconSizes.x5 }} />
+              )}
             </View>
           </TouchableOpacity>
         )}

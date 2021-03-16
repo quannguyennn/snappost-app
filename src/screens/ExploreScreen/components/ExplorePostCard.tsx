@@ -4,7 +4,7 @@ import { StyleSheet, View, TouchableOpacity, StyleProp, ViewStyle } from 'react-
 import { useRecoilValue } from 'recoil';
 import NativeImage from '../../../components/shared/NativeImage';
 import { AppRoutes } from '../../../navigator/app-routes';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { PostDimensions } from '../../../theme';
 import { ThemeColors } from '../../../types/theme';
 import { ExplorePost } from '../../../types/utils';

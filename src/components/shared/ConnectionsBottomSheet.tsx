@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -9,7 +9,7 @@ import UserCard from '../UserCard';
 import { Connection, Connections } from '../../utils/constants';
 import BottomSheetHeader from './layout/headers/BottomSheetHeader';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import type { ThemeColors } from '../../types/theme';
 
 interface ConnectionsBottomSheetProps {

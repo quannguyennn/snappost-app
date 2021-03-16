@@ -26,7 +26,7 @@ import {
   Achromatomaly,
 } from 'react-native-image-filter-kit';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import { FilterType } from './type';
 type FilterRowProps = {
   uri: string;

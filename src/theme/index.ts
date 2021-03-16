@@ -1,5 +1,5 @@
 import { responsiveWidth } from 'react-native-responsive-dimensions';
-import { PostDimensionsType } from '../types/theme';
+import type { PostDimensionsType } from '../types/theme';
 import { Theme, ThemeStatic, ThemeVariant, MaterialColors, HandleAvailableColor, OnlineDotColor } from './Colors';
 import Typography from './Typography';
 

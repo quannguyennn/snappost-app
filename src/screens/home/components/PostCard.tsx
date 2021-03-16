@@ -1,55 +1,82 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import NativeImage from '../../../components/shared/NativeImage';
 import { parseLikes } from '../../../helpers/utils';
 import { AppRoutes } from '../../../navigator/app-routes';
 import { Typography, ThemeStatic, PostDimensions } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
+import type { Maybe } from '../../../graphql/type.interface';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import FastImage from 'react-native-fast-image';
 
 const { FontWeights, FontSizes } = Typography;
 
 type Author = {
-  id: string;
+  id: number;
   avatar: string;
-  handle: string;
+  name: string;
 };
 
 export interface PostCardProps {
-  id: string;
+  id: number;
   author: Author;
   time: string;
-  uri: string;
-  likes: string[];
+  uri: Maybe<string>[];
+  likes: number;
   caption: string;
+  isLike: boolean;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, caption }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, caption, isLike }) => {
   const { navigate } = useNavigation();
+
+  const [mediaIndex, setMediaIndex] = useState(0);
 
   const navigateToPost = () => navigate(AppRoutes.POST_VIEW_SCREEN, { postId: id });
 
   const readableTime = moment(time).fromNow();
-  const readableLikes = parseLikes(likes.length);
-  const isLiked = Math.round(Math.random());
+  const readableLikes = parseLikes(likes);
 
   return (
     <TouchableOpacity onPress={navigateToPost} activeOpacity={0.9} style={styles.container}>
-      <NativeImage uri={uri} style={styles.postImage} />
+      <Carousel
+        data={uri}
+        renderItem={({ item, index }: { item: any; index: number }) => {
+          return <FastImage key={`post-image-${index}`} source={{ uri: item }} style={styles.postImage} />;
+        }}
+        sliderWidth={PostDimensions.Large.width}
+        itemWidth={PostDimensions.Large.width}
+        layout="default"
+        inactiveSlideScale={1}
+        containerCustomStyle={styles.postImage}
+        onSnapToItem={(slideIndex) => setMediaIndex(slideIndex)}
+        hasParallaxImages={true}
+        loop
+      />
+      <Pagination
+        // containerStyle={styles.paginationContainer}
+        dotsLength={uri.length}
+        activeDotIndex={mediaIndex}
+        renderDots={(activeIndex) => {
+          return uri.map((e, index) => <View style={[styles.dot, activeIndex === index ? styles.activeDot : null]} />);
+        }}
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.6}
+      />
 
       <View style={styles.upperContent}>
-        <NativeImage uri={author.avatar} style={styles.avatarImage} />
+        <FastImage source={{ uri: author.avatar }} style={styles.avatarImage} />
         <View>
-          <Text style={styles.handleText}>{author.handle}</Text>
+          <Text style={styles.handleText}>{author.name}</Text>
           <Text style={styles.timeText}>{readableTime}</Text>
         </View>
       </View>
 
       <View style={styles.lowerContent}>
         <View style={styles.likeContent}>
-          <AntDesign name="heart" color={isLiked === 0 ? ThemeStatic.like : ThemeStatic.unlike} size={IconSizes.x5} />
+          <AntDesign name="heart" color={isLike ? ThemeStatic.like : ThemeStatic.unlike} size={IconSizes.x5} />
           <Text style={styles.likesText}>{readableLikes}</Text>
         </View>
 
@@ -73,6 +100,7 @@ const styles = StyleSheet.create({
   postImage: {
     position: 'absolute',
     ...PostDimensions.Large,
+    backgroundColor: 'white',
   },
   avatarImage: {
     height: 44,
@@ -117,6 +145,24 @@ const styles = StyleSheet.create({
     ...FontSizes.Body,
     color: ThemeStatic.white,
     marginTop: 5,
+  },
+  // paginationContainer: {
+  //   position: 'absolute',
+  // },
+  dot: {
+    backgroundColor: 'transparent',
+    borderColor: ThemeStatic.accent,
+    borderWidth: 1,
+    width: 10,
+    height: 10,
+    borderRadius: 10,
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 3,
+    marginBottom: 3,
+  },
+  activeDot: {
+    backgroundColor: ThemeStatic.accent,
   },
 });
 

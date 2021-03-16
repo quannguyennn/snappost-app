@@ -20,7 +20,7 @@ import GoBackHeader from '../../components/shared/layout/headers/GoBackHeader';
 import NativeImage from '../../components/shared/NativeImage';
 import { AppRoutes } from '../../navigator/app-routes';
 import { AppStackParamList } from '../../navigator/app.navigator';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import { Typography, ThemeStatic, PostDimensions } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import { ThemeColors } from '../../types/theme';

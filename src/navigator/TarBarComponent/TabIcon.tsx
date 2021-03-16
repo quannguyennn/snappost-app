@@ -6,9 +6,9 @@ import { useRecoilValue } from 'recoil';
 import { AppRoutes } from '../app-routes';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import { IconSizes } from '../../theme/Icon';
-import { ThemeColors } from '../../types/theme';
+import type { ThemeColors } from '../../types/theme';
 
 const TabIcon = ({ route, isActive }: any) => {
   const theme = useRecoilValue(themeState);
@@ -56,7 +56,7 @@ const styles = (theme = {} as ThemeColors) =>
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      bottom: -8,
+      bottom: -10,
     },
   });
 

@@ -8,7 +8,7 @@ import { IconSizes } from '../../theme/Icon';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import SettingsBottomSheet from './components/SettingsBottomSheet';
 import ProfileCard from '../../components/shared/ProfileCard';
 import { PostDimensions } from '../../theme';
@@ -69,7 +69,9 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
         onEdit={onEdit}
         onFollowingOpen={onFollowingOpen}
         onFollowersOpen={onFollowersOpen}
-        avatar={'https://images.pexels.com/photos/1838609/pexels-photo-1838609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'}
+        avatar={
+          'https://images.pexels.com/photos/1838609/pexels-photo-1838609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        }
         following={10}
         followers={100}
         name={'hahah'}

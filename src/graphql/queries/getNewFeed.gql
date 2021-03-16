@@ -1,0 +1,38 @@
+query getNewFeed($limit: Int, $page: Int) {
+  getNewFeed(limit: $limit, page: $page) {
+    items {
+      id
+      creatorId
+      medias
+      caption
+      rawCaption
+      createdAt
+      updatedAt
+      totalLike
+      isLike
+      mediasPath {
+        id
+        filePath
+      }
+      creatorInfo {
+        id
+        name
+        nickname
+        intro
+        zaloId
+        avatar
+        isNew
+        createdAt
+        updatedAt
+        avatarFilePath
+      }
+    }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
+    }
+  }
+}

@@ -5,7 +5,7 @@ import UserSearchResults from './components/UserSearchResults';
 import useDebounce from './hooks/useDebounce';
 import posed, { Transition } from 'react-native-pose';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import { Debounce } from '../../utils/constants';
 import ExploreScreenPlaceholder from '../../components/placeholders/Explore.Placeholder';
 import SearchUsersPlaceholder from '../../components/placeholders/UserSearch.Placeholder';
@@ -15,6 +15,7 @@ import AnimatedSearchBar from '../../components/shared/layout/headers/AnimatedSe
 import type { ThemeColors } from '../../types/theme';
 import { Images } from '../../assets1/icons';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 const FadeView = posed.View({
   enter: { opacity: 1 },
   exit: { opacity: 0.25 },
@@ -54,7 +55,7 @@ const ExploreScreen: React.FC = () => {
   const onRefresh = () => {
     try {
       // refetchPosts();
-    } catch { }
+    } catch {}
   };
 
   const posts = [

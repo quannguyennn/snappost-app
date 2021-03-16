@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { TextField } from 'rn-material-ui-textfield';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography } from '../../../theme';
 import type { ThemeColors } from '../../../types/theme';
 

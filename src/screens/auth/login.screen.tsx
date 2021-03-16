@@ -1,7 +1,7 @@
 import React, { memo, useRef, useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Platform, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import TermsAndConditionsBottomSheet from './components/TermsAndConditionsBottomSheet';
 import type { Modalize } from 'react-native-modalize';
@@ -11,7 +11,6 @@ import ConfirmationModal from '../../components/shared/ComfirmationModal';
 import LoadingIndicator from '../../components/shared/LoadingIndicator';
 import { AppRoutes } from '../../navigator/app-routes';
 import type { AuthLoginScreenProp, AuthStackNavigationProp } from '../../navigator/auth.navigator';
-import { themeState } from '../../recoil/common/atoms';
 import { ThemeStatic } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
@@ -20,6 +19,8 @@ import ZaloKit, { Constants } from 'react-native-zalo-kit';
 import { useLoginWithSnsMutation } from '../../graphql/mutations/loginWithSNS.generated';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import { useUpdateUserInfoMutation } from '../../graphql/mutations/updateUserInfo.generated';
+import { themeState } from '../../recoil/theme/atoms';
+import { isLoginState } from '../../recoil/auth/atoms';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -34,6 +35,8 @@ const LoginScreen = memo<Props>(() => {
   const [termsConfirmationModal, setTermsConfirmationModal] = useState<boolean>(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const setIsLogin = useSetRecoilState(isLoginState);
+
   const termsAndConditionsBottomSheetRef = useRef<Modalize>(null);
 
   const { navigate } = useNavigation<AuthStackNavigationProp>();
@@ -43,11 +46,13 @@ const LoginScreen = memo<Props>(() => {
       if (res.loginWithSNS.user.isNew) {
         termsConfirmationToggle();
       } else {
-        navigate(AppRoutes.APP);
+        setIsLogin(true);
+        // navigate(AppRoutes.APP);
       }
     },
     onError: (err) => {
       console.log('loginWithSns', err);
+      setIsLogin(false);
       somethingWentWrongErrorNotification();
     },
   });
@@ -55,10 +60,12 @@ const LoginScreen = memo<Props>(() => {
   const [updateUser, { loading: loadingUpdate }] = useUpdateUserInfoMutation({
     onCompleted: (res) => {
       termsConfirmationToggle();
-      navigate(AppRoutes.APP);
+      setIsLogin(true);
+      // navigate(AppRoutes.APP);
     },
     onError: (err) => {
       console.log('updateUser', err);
+      setIsLogin(false);
       somethingWentWrongErrorNotification();
     },
   });
@@ -66,7 +73,6 @@ const LoginScreen = memo<Props>(() => {
   const getApplicationHashKey = async () => {
     try {
       const key = await ZaloKit.getApplicationHashKey();
-      console.log(key);
 
       /*
       returns: 'application hash key'
@@ -88,7 +94,6 @@ const LoginScreen = memo<Props>(() => {
   };
 
   const processNewUser = () => {
-    console.log(111);
     updateUser({
       variables: {
         input: {

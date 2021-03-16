@@ -11,7 +11,7 @@ import Button from '../../../components/shared/controls/Button';
 import GoBackHeader from '../../../components/shared/layout/headers/GoBackHeader';
 import { AppRoutes } from '../../../navigator/app-routes';
 import type { UploadStackParamList } from '../../../navigator/upload.navigator';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography, ThemeStatic } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
 import type { ThemeColors } from '../../../types/theme';
@@ -47,7 +47,7 @@ const FilterScreen = React.memo(() => {
         if (isChange) {
           e.preventDefault();
           Alert.alert('', 'If go back now every changes you made will be removed', [
-            { text: 'Cancel', style: 'cancel', onPress: () => { } },
+            { text: 'Cancel', style: 'cancel', onPress: () => {} },
             {
               text: 'Remove',
               style: 'destructive',

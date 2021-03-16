@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import { Placeholder, PlaceholderLine, PlaceholderMedia } from 'rn-placeholder';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import { PostDimensions } from '../../theme';
 import PlaceholderAnimation from './PlaceholderAnimation';
 

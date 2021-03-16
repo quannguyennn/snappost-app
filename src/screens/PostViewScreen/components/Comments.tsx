@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, FlatList } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import ListEmptyComponent from '../../../components/shared/ListEmptyComponent';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography } from '../../../theme';
 import { ThemeColors } from '../../../types/theme';
 import CommentCard from './CommentCard';

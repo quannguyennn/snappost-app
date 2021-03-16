@@ -2,7 +2,7 @@ import moment from 'moment';
 import React from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../../../recoil/common/atoms';
+import { themeState } from '../../../../recoil/theme/atoms';
 import { Typography } from '../../../../theme';
 import { ThemeColors } from '../../../../types/theme';
 

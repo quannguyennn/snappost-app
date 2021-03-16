@@ -5,7 +5,7 @@ import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Checkbox from 'react-native-modest-checkbox';
 
-import { themeState, themeTypeState } from '../../../recoil/common/atoms';
+import { themeState, themeTypeState } from '../../../recoil/theme/atoms';
 import { useNavigation } from '@react-navigation/core';
 import { ThemeColors, ThemeVariantType } from '../../../types/theme';
 import { saveThemeType, storage } from '../../../helpers/storage';

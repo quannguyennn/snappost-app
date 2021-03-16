@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl, StyleSheet, TextInput, View } from 'react-native';
+import { RefreshControl, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 import PostCard from './components/PostCard';
@@ -13,97 +13,103 @@ import PostCardPlaceholder from '../../components/placeholders/PostCard.Placehol
 import IconButton from '../../components/shared/Iconbutton';
 import ImageBanner from '../../components/shared/ImageBanner';
 import HomeHeader from '../../components/shared/layout/headers/HomeHeader';
-import { AppRoutes } from '../../navigator/app-routes';
-import { HomeScreenNavigationProp } from '../../navigator/home.navigator';
-import { themeState } from '../../recoil/common/atoms';
+import type { HomeScreenNavigationProp } from '../../navigator/home.navigator';
+import { themeState } from '../../recoil/theme/atoms';
 import { IconSizes } from '../../theme/Icon';
-import { ThemeColors } from '../../types/theme';
-import Story from 'react-native-story';
+import type { ThemeColors } from '../../types/theme';
+import { GetNewFeedQueryResponse, useGetNewFeedLazyQuery } from '../../graphql/queries/getNewFeed.generated';
+import type { Post } from '../../graphql/type.interface';
 
 const HomeScreen = React.memo(() => {
   const { navigate } = useNavigation<HomeScreenNavigationProp>();
   const theme = useRecoilValue(themeState);
 
-  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(true);
+
+  const [getNewFeed, { data: fetchNewFeed, loading, fetchMore }] = useGetNewFeedLazyQuery({
+    fetchPolicy: 'cache-and-network',
+    onCompleted: () => setRefresh(false),
+  });
+
+  const currentPage =
+    Number(fetchNewFeed?.getNewFeed?.meta.currentPage) >= 0 ? Number(fetchNewFeed?.getNewFeed?.meta.currentPage) : 1;
+  const totalPages =
+    Number(fetchNewFeed?.getNewFeed?.meta.totalPages) >= 0 ? Number(fetchNewFeed?.getNewFeed?.meta.totalPages) : 2;
+
+  const data = fetchNewFeed?.getNewFeed?.items;
 
   useEffect(() => {
-    const init = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-
-    return () => {
-      clearTimeout(init);
-    };
-  }, []);
+    if (refresh) {
+      getNewFeed({
+        variables: { limit: 10, page: 1 },
+      });
+    }
+  }, [getNewFeed, refresh]);
 
   const refreshControl = () => {
     const onRefresh = () => {
       try {
+        setRefresh(true);
       } catch {}
     };
 
     return <RefreshControl tintColor={theme.text02} refreshing={loading} onRefresh={onRefresh} />;
   };
 
-  const renderItem = ({ item }: any) => {
-    const { id, uri, caption, likes, createdAt, author } = item;
-
-    return <PostCard id={id} author={author} time={createdAt} uri={uri} likes={likes} caption={caption} />;
+  const loadMore = () => {
+    if (Number(currentPage) < Number(totalPages)) {
+      fetchMore &&
+        fetchMore({
+          variables: { limit: 10, page: currentPage + 1 },
+          updateQuery: (prev: GetNewFeedQueryResponse, { fetchMoreResult }) => {
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            const prevItem = prev?.getNewFeed?.items ? prev?.getNewFeed?.items : [];
+            const nextItem = fetchMoreResult.getNewFeed?.items ? fetchMoreResult.getNewFeed?.items : [];
+            return Object.assign({}, prev, {
+              getNewFeed: {
+                items: [...prevItem, ...nextItem],
+                meta: fetchMoreResult.getNewFeed?.meta,
+                __typename: 'PostConnection',
+              },
+            });
+          },
+        });
+    }
   };
 
-  let content = <PostCardPlaceholder />;
-  const userFeed = [
-    {
-      id: '1',
-      uri: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-      caption: 'Mlem mlem',
-      likes: [],
-      createdAt: '2020-09-17 08:34:40.221711',
-      author: {
-        id: '2',
-        avatar: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-        handle: 'Quan',
-      },
-    },
-    {
-      id: '2',
-      uri: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-      caption: 'Mlem mlem',
-      likes: [],
-      createdAt: '2020-09-17 08:34:40.221711',
-      author: {
-        id: '2',
-        avatar: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-        handle: 'Quan',
-      },
-    },
-    {
-      id: '3',
-      uri: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-      caption: 'Mlem mlem',
-      likes: [],
-      createdAt: '2020-09-17 08:34:40.221711',
-      author: {
-        id: '2',
-        avatar: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-        handle: 'Quan',
-      },
-    },
-  ];
-  if (!loading) {
-    content = (
-      <FlatGrid
-        refreshControl={refreshControl()}
-        itemDimension={responsiveWidth(85)}
-        showsVerticalScrollIndicator={false}
-        data={userFeed}
-        ListEmptyComponent={() => <ImageBanner img={Images.emptyFeed} spacing={20} placeholder={'No new posts'} />}
-        style={styles().postList}
-        spacing={20}
-        renderItem={renderItem}
+  const renderItem = ({ item }: { item: Post }) => {
+    const { id, mediasPath, caption, totalLike, createdAt, creatorInfo, isLike } = item;
+
+    return (
+      <PostCard
+        id={id}
+        author={{ avatar: creatorInfo?.avatarFilePath ?? '', name: creatorInfo?.name ?? '', id: creatorInfo?.id ?? 0 }}
+        time={createdAt}
+        uri={mediasPath?.map((item) => item.filePath) ?? []}
+        likes={totalLike}
+        caption={caption ?? ''}
+        isLike={isLike}
       />
     );
-  }
+  };
+
+  const content = (
+    <FlatGrid
+      refreshControl={refreshControl()}
+      itemDimension={responsiveWidth(85)}
+      showsVerticalScrollIndicator={false}
+      data={data ?? []}
+      ListEmptyComponent={() => <ImageBanner img={Images.emptyFeed} spacing={20} placeholder={'No new posts'} />}
+      style={styles().postList}
+      spacing={20}
+      renderItem={renderItem}
+      onEndReachedThreshold={0.5}
+      refreshing={refresh}
+      onEndReached={() => loadMore()}
+    />
+  );
 
   const IconRight = () => {
     const unreadMessages = Math.floor(Math.random() * 10);
@@ -122,6 +128,7 @@ const HomeScreen = React.memo(() => {
     <View style={styles(theme).container}>
       <HomeHeader IconRight={IconRight} />
       {content}
+      {loading ? <PostCardPlaceholder /> : null}
     </View>
   );
 });

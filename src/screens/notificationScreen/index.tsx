@@ -6,7 +6,7 @@ import EmptyNotifications from '../..//assets/svg/empty-notifications.svg';
 
 import NotificationCard from './components/NotificationCard';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 import { useQuery } from '@apollo/client';
 import type { ThemeColors } from '../../types/theme';
 import Header from '../../components/shared/layout/headers/Header';
@@ -27,7 +27,9 @@ const NotificationScreen: React.FC = () => {
     return (
       <NotificationCard
         notificationId={notificationId}
-        avatar={'https://images.pexels.com/photos/5706559/pexels-photo-5706559.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'}
+        avatar={
+          'https://images.pexels.com/photos/5706559/pexels-photo-5706559.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        }
         handle={'hihi'}
         type={type}
         resourceId={resourceId}
@@ -43,7 +45,7 @@ const NotificationScreen: React.FC = () => {
       <FlatGrid
         itemDimension={responsiveWidth(85)}
         showsVerticalScrollIndicator={false}
-        data={[0,1,2,3]}
+        data={[0, 1, 2, 3]}
         ListEmptyComponent={() => (
           <SvgBanner Svg={EmptyNotifications} spacing={20} placeholder="No notifications yet" />
         )}

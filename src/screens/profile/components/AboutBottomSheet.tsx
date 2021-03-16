@@ -8,7 +8,7 @@ import { ThemeStatic, Typography } from '../../../theme';
 import Button from '../../../components/shared/controls/Button';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import type { ThemeColors } from '../../../types/theme';
 
 const { FontWeights, FontSizes } = Typography;

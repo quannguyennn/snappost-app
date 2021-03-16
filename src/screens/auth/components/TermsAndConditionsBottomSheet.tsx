@@ -4,7 +4,7 @@ import { Modalize } from 'react-native-modalize';
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import { useRecoilValue } from 'recoil';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography } from '../../../theme';
 import { ThemeColors } from '../../../types/theme';
 

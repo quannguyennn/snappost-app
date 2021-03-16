@@ -1,7 +1,7 @@
 import React from 'react';
 import { Shine, ShineOverlay } from 'rn-placeholder';
 import { useRecoilValue } from 'recoil';
-import { themeTypeState } from '../../recoil/common/atoms';
+import { themeTypeState } from '../../recoil/theme/atoms';
 import { ThemeVariant } from '../../theme';
 
 const AnimationBackground = {

@@ -3,8 +3,8 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import TabIcon from './TabIcon';
 import { useRecoilValue } from 'recoil';
 import { AppRoutes } from '../app-routes';
-import { themeState } from '../../recoil/common/atoms';
-import { ThemeColors } from '../../types/theme';
+import { themeState } from '../../recoil/theme/atoms';
+import type { ThemeColors } from '../../types/theme';
 
 const TabBarComponent = ({ navigation, descriptors, state, ...data }: any) => {
   const theme = useRecoilValue(themeState);

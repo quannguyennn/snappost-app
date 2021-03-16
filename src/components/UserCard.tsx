@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import { AppRoutes } from '../navigator/app-routes';
-import { themeState } from '../recoil/common/atoms';
+import { themeState } from '../recoil/theme/atoms';
 import { Typography } from '../theme';
 import { ThemeColors } from '../types/theme';
 import NativeImage from './shared/NativeImage';

@@ -4,7 +4,7 @@ import { Placeholder, PlaceholderLine, PlaceholderMedia } from 'rn-placeholder';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import PlaceholderAnimation from './PlaceholderAnimation';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 
 interface ProfileScreenPlaceholderProps {
   viewMode?: boolean;

@@ -9,7 +9,7 @@ import { ThemeStatic } from '../../theme';
 import { parseConnectionsCount } from '../../utils/shared';
 import type { ThemeColors } from '../../types/theme';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 
 const { FontWeights, FontSizes } = Typography;
 

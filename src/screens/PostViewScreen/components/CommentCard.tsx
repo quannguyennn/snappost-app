@@ -8,7 +8,7 @@ import DeleteCardRightActions from '../../../components/shared/DeleteCardRightAc
 import NativeImage from '../../../components/shared/NativeImage';
 import { longPressDeleteNotification } from '../../../helpers/notifications';
 import { AppRoutes } from '../../../navigator/app-routes';
-import { themeState } from '../../../recoil/common/atoms';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography } from '../../../theme';
 import { ThemeColors } from '../../../types/theme';
 

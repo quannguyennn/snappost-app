@@ -102,17 +102,6 @@ export type AuthConnection = {
   user: User;
 };
 
-export type Sample = Node & {
-  __typename?: 'Sample';
-  id: Scalars['Float'];
-  views: Scalars['Int'];
-  title: Scalars['String'];
-  content: Scalars['String'];
-  isPublished: Scalars['Boolean'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-};
-
 export type Post = Node & {
   __typename?: 'Post';
   id: Scalars['Float'];
@@ -123,6 +112,9 @@ export type Post = Node & {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   postComments?: Maybe<Array<Comments>>;
+  totalLike: Scalars['Float'];
+  isLike: Scalars['Boolean'];
+  mediasPath?: Maybe<Array<Media>>;
   creatorInfo?: Maybe<User>;
 };
 
@@ -150,7 +142,7 @@ export type Query = {
   searchUser: UserConnection;
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
-  posts?: Maybe<PostConnection>;
+  getNewFeed: PostConnection;
 };
 
 export type QueryUserArgs = {
@@ -174,7 +166,7 @@ export type QueryMediaArgs = {
   id: Scalars['Float'];
 };
 
-export type QueryPostsArgs = {
+export type QueryGetNewFeedArgs = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
 };

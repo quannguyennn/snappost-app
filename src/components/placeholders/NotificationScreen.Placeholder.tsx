@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Placeholder, PlaceholderLine, PlaceholderMedia } from 'rn-placeholder';
 import PlaceholderAnimation from './PlaceholderAnimation';
 import { useRecoilValue } from 'recoil';
-import { themeState } from '../../recoil/common/atoms';
+import { themeState } from '../../recoil/theme/atoms';
 
 const NotificationScreenPlaceholder: React.FC = () => {
   const theme = useRecoilValue(themeState);
