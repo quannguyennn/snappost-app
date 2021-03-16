@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -23,10 +23,25 @@ import { Connections } from '../../utils/constants';
 import type { Modalize } from 'react-native-modalize';
 import { sortPostsAscendingTime } from '../../utils/shared';
 import type { ThemeColors } from '../../types/theme';
+import { useMeLazyQuery } from '../../graphql/queries/me.generated';
+
+
 const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const { navigate } = useNavigation();
   const client = useApolloClient();
   const theme = useRecoilValue(themeState);
+  const [meInfo, setMeInfo] = useState()
+  const [me, {data}] = useMeLazyQuery({
+    onError: (err) => console.log(err),
+    onCompleted: (res) => setMeInfo(res.me),
+    fetchPolicy: 'network-only'
+    
+  });
+
+  useEffect(()=> {
+    me()
+  },[])
+
 
   const editProfileBottomSheetRef = useRef<Modalize>(null);
   const settingsBottomSheetRef = useRef<Modalize>(null);
@@ -69,13 +84,11 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
         onEdit={onEdit}
         onFollowingOpen={onFollowingOpen}
         onFollowersOpen={onFollowersOpen}
-        avatar={
-          'https://images.pexels.com/photos/1838609/pexels-photo-1838609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
-        }
-        following={10}
-        followers={100}
-        name={'hahah'}
-        handle={'hahaha'}
+        avatar={meInfo?.avatarFilePath}
+        following={100}
+        followers={1000}
+        name={meInfo?.name}
+        handle={meInfo?.nickname}
         about={'hihi'}
       />
     );
@@ -162,13 +175,13 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
         />
         <ConnectionsBottomSheet ref={followingBottomSheetRef} data={following} type={Connections.FOLLOWING} />
         <ConnectionsBottomSheet ref={followersBottomSheetRef} data={followers} type={Connections.FOLLOWERS} />
-        {/*<EditProfileBottomSheet*/}
-        {/*  ref={editProfileBottomSheetRef}*/}
-        {/*  avatar={avatar}*/}
-        {/*  name={name}*/}
-        {/*  handle={handle}*/}
-        {/*  about={about}*/}
-        {/*/>*/}
+        <EditProfileBottomSheet
+         ref={editProfileBottomSheetRef}
+         avatar={meInfo?.avatarFilePath}
+         name={meInfo?.name}
+         handle={meInfo?.nickname}
+         about={meInfo?.intro}
+        />
       </>
     );
   }
