@@ -15,20 +15,19 @@ export type GetNewFeedQueryResponse = { __typename?: 'Query' } & {
           Types.Post,
           'id' | 'creatorId' | 'medias' | 'caption' | 'rawCaption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike'
         > & {
-            mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'id' | 'filePath'>>>;
+            postComments?: Types.Maybe<
+              Array<
+                { __typename?: 'Comments' } & Pick<
+                  Types.Comments,
+                  'id' | 'creatorId' | 'postId' | 'parentId' | 'content' | 'createdAt' | 'updatedAt'
+                >
+              >
+            >;
+            mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
             creatorInfo?: Types.Maybe<
               { __typename?: 'User' } & Pick<
                 Types.User,
-                | 'id'
-                | 'name'
-                | 'nickname'
-                | 'intro'
-                | 'zaloId'
-                | 'avatar'
-                | 'isNew'
-                | 'createdAt'
-                | 'updatedAt'
-                | 'avatarFilePath'
+                'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'avatarFilePath' | 'followStatus'
               >
             >;
           }
@@ -52,10 +51,18 @@ export const GetNewFeedDocument = gql`
         rawCaption
         createdAt
         updatedAt
+        postComments {
+          id
+          creatorId
+          postId
+          parentId
+          content
+          createdAt
+          updatedAt
+        }
         totalLike
         isLike
         mediasPath {
-          id
           filePath
         }
         creatorInfo {
@@ -65,10 +72,8 @@ export const GetNewFeedDocument = gql`
           intro
           zaloId
           avatar
-          isNew
-          createdAt
-          updatedAt
           avatarFilePath
+          followStatus
         }
       }
       meta {

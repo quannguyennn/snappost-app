@@ -11,11 +11,12 @@ import BottomSheetHeader from './layout/headers/BottomSheetHeader';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import type { ThemeColors } from '../../types/theme';
+import type { User } from '../../graphql/type.interface';
 
 interface ConnectionsBottomSheetProps {
   ref: React.Ref<any>;
   viewMode?: boolean;
-  data: Connection[];
+  data: User[];
   handle: string;
   type: string;
 }

@@ -7,8 +7,130 @@ export type MeQueryVariables = Types.Exact<{ [key: string]: never }>;
 export type MeQueryResponse = { __typename?: 'Query' } & {
   me: { __typename?: 'User' } & Pick<
     Types.User,
-    'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'isNew' | 'createdAt' | 'updatedAt' | 'avatarFilePath'
-  >;
+    | 'id'
+    | 'name'
+    | 'nickname'
+    | 'intro'
+    | 'zaloId'
+    | 'avatar'
+    | 'isNew'
+    | 'createdAt'
+    | 'updatedAt'
+    | 'avatarFilePath'
+    | 'followStatus'
+  > & {
+      nFollowing?: Types.Maybe<
+        Array<
+          { __typename?: 'User' } & Pick<
+            Types.User,
+            | 'id'
+            | 'name'
+            | 'nickname'
+            | 'intro'
+            | 'zaloId'
+            | 'avatar'
+            | 'isNew'
+            | 'createdAt'
+            | 'updatedAt'
+            | 'avatarFilePath'
+            | 'followStatus'
+          > & {
+              nFollowing?: Types.Maybe<
+                Array<
+                  { __typename?: 'User' } & Pick<
+                    Types.User,
+                    | 'id'
+                    | 'name'
+                    | 'nickname'
+                    | 'intro'
+                    | 'zaloId'
+                    | 'avatar'
+                    | 'isNew'
+                    | 'createdAt'
+                    | 'updatedAt'
+                    | 'avatarFilePath'
+                    | 'followStatus'
+                  > & {
+                      nFollower?: Types.Maybe<
+                        Array<
+                          { __typename?: 'User' } & Pick<
+                            Types.User,
+                            | 'id'
+                            | 'name'
+                            | 'nickname'
+                            | 'intro'
+                            | 'zaloId'
+                            | 'avatar'
+                            | 'isNew'
+                            | 'createdAt'
+                            | 'updatedAt'
+                            | 'avatarFilePath'
+                            | 'followStatus'
+                          > & {
+                              nFollowing?: Types.Maybe<
+                                Array<
+                                  { __typename?: 'User' } & Pick<
+                                    Types.User,
+                                    | 'id'
+                                    | 'name'
+                                    | 'nickname'
+                                    | 'intro'
+                                    | 'zaloId'
+                                    | 'avatar'
+                                    | 'isNew'
+                                    | 'createdAt'
+                                    | 'updatedAt'
+                                    | 'avatarFilePath'
+                                    | 'followStatus'
+                                  >
+                                >
+                              >;
+                              nFollower?: Types.Maybe<
+                                Array<
+                                  { __typename?: 'User' } & Pick<
+                                    Types.User,
+                                    | 'id'
+                                    | 'name'
+                                    | 'nickname'
+                                    | 'intro'
+                                    | 'zaloId'
+                                    | 'avatar'
+                                    | 'isNew'
+                                    | 'createdAt'
+                                    | 'updatedAt'
+                                    | 'avatarFilePath'
+                                    | 'followStatus'
+                                  >
+                                >
+                              >;
+                            }
+                        >
+                      >;
+                    }
+                >
+              >;
+            }
+        >
+      >;
+      nFollower?: Types.Maybe<
+        Array<
+          { __typename?: 'User' } & Pick<
+            Types.User,
+            | 'id'
+            | 'name'
+            | 'nickname'
+            | 'intro'
+            | 'zaloId'
+            | 'avatar'
+            | 'isNew'
+            | 'createdAt'
+            | 'updatedAt'
+            | 'avatarFilePath'
+            | 'followStatus'
+          >
+        >
+      >;
+    };
 };
 
 export const MeDocument = gql`
@@ -24,6 +146,85 @@ export const MeDocument = gql`
       createdAt
       updatedAt
       avatarFilePath
+      followStatus
+      nFollowing {
+        id
+        name
+        nickname
+        intro
+        zaloId
+        avatar
+        isNew
+        createdAt
+        updatedAt
+        avatarFilePath
+        followStatus
+        nFollowing {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+          nFollower {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+            nFollowing {
+              id
+              name
+              nickname
+              intro
+              zaloId
+              avatar
+              isNew
+              createdAt
+              updatedAt
+              avatarFilePath
+              followStatus
+            }
+            nFollower {
+              id
+              name
+              nickname
+              intro
+              zaloId
+              avatar
+              isNew
+              createdAt
+              updatedAt
+              avatarFilePath
+              followStatus
+            }
+          }
+        }
+      }
+      nFollower {
+        id
+        name
+        nickname
+        intro
+        zaloId
+        avatar
+        isNew
+        createdAt
+        updatedAt
+        avatarFilePath
+        followStatus
+      }
     }
   }
 `;

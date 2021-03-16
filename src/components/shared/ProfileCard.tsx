@@ -91,10 +91,13 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       </View>
       {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
       {renderInteractions && renderInteractions()}
-      <View style={styles(theme).about}>
-        <Text style={styles(theme).aboutTitle}>About</Text>
-        <Text style={styles(theme).aboutText}>{about}</Text>
-      </View>
+      {
+        about ? <View style={styles(theme).about}>
+          <Text style={styles(theme).aboutTitle}>About</Text>
+          <Text style={styles(theme).aboutText}>{about}</Text>
+        </View> : null
+      }
+
     </View>
   );
 };

@@ -17,6 +17,9 @@ type User implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   avatarFilePath: String
+  followStatus: FollowStatus
+  nFollowing: [User!]
+  nFollower: [User!]
 }
 
 """
@@ -31,6 +34,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+enum FollowStatus {
+  WAITING
+  ACCEPT
+}
+
 type UserConnection {
   items: [User!]
   meta: BasePaginationMeta!
@@ -43,11 +51,6 @@ type Follow implements Node {
   status: FollowStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
-}
-
-enum FollowStatus {
-  WAITING
-  ACCEPT
 }
 
 type Media implements Node {
@@ -124,12 +127,13 @@ type Comments implements Node {
 
 type Query {
   me: User!
-  user(id: Float!): User
+  getUserInfo(id: Float!): User
   searchUser(page: Float!, limit: Float!, isRestricted: Boolean = false, keyword: String!): UserConnection!
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!
   getPostDetail(id: Float!): Post!
+  myPost(page: Float!, limit: Float!): PostConnection!
 }
 
 type Mutation {

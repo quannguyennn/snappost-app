@@ -8,10 +8,18 @@ query getNewFeed($limit: Int, $page: Int) {
       rawCaption
       createdAt
       updatedAt
+      postComments {
+        id
+        creatorId
+        postId
+        parentId
+        content
+        createdAt
+        updatedAt
+      }
       totalLike
       isLike
       mediasPath {
-        id
         filePath
       }
       creatorInfo {
@@ -21,10 +29,8 @@ query getNewFeed($limit: Int, $page: Int) {
         intro
         zaloId
         avatar
-        isNew
-        createdAt
-        updatedAt
         avatarFilePath
+        followStatus
       }
     }
     meta {

@@ -1,5 +1,5 @@
-query me {
-  me {
+query getUserInfo($id: Float!) {
+  getUserInfo(id: $id) {
     id
     name
     nickname

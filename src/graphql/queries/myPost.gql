@@ -1,35 +1,83 @@
-query getPostDetail($id: Float!) {
-  getPostDetail(id: $id) {
-    id
-    creatorId
-    medias
-    caption
-    rawCaption
-    createdAt
-    updatedAt
-    postComments {
+query myPost($page: Float!, $limit: Float!) {
+  myPost(page: $page, limit: $limit) {
+    items {
       id
       creatorId
-      postId
-      parentId
-      content
+      medias
+      caption
+      rawCaption
       createdAt
       updatedAt
-    }
-    totalLike
-    isLike
-    mediasPath {
-      id
-      fileSize
-      name
-      filePath
-      mimeType
-      isDeleted
-      ownerId
-      type
-      createdAt
-      updatedAt
-      owner {
+      postComments {
+        id
+        creatorId
+        postId
+        parentId
+        content
+        createdAt
+        updatedAt
+      }
+      totalLike
+      isLike
+      mediasPath {
+        id
+        fileSize
+        name
+        filePath
+        mimeType
+        isDeleted
+        ownerId
+        type
+        createdAt
+        updatedAt
+        owner {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+          nFollowing {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+          }
+          nFollower {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+          }
+        }
+        capabilities {
+          canCopy
+          canDelete
+          canDownload
+          canEdit
+          canRename
+        }
+      }
+      creatorInfo {
         id
         name
         nickname
@@ -120,52 +168,13 @@ query getPostDetail($id: Float!) {
           }
         }
       }
-      capabilities {
-        canCopy
-        canDelete
-        canDownload
-        canEdit
-        canRename
-      }
     }
-    creatorInfo {
-      id
-      name
-      nickname
-      intro
-      zaloId
-      avatar
-      isNew
-      createdAt
-      updatedAt
-      avatarFilePath
-      followStatus
-      nFollowing {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
-      }
-      nFollower {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
-      }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -21,12 +21,40 @@ import { FlatGrid } from 'react-native-super-grid';
 import ConnectionsBottomSheet from '../../components/shared/ConnectionsBottomSheet';
 import { Connections } from '../../utils/constants';
 import type { Modalize } from 'react-native-modalize';
-import { sortPostsAscendingTime } from '../../utils/shared';
 import type { ThemeColors } from '../../types/theme';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { useMyPostLazyQuery } from '../../graphql/queries/myPost.generated';
+import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
+
 const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const { navigate } = useNavigation();
-  const client = useApolloClient();
   const theme = useRecoilValue(themeState);
+
+  const me = useCurrentUser();
+
+  const [refresh, setRefresh] = useState(true);
+
+  const [getMyPost, { data: fetchData, loading, fetchMore }] = useMyPostLazyQuery({
+    onError: () => somethingWentWrongErrorNotification(),
+    onCompleted: () => {
+
+    }
+  })
+
+  const currentPage =
+    Number(fetchData?.myPost?.meta.currentPage) >= 0 ? Number(fetchData?.myPost?.meta.currentPage) : 1;
+  const totalPages =
+    Number(fetchData?.myPost?.meta.totalPages) >= 0 ? Number(fetchData?.myPost?.meta.totalPages) : 2;
+
+  const data = fetchData?.myPost?.items;
+
+  useEffect(() => {
+    if (refresh) {
+      getMyPost({
+        variables: { limit: 10, page: 1 },
+      });
+    }
+  }, [getMyPost, refresh]);
 
   const editProfileBottomSheetRef = useRef<Modalize>(null);
   const settingsBottomSheetRef = useRef<Modalize>(null);
@@ -60,23 +88,18 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
   };
 
   const ListHeaderComponent = (props: any) => {
-    // const {
-    //   user: { avatar, following, followers, name, handle, about },
-    // } = props;
     return (
       <ProfileCard
         editable
         onEdit={onEdit}
         onFollowingOpen={onFollowingOpen}
         onFollowersOpen={onFollowersOpen}
-        avatar={
-          'https://images.pexels.com/photos/1838609/pexels-photo-1838609.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
-        }
-        following={10}
-        followers={100}
-        name={'hahah'}
-        handle={'hahaha'}
-        about={'hihi'}
+        avatar={me?.avatarFilePath ?? ""}
+        following={me?.nFollowing as number ?? 0}
+        followers={me?.nFollower as number ?? 0}
+        name={me?.name ?? ''}
+        handle={me?.nickname ?? ""}
+        about={me?.intro ?? ""}
       />
     );
   };
@@ -96,65 +119,15 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
 
   let content = <ProfileScreenPlaceholder />;
   // loading : query user
-  if (true) {
-    const posts = new Array(
-      'Bulbasaur',
-      'Rhyhorn',
-      'Rhydon',
-      'Chansey',
-      'Tangela',
-      'Kangaskhan',
-      'Horsea',
-      'Seadra',
-      'Goldeen',
-      'Seaking',
-      'Staryu',
-      'Starmie',
-      'Mr. Mime',
-      'Scyther',
-      'Jynx',
-      'Electabuzz',
-      'Magmar',
-      'Pinsir',
-      'Tauros',
-      'Magikarp',
-      'Gyarados',
-      'Lapras',
-      'Ditto',
-      'Eevee',
-      'Vaporeon',
-      'Jolteon',
-      'Flareon',
-      'Porygon',
-      'Omanyte',
-      'Omastar',
-      'Kabuto',
-      'Kabutops',
-      'Aerodactyl',
-      'Snorlax',
-      'Articuno',
-      'Zapdos',
-      'Moltres',
-      'Dratini',
-      'Dragonair',
-      'Dragonite',
-      'Mewtwo',
-      'Mew',
-    );
-    const following = posts;
-    const followers = posts;
-    const avatar =
-      'https://images.pexels.com/photos/5608545/pexels-photo-5608545.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500';
-    const name = 'MrH';
+  if (loading) {
 
-    const sortedPosts = sortPostsAscendingTime(posts);
     content = (
       <>
         <FlatGrid
           staticDimension={responsiveWidth(94)}
           ListHeaderComponent={ListHeaderComponent}
           itemDimension={150}
-          data={sortedPosts}
+          data={data}
           ListEmptyComponent={() => <ListEmptyComponent listType="posts" spacing={30} />}
           style={styles().postGrid}
           showsVerticalScrollIndicator={false}

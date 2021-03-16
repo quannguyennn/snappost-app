@@ -51,7 +51,7 @@ const HomeScreen = React.memo(() => {
     const onRefresh = () => {
       try {
         setRefresh(true);
-      } catch {}
+      } catch { }
     };
 
     return <RefreshControl tintColor={theme.text02} refreshing={loading} onRefresh={onRefresh} />;
@@ -120,7 +120,7 @@ const HomeScreen = React.memo(() => {
       <IconButton
         hasBadge={hasBadge}
         badgeCount={unreadMessages}
-        onPress={() => {}}
+        onPress={() => { }}
         Icon={() => <FontAwesome name="send" size={IconSizes.x5} color={theme.text01} />}
       />
     );
