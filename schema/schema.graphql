@@ -18,8 +18,11 @@ type User implements Node {
   updatedAt: DateTime!
   avatarFilePath: String
   followStatus: FollowStatus
+<<<<<<< HEAD
   nFollowing: [User!]
   nFollower: [User!]
+=======
+>>>>>>> a9ffc46979ab216886908370963bb0c87779a3a3
 }
 
 """

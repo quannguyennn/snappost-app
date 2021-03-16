@@ -1,0 +1,15 @@
+query user($id: Float!) {
+  user(id: $id) {
+    id
+    name
+    nickname
+    intro
+    zaloId
+    avatar
+    isNew
+    createdAt
+    updatedAt
+    avatarFilePath
+    followStatus
+  }
+}

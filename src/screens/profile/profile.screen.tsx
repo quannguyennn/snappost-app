@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -135,13 +135,13 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
         />
         <ConnectionsBottomSheet ref={followingBottomSheetRef} data={following} type={Connections.FOLLOWING} />
         <ConnectionsBottomSheet ref={followersBottomSheetRef} data={followers} type={Connections.FOLLOWERS} />
-        {/*<EditProfileBottomSheet*/}
-        {/*  ref={editProfileBottomSheetRef}*/}
-        {/*  avatar={avatar}*/}
-        {/*  name={name}*/}
-        {/*  handle={handle}*/}
-        {/*  about={about}*/}
-        {/*/>*/}
+        {/* <EditProfileBottomSheet
+         ref={editProfileBottomSheetRef}
+         avatar={meInfo?.avatarFilePath}
+         name={meInfo?.name}
+         handle={meInfo?.nickname}
+         about={meInfo?.intro}
+        /> */}
       </>
     );
   }
