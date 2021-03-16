@@ -1,6 +1,6 @@
 import React from 'react';
 import { RefreshControl, StyleSheet, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 import PostCard from './components/PostCard';
 import { useState } from 'react';
@@ -22,6 +22,7 @@ import type { Post } from '../../graphql/type.interface';
 
 const HomeScreen = React.memo(() => {
   const { navigate } = useNavigation<HomeScreenNavigationProp>();
+  const isFocused = useIsFocused();
   const theme = useRecoilValue(themeState);
 
   const [refresh, setRefresh] = useState(true);
@@ -80,7 +81,7 @@ const HomeScreen = React.memo(() => {
   };
 
   const renderItem = ({ item }: { item: Post }) => {
-    const { id, mediasPath, caption, totalLike, createdAt, creatorInfo, isLike } = item;
+    const { id, mediasPath, totalLike, createdAt, creatorInfo, isLike, rawCaption } = item;
 
     return (
       <PostCard
@@ -89,7 +90,7 @@ const HomeScreen = React.memo(() => {
         time={createdAt}
         uri={mediasPath?.map((item) => item.filePath) ?? []}
         likes={totalLike}
-        caption={caption ?? ''}
+        caption={rawCaption ?? ''}
         isLike={isLike}
       />
     );
@@ -100,6 +101,7 @@ const HomeScreen = React.memo(() => {
       refreshControl={refreshControl()}
       itemDimension={responsiveWidth(85)}
       showsVerticalScrollIndicator={false}
+      keyExtractor={(item) => item.id.toString()}
       data={data ?? []}
       ListEmptyComponent={() => <ImageBanner img={Images.emptyFeed} spacing={20} placeholder={'No new posts'} />}
       style={styles().postList}

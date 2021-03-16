@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, { useRef, useState } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import Feather from 'react-native-vector-icons/Feather';
 import { useRecoilValue } from 'recoil';
+import Button from '../../../components/shared/controls/Button';
 import FormInput from '../../../components/shared/controls/FormInput';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import { postUpdatedNotification } from '../../../helpers/notifications';
 import { themeState } from '../../../recoil/theme/atoms';
 import { ThemeStatic } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
-import { ThemeColors } from '../../../types/theme';
+import type { ThemeColors } from '../../../types/theme';
 
 interface EditPostBottomSheetProps {
   ref: React.Ref<any>;
-  postId: string;
+  postId: number;
   caption: string;
 }
 
@@ -39,8 +40,6 @@ const EditPostBottomSheet: React.FC<EditPostBottomSheetProps> = React.forwardRef
     ref.current.close();
   };
 
-  const Icon = () => <Feather name="check" color={ThemeStatic.white} size={IconSizes.x5} />;
-
   return (
     <Modalize
       //@ts-ignore
@@ -60,7 +59,7 @@ const EditPostBottomSheet: React.FC<EditPostBottomSheetProps> = React.forwardRef
           characterRestriction={200}
         />
         <Button
-          Icon={Icon}
+          IconComponent={() => <Feather name="check" color={ThemeStatic.white} size={IconSizes.x5} />}
           label="Update"
           onPress={updatePost}
           loading={isUpdating}

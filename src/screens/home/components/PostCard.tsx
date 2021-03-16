@@ -10,6 +10,7 @@ import { IconSizes } from '../../../theme/Icon';
 import type { Maybe } from '../../../graphql/type.interface';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import FastImage from 'react-native-fast-image';
+import TransformText from '../../../components/shared/TransformText';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -40,11 +41,15 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, capti
   const readableLikes = parseLikes(likes);
 
   return (
-    <TouchableOpacity onPress={navigateToPost} activeOpacity={0.9} style={styles.container}>
+    <View style={styles.container}>
       <Carousel
         data={uri}
         renderItem={({ item, index }: { item: any; index: number }) => {
-          return <FastImage key={`post-image-${index}`} source={{ uri: item }} style={styles.postImage} />;
+          return (
+            <TouchableOpacity onPress={navigateToPost} activeOpacity={0.9}>
+              <FastImage key={`post-image-${index}`} source={{ uri: item }} style={styles.postImage} />
+            </TouchableOpacity>
+          );
         }}
         sliderWidth={PostDimensions.Large.width}
         itemWidth={PostDimensions.Large.width}
@@ -53,14 +58,18 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, capti
         containerCustomStyle={styles.postImage}
         onSnapToItem={(slideIndex) => setMediaIndex(slideIndex)}
         hasParallaxImages={true}
-        loop
       />
       <Pagination
-        // containerStyle={styles.paginationContainer}
+        containerStyle={styles.paginationContainer}
         dotsLength={uri.length}
         activeDotIndex={mediaIndex}
         renderDots={(activeIndex) => {
-          return uri.map((e, index) => <View style={[styles.dot, activeIndex === index ? styles.activeDot : null]} />);
+          return uri.map((e, index) => (
+            <View
+              key={index.toString() + '-' + id.toString()}
+              style={[styles.dot, activeIndex === index ? styles.activeDot : null]}
+            />
+          ));
         }}
         inactiveDotOpacity={0.4}
         inactiveDotScale={0.6}
@@ -80,11 +89,9 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, capti
           <Text style={styles.likesText}>{readableLikes}</Text>
         </View>
 
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.captionText}>
-          {caption}
-        </Text>
+        <TransformText text={caption ?? ''} />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -108,6 +115,13 @@ const styles = StyleSheet.create({
     backgroundColor: ThemeStatic.placeholder,
     borderRadius: 45,
     marginRight: 10,
+  },
+  paginationContainer: {
+    position: 'absolute',
+    zIndex: 1000,
+    flexDirection: 'column',
+    right: 0,
+    height: '100%',
   },
   upperContent: {
     flexDirection: 'row',

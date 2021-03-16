@@ -8,8 +8,6 @@ import TabBarComponent from './TarBarComponent';
 import { UploadStackNavigator } from './upload.navigator';
 import PostViewScreen from '../screens/PostViewScreen';
 import ExploreScreen from '../screens/ExploreScreen';
-import { Notification } from 'rxjs';
-import NotificationScreen from '../screens/notificationScreen';
 import { NotificationNavigator } from './notification.navigator';
 
 export type MainTabParamList = {
@@ -24,8 +22,8 @@ export type AppStackParamList = {
   [AppRoutes.MESSAGE_SCREEN]: undefined;
   [AppRoutes.CONVERSATION_SCREEN]: undefined;
   [AppRoutes.NOTIFICATION_VIEW_SCREEN]: undefined;
-  [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: string };
-  [AppRoutes.POST_VIEW_SCREEN]: { postId: string };
+  [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: number };
+  [AppRoutes.POST_VIEW_SCREEN]: { postId: number };
   [AppRoutes.UPLOAD_STACK]: undefined;
 };
 
@@ -49,7 +47,11 @@ export const AppNavigator = () => {
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MESSAGE_SCREEN} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.CONVERSATION_SCREEN} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.PROFILE_VIEW_SCREEN} component={MainNavigator} />
-      <Stack.Screen options={{ headerShown: false }} name={AppRoutes.NOTIFICATION_VIEW_SCREEN} component={MainNavigator} />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={AppRoutes.NOTIFICATION_VIEW_SCREEN}
+        component={MainNavigator}
+      />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.POST_VIEW_SCREEN} component={PostViewScreen} />
       <Stack.Screen name={AppRoutes.UPLOAD_STACK} component={UploadStackNavigator} />
     </Stack.Navigator>

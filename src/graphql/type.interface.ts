@@ -143,6 +143,7 @@ export type Query = {
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
   getNewFeed: PostConnection;
+  getPostDetail: Post;
 };
 
 export type QueryUserArgs = {
@@ -169,6 +170,10 @@ export type QueryMediaArgs = {
 export type QueryGetNewFeedArgs = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
+};
+
+export type QueryGetPostDetailArgs = {
+  id: Scalars['Float'];
 };
 
 export type Mutation = {

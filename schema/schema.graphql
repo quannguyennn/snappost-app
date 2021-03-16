@@ -129,6 +129,7 @@ type Query {
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!
+  getPostDetail(id: Float!): Post!
 }
 
 type Mutation {

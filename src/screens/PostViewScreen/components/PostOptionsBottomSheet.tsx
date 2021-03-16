@@ -6,12 +6,12 @@ import Option from '../../../components/shared/controls/Option';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import { themeState } from '../../../recoil/theme/atoms';
 import { ThemeStatic } from '../../../theme';
-import { ThemeColors } from '../../../types/theme';
+import type { ThemeColors } from '../../../types/theme';
 
 interface PostOptionsBottomSheetProps {
   ref: React.Ref<any>;
-  authorId: string;
-  postId: string;
+  authorId: number;
+  postId: number;
   onPostEdit: () => void;
   onPostDelete: () => void;
 }
