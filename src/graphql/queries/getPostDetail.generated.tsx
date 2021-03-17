@@ -15,161 +15,11 @@ export type GetPostDetailQueryResponse = { __typename?: 'Query' } & {
         Array<
           { __typename?: 'Comments' } & Pick<
             Types.Comments,
-            'id' | 'creatorId' | 'postId' | 'parentId' | 'content' | 'createdAt' | 'updatedAt'
-          >
+            'id' | 'creatorId' | 'postId' | 'parentId' | 'content' | 'createdAt'
+          > & { creatorInfo: { __typename?: 'User' } & Pick<Types.User, 'name' | 'nickname' | 'avatarFilePath'> }
         >
       >;
-      mediasPath?: Types.Maybe<
-        Array<
-          { __typename?: 'Media' } & Pick<
-            Types.Media,
-            | 'id'
-            | 'fileSize'
-            | 'name'
-            | 'filePath'
-            | 'mimeType'
-            | 'isDeleted'
-            | 'ownerId'
-            | 'type'
-            | 'createdAt'
-            | 'updatedAt'
-          > & {
-              owner?: Types.Maybe<
-                { __typename?: 'User' } & Pick<
-                  Types.User,
-                  | 'id'
-                  | 'name'
-                  | 'nickname'
-                  | 'intro'
-                  | 'zaloId'
-                  | 'avatar'
-                  | 'isNew'
-                  | 'createdAt'
-                  | 'updatedAt'
-                  | 'avatarFilePath'
-                  | 'followStatus'
-                > & {
-                    nFollowing?: Types.Maybe<
-                      Array<
-                        { __typename?: 'User' } & Pick<
-                          Types.User,
-                          | 'id'
-                          | 'name'
-                          | 'nickname'
-                          | 'intro'
-                          | 'zaloId'
-                          | 'avatar'
-                          | 'isNew'
-                          | 'createdAt'
-                          | 'updatedAt'
-                          | 'avatarFilePath'
-                          | 'followStatus'
-                        > & {
-                            nFollowing?: Types.Maybe<
-                              Array<
-                                { __typename?: 'User' } & Pick<
-                                  Types.User,
-                                  | 'id'
-                                  | 'name'
-                                  | 'nickname'
-                                  | 'intro'
-                                  | 'zaloId'
-                                  | 'avatar'
-                                  | 'isNew'
-                                  | 'createdAt'
-                                  | 'updatedAt'
-                                  | 'avatarFilePath'
-                                  | 'followStatus'
-                                >
-                              >
-                            >;
-                            nFollower?: Types.Maybe<
-                              Array<
-                                { __typename?: 'User' } & Pick<
-                                  Types.User,
-                                  | 'id'
-                                  | 'name'
-                                  | 'nickname'
-                                  | 'intro'
-                                  | 'zaloId'
-                                  | 'avatar'
-                                  | 'isNew'
-                                  | 'createdAt'
-                                  | 'updatedAt'
-                                  | 'avatarFilePath'
-                                  | 'followStatus'
-                                >
-                              >
-                            >;
-                          }
-                      >
-                    >;
-                    nFollower?: Types.Maybe<
-                      Array<
-                        { __typename?: 'User' } & Pick<
-                          Types.User,
-                          | 'id'
-                          | 'name'
-                          | 'nickname'
-                          | 'intro'
-                          | 'zaloId'
-                          | 'avatar'
-                          | 'isNew'
-                          | 'createdAt'
-                          | 'updatedAt'
-                          | 'avatarFilePath'
-                          | 'followStatus'
-                        > & {
-                            nFollowing?: Types.Maybe<
-                              Array<
-                                { __typename?: 'User' } & Pick<
-                                  Types.User,
-                                  | 'id'
-                                  | 'name'
-                                  | 'nickname'
-                                  | 'intro'
-                                  | 'zaloId'
-                                  | 'avatar'
-                                  | 'isNew'
-                                  | 'createdAt'
-                                  | 'updatedAt'
-                                  | 'avatarFilePath'
-                                  | 'followStatus'
-                                >
-                              >
-                            >;
-                            nFollower?: Types.Maybe<
-                              Array<
-                                { __typename?: 'User' } & Pick<
-                                  Types.User,
-                                  | 'id'
-                                  | 'name'
-                                  | 'nickname'
-                                  | 'intro'
-                                  | 'zaloId'
-                                  | 'avatar'
-                                  | 'isNew'
-                                  | 'createdAt'
-                                  | 'updatedAt'
-                                  | 'avatarFilePath'
-                                  | 'followStatus'
-                                >
-                              >
-                            >;
-                          }
-                      >
-                    >;
-                  }
-              >;
-              capabilities?: Types.Maybe<
-                { __typename?: 'MediaCapability' } & Pick<
-                  Types.MediaCapability,
-                  'canCopy' | 'canDelete' | 'canDownload' | 'canEdit' | 'canRename'
-                >
-              >;
-            }
-        >
-      >;
+      mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
       creatorInfo?: Types.Maybe<
         { __typename?: 'User' } & Pick<
           Types.User,
@@ -184,44 +34,7 @@ export type GetPostDetailQueryResponse = { __typename?: 'Query' } & {
           | 'updatedAt'
           | 'avatarFilePath'
           | 'followStatus'
-        > & {
-            nFollowing?: Types.Maybe<
-              Array<
-                { __typename?: 'User' } & Pick<
-                  Types.User,
-                  | 'id'
-                  | 'name'
-                  | 'nickname'
-                  | 'intro'
-                  | 'zaloId'
-                  | 'avatar'
-                  | 'isNew'
-                  | 'createdAt'
-                  | 'updatedAt'
-                  | 'avatarFilePath'
-                  | 'followStatus'
-                >
-              >
-            >;
-            nFollower?: Types.Maybe<
-              Array<
-                { __typename?: 'User' } & Pick<
-                  Types.User,
-                  | 'id'
-                  | 'name'
-                  | 'nickname'
-                  | 'intro'
-                  | 'zaloId'
-                  | 'avatar'
-                  | 'isNew'
-                  | 'createdAt'
-                  | 'updatedAt'
-                  | 'avatarFilePath'
-                  | 'followStatus'
-                >
-              >
-            >;
-          }
+        >
       >;
     };
 };
@@ -243,119 +56,16 @@ export const GetPostDetailDocument = gql`
         parentId
         content
         createdAt
-        updatedAt
+        creatorInfo {
+          name
+          nickname
+          avatarFilePath
+        }
       }
       totalLike
       isLike
       mediasPath {
-        id
-        fileSize
-        name
         filePath
-        mimeType
-        isDeleted
-        ownerId
-        type
-        createdAt
-        updatedAt
-        owner {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-            nFollowing {
-              id
-              name
-              nickname
-              intro
-              zaloId
-              avatar
-              isNew
-              createdAt
-              updatedAt
-              avatarFilePath
-              followStatus
-            }
-            nFollower {
-              id
-              name
-              nickname
-              intro
-              zaloId
-              avatar
-              isNew
-              createdAt
-              updatedAt
-              avatarFilePath
-              followStatus
-            }
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-            nFollowing {
-              id
-              name
-              nickname
-              intro
-              zaloId
-              avatar
-              isNew
-              createdAt
-              updatedAt
-              avatarFilePath
-              followStatus
-            }
-            nFollower {
-              id
-              name
-              nickname
-              intro
-              zaloId
-              avatar
-              isNew
-              createdAt
-              updatedAt
-              avatarFilePath
-              followStatus
-            }
-          }
-        }
-        capabilities {
-          canCopy
-          canDelete
-          canDownload
-          canEdit
-          canRename
-        }
       }
       creatorInfo {
         id
@@ -369,32 +79,6 @@ export const GetPostDetailDocument = gql`
         updatedAt
         avatarFilePath
         followStatus
-        nFollowing {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-        }
-        nFollower {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-        }
       }
     }
   }

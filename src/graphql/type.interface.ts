@@ -131,11 +131,12 @@ export type Comments = Node & {
   __typename?: 'Comments';
   id: Scalars['Float'];
   creatorId: Scalars['Float'];
-  postId: Scalars['String'];
+  postId: Scalars['Float'];
   parentId: Scalars['Float'];
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  creatorInfo: User;
 };
 
 export type Query = {
@@ -203,6 +204,7 @@ export type Mutation = {
   createPost: Post;
   updatePost: Post;
   removePost: Scalars['Boolean'];
+  reactToPost: Scalars['Boolean'];
 };
 
 export type MutationUpdateUserInfoArgs = {
@@ -254,7 +256,7 @@ export type MutationUpdateCommentArgs = {
 };
 
 export type MutationRemoveCommentArgs = {
-  id: Scalars['ID'];
+  id: Scalars['Float'];
 };
 
 export type MutationCreatePostArgs = {
@@ -267,6 +269,10 @@ export type MutationUpdatePostArgs = {
 
 export type MutationRemovePostArgs = {
   id: Scalars['ID'];
+};
+
+export type MutationReactToPostArgs = {
+  postId: Scalars['Float'];
 };
 
 export type UpdateUserInput = {
@@ -297,13 +303,13 @@ export type NewUserInput = {
 export type CreateCommentInput = {
   content: Scalars['String'];
   parentId?: Maybe<Scalars['Float']>;
-  postId: Scalars['String'];
+  postId: Scalars['Float'];
 };
 
 export type UpdateCommentInput = {
   content: Scalars['String'];
   parentId?: Maybe<Scalars['Float']>;
-  postId: Scalars['String'];
+  postId: Scalars['Float'];
   id: Scalars['Float'];
 };
 
@@ -318,4 +324,13 @@ export type UpdatePostInput = {
   caption?: Maybe<Scalars['String']>;
   rawCaption?: Maybe<Scalars['String']>;
   id: Scalars['Float'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  onCreateComment: Comments;
+};
+
+export type SubscriptionOnCreateCommentArgs = {
+  postId: Scalars['Float'];
 };

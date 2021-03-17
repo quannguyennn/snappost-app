@@ -14,119 +14,16 @@ query getPostDetail($id: Float!) {
       parentId
       content
       createdAt
-      updatedAt
+      creatorInfo {
+        name
+        nickname
+        avatarFilePath
+      }
     }
     totalLike
     isLike
     mediasPath {
-      id
-      fileSize
-      name
       filePath
-      mimeType
-      isDeleted
-      ownerId
-      type
-      createdAt
-      updatedAt
-      owner {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
-        nFollowing {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
-        nFollower {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
-      }
-      capabilities {
-        canCopy
-        canDelete
-        canDownload
-        canEdit
-        canRename
-      }
     }
     creatorInfo {
       id
@@ -140,32 +37,6 @@ query getPostDetail($id: Float!) {
       updatedAt
       avatarFilePath
       followStatus
-      nFollowing {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
-      }
-      nFollower {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
-      }
     }
   }
 }

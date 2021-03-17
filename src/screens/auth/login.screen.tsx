@@ -1,6 +1,5 @@
 import React, { memo, useRef, useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Platform, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import TermsAndConditionsBottomSheet from './components/TermsAndConditionsBottomSheet';
@@ -9,8 +8,7 @@ import Typography from '../../theme/Typography';
 import { Images } from '../../assets1/icons';
 import ConfirmationModal from '../../components/shared/ComfirmationModal';
 import LoadingIndicator from '../../components/shared/LoadingIndicator';
-import { AppRoutes } from '../../navigator/app-routes';
-import type { AuthLoginScreenProp, AuthStackNavigationProp } from '../../navigator/auth.navigator';
+import type { AuthLoginScreenProp } from '../../navigator/auth.navigator';
 import { ThemeStatic } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
@@ -39,8 +37,6 @@ const LoginScreen = memo<Props>(() => {
   const setIsLogin = useSetRecoilState(isLoginState);
 
   const termsAndConditionsBottomSheetRef = useRef<Modalize>(null);
-
-  const { navigate } = useNavigation<AuthStackNavigationProp>();
 
   const [loginWithSns, { loading: loginLoading }] = useLoginWithSnsMutation({
     onCompleted: (res) => {
@@ -76,7 +72,6 @@ const LoginScreen = memo<Props>(() => {
     onCompleted: (res) => {
       termsConfirmationToggle();
       setIsLogin(true);
-      // navigate(AppRoutes.APP);
     },
     onError: (err) => {
       console.log('updateUser', err);
@@ -87,7 +82,7 @@ const LoginScreen = memo<Props>(() => {
 
   const getApplicationHashKey = async () => {
     try {
-      const key = await ZaloKit.getApplicationHashKey();
+      await ZaloKit.getApplicationHashKey();
 
       /*
       returns: 'application hash key'

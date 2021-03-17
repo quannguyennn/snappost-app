@@ -7,8 +7,6 @@ query me {
     zaloId
     avatar
     isNew
-    createdAt
-    updatedAt
     avatarFilePath
     followStatus
     nFollowing {
@@ -19,62 +17,8 @@ query me {
       zaloId
       avatar
       isNew
-      createdAt
-      updatedAt
       avatarFilePath
       followStatus
-      nFollowing {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
-        nFollower {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
-      }
     }
     nFollower {
       id
@@ -84,8 +28,6 @@ query me {
       zaloId
       avatar
       isNew
-      createdAt
-      updatedAt
       avatarFilePath
       followStatus
     }

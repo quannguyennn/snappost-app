@@ -46,6 +46,7 @@ const App = React.memo(() => {
 
   React.useEffect(() => {
     initializeTheme();
+    initLoginState();
   }, []);
 
   const toggleTheme = (type: string) => {

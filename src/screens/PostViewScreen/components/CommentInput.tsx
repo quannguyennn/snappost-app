@@ -6,7 +6,8 @@ import { useRecoilValue } from 'recoil';
 import IconButton from '../../../components/shared/Iconbutton';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';
 import NativeImage from '../../../components/shared/NativeImage';
-import { inputLimitErrorNotification } from '../../../helpers/notifications';
+import { useCreateCommentMutation } from '../../../graphql/mutations/createComment.generated';
+import { inputLimitErrorNotification, somethingWentWrongErrorNotification } from '../../../helpers/notifications';
 import { createAsyncDelay } from '../../../helpers/utils';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { themeState } from '../../../recoil/theme/atoms';
@@ -25,7 +26,11 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, scrollViewRef }) =>
   const theme = useRecoilValue(themeState);
   const user = useCurrentUser();
   const [comment, setComment] = useState('');
-  // const [addComment, { loading }] = useMutation(MUTATION_ADD_COMMENT);
+  const [addComment, { loading }] = useCreateCommentMutation({
+    onError: () => {
+      somethingWentWrongErrorNotification();
+    },
+  });
 
   const postComment = async () => {
     if (comment.length < 1) {
@@ -37,7 +42,7 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, scrollViewRef }) =>
       return;
     }
 
-    // await addComment({ variables: { userId: user.id, postId, body: comment } });
+    await addComment({ variables: { input: { postId, content: comment } } });
     Keyboard.dismiss();
     setComment('');
     await createAsyncDelay(1200);
@@ -53,7 +58,7 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, scrollViewRef }) =>
     </View>
   );
 
-  if (!false) {
+  if (!loading) {
     content = <IconButton Icon={Icon} onPress={postComment} style={styles().postButton} />;
   }
 

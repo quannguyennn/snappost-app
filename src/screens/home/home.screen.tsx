@@ -1,7 +1,6 @@
 import React from 'react';
-import { RefreshControl, StyleSheet, View } from 'react-native';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useRecoilValue } from 'recoil';
+import { StyleSheet, View } from 'react-native';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import PostCard from './components/PostCard';
 import { useState } from 'react';
 import { FlatGrid } from 'react-native-super-grid';
@@ -13,23 +12,30 @@ import PostCardPlaceholder from '../../components/placeholders/PostCard.Placehol
 import IconButton from '../../components/shared/Iconbutton';
 import ImageBanner from '../../components/shared/ImageBanner';
 import HomeHeader from '../../components/shared/layout/headers/HomeHeader';
-import type { HomeScreenNavigationProp } from '../../navigator/home.navigator';
 import { themeState } from '../../recoil/theme/atoms';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
 import { GetNewFeedQueryResponse, useGetNewFeedLazyQuery } from '../../graphql/queries/getNewFeed.generated';
 import type { Post } from '../../graphql/type.interface';
+import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
+import { newFeedState } from '../../recoil/app/atoms';
 
 const HomeScreen = React.memo(() => {
-  const { navigate } = useNavigation<HomeScreenNavigationProp>();
-  const isFocused = useIsFocused();
   const theme = useRecoilValue(themeState);
-
   const [refresh, setRefresh] = useState(true);
+
+  const [posts, setPosts] = useRecoilState(newFeedState);
 
   const [getNewFeed, { data: fetchNewFeed, loading, fetchMore }] = useGetNewFeedLazyQuery({
     fetchPolicy: 'cache-and-network',
-    onCompleted: () => setRefresh(false),
+    onCompleted: (res) => {
+      setPosts(res.getNewFeed.items);
+      setRefresh(false);
+    },
+    onError: (err) => {
+      console.log(err);
+      somethingWentWrongErrorNotification();
+    },
   });
 
   const currentPage =
@@ -37,7 +43,7 @@ const HomeScreen = React.memo(() => {
   const totalPages =
     Number(fetchNewFeed?.getNewFeed?.meta.totalPages) >= 0 ? Number(fetchNewFeed?.getNewFeed?.meta.totalPages) : 2;
 
-  const data = fetchNewFeed?.getNewFeed?.items;
+  const data = posts;
 
   useEffect(() => {
     if (refresh) {
@@ -46,7 +52,6 @@ const HomeScreen = React.memo(() => {
       });
     }
   }, [getNewFeed, refresh]);
-
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -113,7 +118,7 @@ const HomeScreen = React.memo(() => {
       <IconButton
         hasBadge={hasBadge}
         badgeCount={unreadMessages}
-        onPress={() => { }}
+        onPress={() => {}}
         Icon={() => <FontAwesome name="send" size={IconSizes.x5} color={theme.text01} />}
       />
     );
@@ -123,7 +128,7 @@ const HomeScreen = React.memo(() => {
     <View style={styles(theme).container}>
       <HomeHeader IconRight={IconRight} />
       {content}
-      {loading ? <PostCardPlaceholder /> : null}
+      {loading && !posts?.length ? <PostCardPlaceholder /> : null}
     </View>
   );
 });

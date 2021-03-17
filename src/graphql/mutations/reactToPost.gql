@@ -1,0 +1,3 @@
+mutation reactToPost($postId: Float!) {
+  reactToPost(postId: $postId)
+}

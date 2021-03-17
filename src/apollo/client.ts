@@ -4,7 +4,7 @@ import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 
-import { API_URL } from '../environment/env';
+import { API_URL, WS_URL } from '../environment/env';
 import { storage, removeToken } from '../helpers/storage';
 import possibleTypes from './possibleTypes.json';
 
@@ -118,7 +118,7 @@ const authMiddleware = setContext(async (_, { headers }) => {
 });
 // setup websocket link
 export const wsLink = new WebSocketLink({
-  uri: API_URL,
+  uri: WS_URL,
   options: {
     reconnect: true,
     lazy: true,

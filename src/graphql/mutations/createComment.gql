@@ -1,0 +1,102 @@
+mutation createComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
+    id
+    creatorId
+    postId
+    parentId
+    content
+    createdAt
+    updatedAt
+    creatorInfo {
+      id
+      name
+      nickname
+      intro
+      zaloId
+      avatar
+      isNew
+      createdAt
+      updatedAt
+      avatarFilePath
+      followStatus
+      nFollowing {
+        id
+        name
+        nickname
+        intro
+        zaloId
+        avatar
+        isNew
+        createdAt
+        updatedAt
+        avatarFilePath
+        followStatus
+        nFollowing {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+          nFollower {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+          }
+        }
+      }
+      nFollower {
+        id
+        name
+        nickname
+        intro
+        zaloId
+        avatar
+        isNew
+        createdAt
+        updatedAt
+        avatarFilePath
+        followStatus
+        nFollowing {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+        }
+        nFollower {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+        }
+      }
+    }
+  }
+}

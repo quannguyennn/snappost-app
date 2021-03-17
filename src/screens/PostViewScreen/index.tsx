@@ -4,7 +4,6 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, Touchable
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import CommentInput from './components/CommentInput';
-import Comments from './components/Comments';
 import EditPostBottomSheet from './components/EditPostBottomSheet';
 import LikeBounceAnimation from './components/LikeBounceAnimation';
 import LikesBottomSheet from './components/LikesBottomSheet';
@@ -24,11 +23,14 @@ import { themeState } from '../../recoil/theme/atoms';
 import { Typography, ThemeStatic, PostDimensions } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
-import { useGetPostDetailLazyQuery } from '../../graphql/queries/getPostDetail.generated';
+import { GetPostDetailQueryResponse, useGetPostDetailLazyQuery } from '../../graphql/queries/getPostDetail.generated';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import FastImage from 'react-native-fast-image';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import TransformText from '../../components/shared/TransformText';
+import CommentList from './components/Comments';
+import { useOnCreateCommentSubscription } from '../../graphql/subscriptions/onCreateComment.generated';
+import { useReactToPostMutation } from '../../graphql/mutations/reactToPost.generated';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -42,12 +44,45 @@ const PostViewScreen: React.FC = () => {
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [lastTap, setLastTap] = useState(Date.now());
   const [mediaIndex, setMediaIndex] = useState(0);
+  const [comments, setComments] = useState<GetPostDetailQueryResponse['getPostDetail']['postComments']>([]);
+  const [isLike, setIsLike] = useState(false);
+  const [totalLike, setTotalLike] = useState(0);
+
+  const [reactToPost] = useReactToPostMutation({
+    onError: () => somethingWentWrongErrorNotification(),
+    onCompleted: (res) => {
+      setIsLike(res.reactToPost);
+      if (res.reactToPost) {
+        setTotalLike(totalLike + 1);
+      } else {
+        setTotalLike(totalLike - 1);
+      }
+    },
+  });
 
   const [getPostDetail, { data: fetchData, loading }] = useGetPostDetailLazyQuery({
-    onError: () => somethingWentWrongErrorNotification(),
+    onError: (err) => {
+      console.log('post detail', err);
+      somethingWentWrongErrorNotification();
+    },
+    onCompleted: (res) => {
+      setTotalLike(res.getPostDetail.totalLike);
+      setIsLike(res.getPostDetail.isLike);
+      setComments(
+        res.getPostDetail.postComments || ([] as GetPostDetailQueryResponse['getPostDetail']['postComments']),
+      );
+    },
   });
 
   const data = fetchData?.getPostDetail;
+
+  useOnCreateCommentSubscription({
+    variables: { postId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData);
+    },
+    fetchPolicy: 'network-only',
+  });
 
   useEffect(() => {
     getPostDetail({ variables: { id: postId } });
@@ -82,21 +117,27 @@ const PostViewScreen: React.FC = () => {
     likesBottomSheetRef?.current?.open();
   };
 
-  const handleDoubleTap = (isLiked: boolean) => {
+  const handleDoubleTap = () => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 500;
     if (now - lastTap < DOUBLE_PRESS_DELAY) {
-      likeInteractionHandler(isLiked);
+      if (isLike) {
+        // @ts-ignore
+        likeBounceAnimationRef.current.animate();
+      } else {
+        likeInteractionHandler();
+      }
     } else {
       setLastTap(now);
     }
   };
 
-  const likeInteractionHandler = (isLiked: boolean) => {
-    // @ts-ignore
-    likeBounceAnimationRef.current.animate();
-
-    // return likeInteraction({ variables });
+  const likeInteractionHandler = () => {
+    if (!isLike) {
+      // @ts-ignore
+      likeBounceAnimationRef.current.animate();
+    }
+    reactToPost({ variables: { postId } });
   };
 
   const onPostEdit = () => {
@@ -118,7 +159,7 @@ const PostViewScreen: React.FC = () => {
   let content = <PostViewScreenPlaceholder />;
 
   if (!loading && data) {
-    const { mediasPath, rawCaption, totalLike, createdAt, creatorInfo, isLike } = data;
+    const { mediasPath, rawCaption, createdAt, creatorInfo } = data;
 
     const readableTime = moment(createdAt).fromNow();
 
@@ -143,7 +184,7 @@ const PostViewScreen: React.FC = () => {
             data={mediasPath?.map((item) => item.filePath) ?? []}
             renderItem={({ item, index }: { item: any; index: number }) => {
               return (
-                <TouchableOpacity onPress={() => handleDoubleTap(isLike)} activeOpacity={1}>
+                <TouchableOpacity onPress={() => handleDoubleTap()} activeOpacity={1}>
                   <FastImage key={`post-image-${index}`} source={{ uri: item }} style={styles(theme).postImage} />
                 </TouchableOpacity>
               );
@@ -171,7 +212,7 @@ const PostViewScreen: React.FC = () => {
           <LikeBounceAnimation ref={likeBounceAnimationRef} />
         </View>
         <View style={styles().likes}>
-          <BounceView scale={1.5} onPress={() => likeInteractionHandler(isLike)}>
+          <BounceView scale={1.5} onPress={() => likeInteractionHandler()}>
             <AntDesign name="heart" color={isLike ? ThemeStatic.like : ThemeStatic.unlike} size={IconSizes.x5} />
           </BounceView>
           <Text onPress={openLikes} style={styles(theme).likesText}>
@@ -181,7 +222,7 @@ const PostViewScreen: React.FC = () => {
         <View style={styles(theme).captionText}>
           <TransformText username={creatorInfo?.name ?? ''} text={rawCaption ?? ''} />
         </View>
-        <Comments postId={postId} comments={[]} />
+        <CommentList postId={postId} comments={comments} />
       </>
     );
   }
