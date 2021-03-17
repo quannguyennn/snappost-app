@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import React  from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 
 import { Typography } from '../../theme';
-import { AppContext } from '../../context';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ThemeStatic } from '../../theme';
@@ -52,8 +51,8 @@ interface ProfileCardProps {
   onFollowersOpen: any;
   following: number;
   followers: number;
+  nickname: string;
   name: string;
-  handle: string;
   renderInteractions?: any;
   about: string;
 }
@@ -66,8 +65,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onFollowersOpen,
   following,
   followers,
+  nickname,
   name,
-  handle,
   renderInteractions,
   about,
 }) => {
@@ -85,9 +84,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </ImageBackground>
         <Connections onPress={onFollowersOpen} total={parseConnectionsCount(followers)} type="FOLLOWERS" />
       </View>
-      <View style={styles(theme).name}>
-        <Text style={styles(theme).usernameText}>{name}</Text>
-        <Text style={styles(theme).handleText}>{handle}</Text>
+      <View style={styles(theme).nickname}>
+        <Text style={styles(theme).usernicknameText}>{nickname}</Text>
+        <Text style={styles(theme).nameText}>{name}</Text>
       </View>
       {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
       {renderInteractions && renderInteractions()}
@@ -150,17 +149,17 @@ const styles = (theme = {} as ThemeColors) =>
       color: theme.text02,
       marginTop: 5,
     },
-    name: {
+    nickname: {
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 16,
     },
-    usernameText: {
+    usernicknameText: {
       ...FontWeights.Bold,
       ...FontSizes.SubHeading,
       color: theme.text01,
     },
-    handleText: {
+    nameText: {
       ...FontWeights.Bold,
       ...FontSizes.Body,
       color: theme.text02,

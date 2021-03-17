@@ -101,7 +101,9 @@ export const convertToNormalVideoUri = (media: PhotoIdentifier): string => {
   const ext = (media.node.image.filename ?? '').substring(fileNameLength - 3);
   return `assets-library://asset/asset.${ext}?id=${appleId}&ext=${ext}`;
 };
-
+export const sortPostsAscendingTime = (array: any) =>
+  // @ts-ignore
+  [...array].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 export const parseGridImages = (images: ExplorePost[]): ExplorePost[][] => {
   const parsedImages: ExplorePost[][] = [];
 

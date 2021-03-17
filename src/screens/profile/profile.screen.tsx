@@ -1,12 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useApolloClient } from '@apollo/client';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../../components/shared/layout/headers/Header';
 import IconButton from '../../components/shared/Iconbutton';
 import { IconSizes } from '../../theme/Icon';
 import Entypo from 'react-native-vector-icons/Entypo';
-
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import SettingsBottomSheet from './components/SettingsBottomSheet';
@@ -25,6 +23,7 @@ import type { ThemeColors } from '../../types/theme';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { useMyPostLazyQuery } from '../../graphql/queries/myPost.generated';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
+import EditProfileBottomSheet from './components/EditProfileBottomSheet';
 
 const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const { navigate } = useNavigation();
@@ -36,15 +35,12 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
 
   const [getMyPost, { data: fetchData, loading, fetchMore }] = useMyPostLazyQuery({
     onError: () => somethingWentWrongErrorNotification(),
-    onCompleted: () => {
-
-    }
-  })
+    onCompleted: () => {},
+  });
 
   const currentPage =
     Number(fetchData?.myPost?.meta.currentPage) >= 0 ? Number(fetchData?.myPost?.meta.currentPage) : 1;
-  const totalPages =
-    Number(fetchData?.myPost?.meta.totalPages) >= 0 ? Number(fetchData?.myPost?.meta.totalPages) : 2;
+  const totalPages = Number(fetchData?.myPost?.meta.totalPages) >= 0 ? Number(fetchData?.myPost?.meta.totalPages) : 2;
 
   const data = fetchData?.myPost?.items;
 
@@ -94,12 +90,12 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
         onEdit={onEdit}
         onFollowingOpen={onFollowingOpen}
         onFollowersOpen={onFollowersOpen}
-        avatar={me?.avatarFilePath ?? ""}
-        following={me?.nFollowing as number ?? 0}
-        followers={me?.nFollower as number ?? 0}
+        avatar={me?.avatarFilePath ?? ''}
+        following={me?.nFollowing?.length ?? 0}
+        followers={me?.nFollower?.length ?? 0}
         name={me?.name ?? ''}
-        handle={me?.nickname ?? ""}
-        about={me?.intro ?? ""}
+        nickname={me?.nickname ?? ''}
+        about={me?.intro ?? ''}
       />
     );
   };
@@ -119,8 +115,8 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
 
   let content = <ProfileScreenPlaceholder />;
   // loading : query user
-  if (loading) {
-
+  console.log(me, 'data');
+  if (!loading) {
     content = (
       <>
         <FlatGrid
@@ -133,15 +129,15 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
         />
-        <ConnectionsBottomSheet ref={followingBottomSheetRef} data={following} type={Connections.FOLLOWING} />
-        <ConnectionsBottomSheet ref={followersBottomSheetRef} data={followers} type={Connections.FOLLOWERS} />
-        {/* <EditProfileBottomSheet
-         ref={editProfileBottomSheetRef}
-         avatar={meInfo?.avatarFilePath}
-         name={meInfo?.name}
-         handle={meInfo?.nickname}
-         about={meInfo?.intro}
-        /> */}
+        <ConnectionsBottomSheet ref={followingBottomSheetRef} data={me?.nFollowing} type={Connections.FOLLOWING} />
+        <ConnectionsBottomSheet ref={followersBottomSheetRef} data={me?.nFollower} type={Connections.FOLLOWERS} />
+        <EditProfileBottomSheet
+          ref={editProfileBottomSheetRef}
+          avatar={me?.avatarFilePath ?? ''}
+          name={me?.name ?? ''}
+          handle={me?.nickname ?? ''}
+          about={me?.intro ?? ''}
+        />
       </>
     );
   }

@@ -11,19 +11,20 @@ import BottomSheetHeader from './layout/headers/BottomSheetHeader';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import type { ThemeColors } from '../../types/theme';
-import type { User } from '../../graphql/type.interface';
+// import type { User } from '../../graphql/type.interface';
 
 interface ConnectionsBottomSheetProps {
   ref: React.Ref<any>;
   viewMode?: boolean;
-  data: User[];
-  handle: string;
+  data: string[];
+  name: string;
   type: string;
 }
 
 const ConnectionsBottomSheet: React.FC<ConnectionsBottomSheetProps> = React.forwardRef(
-  ({ viewMode, handle, data, type }, ref) => {
+  ({ viewMode, name, data, type }, ref) => {
     const theme = useRecoilValue(themeState);
+console.log(data, 'data bottomsheet');
 
     let heading: string;
     let subHeading: string;
@@ -31,14 +32,14 @@ const ConnectionsBottomSheet: React.FC<ConnectionsBottomSheetProps> = React.forw
     if (type === Connections.FOLLOWING) {
       heading = 'Following';
       if (viewMode) {
-        subHeading = `People ${handle} is following`;
+        subHeading = `People ${name} is following`;
       } else {
         subHeading = 'People you are following';
       }
     } else if (type === Connections.FOLLOWERS) {
       heading = 'Followers';
       if (viewMode) {
-        subHeading = `People who are following ${handle}`;
+        subHeading = `People who are following ${name}`;
       } else {
         subHeading = 'People who are following you';
       }
@@ -50,8 +51,9 @@ const ConnectionsBottomSheet: React.FC<ConnectionsBottomSheetProps> = React.forw
 
     // @ts-ignore
     const renderItem = ({ item }) => {
-      const { id, avatar, handle, name } = item;
-      return <UserCard userId={id} avatar={avatar} handle={handle} name={name} />;
+
+      const { id, avatarFilePath, nickname, name } = item;
+      return <UserCard userId={id} avatar={avatarFilePath} name={name} nickname={nickname} />;
     };
 
     // @ts-ignore

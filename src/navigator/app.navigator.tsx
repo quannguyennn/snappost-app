@@ -9,12 +9,14 @@ import { UploadStackNavigator } from './upload.navigator';
 import PostViewScreen from '../screens/PostViewScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import { NotificationNavigator } from './notification.navigator';
+import ProfileViewScreen from '../screens/ProfileViewScreen';
 
 export type MainTabParamList = {
   [AppRoutes.HOME_TAB]: undefined;
   [AppRoutes.NOTIFICATION_TAB]: undefined;
   [AppRoutes.PROFILE_TAB]: undefined;
   [AppRoutes.EXPLORE_TAB]: undefined;
+  [AppRoutes.PROFILE_VIEW_SCREEN]: undefined;
 };
 
 export type AppStackParamList = {
@@ -37,6 +39,8 @@ export const MainNavigator = () => (
     <Tab.Screen name={AppRoutes.EXPLORE_TAB} component={ExploreScreen} />
     <Tab.Screen name={AppRoutes.NOTIFICATION_TAB} component={NotificationNavigator} />
     <Tab.Screen name={AppRoutes.PROFILE_TAB} component={ProfileNavigator} />
+    <Tab.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
+
   </Tab.Navigator>
 );
 
@@ -46,7 +50,7 @@ export const AppNavigator = () => {
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MAIN_TAB} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MESSAGE_SCREEN} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.CONVERSATION_SCREEN} component={MainNavigator} />
-      <Stack.Screen options={{ headerShown: false }} name={AppRoutes.PROFILE_VIEW_SCREEN} component={MainNavigator} />
+
       <Stack.Screen
         options={{ headerShown: false }}
         name={AppRoutes.NOTIFICATION_VIEW_SCREEN}

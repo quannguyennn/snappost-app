@@ -87,7 +87,7 @@ const PostViewScreen: React.FC = () => {
   useEffect(() => {
     getPostDetail({ variables: { id: postId } });
   }, [getPostDetail, postId]);
-
+  
   const scrollViewRef = useRef();
   const postOptionsBottomSheetRef = useRef();
   const editPostBottomSheetRef = useRef();

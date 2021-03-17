@@ -1,13 +1,10 @@
 
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-
-
-import { ConfirmationModal, ConnectionsBottomSheet, GoBackHeader, IconButton, ListEmptyComponent, PostThumbnail, ProfileCard, ProfileScreenPlaceholder } from '@app/layout';
 
 import ProfileOptionsBottomSheet from './components/ProfileOptionsBottomSheet';
 import UserInteractions from './components/UserInteractions';
@@ -15,22 +12,27 @@ import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import { useNavigation } from '@react-navigation/native';
 import { PostDimensions, ThemeStatic } from '../../theme';
-import { sortPostsAscendingTime } from '../../utils/shared';
 import { Connections } from '../../utils/constants';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
 import { userBlockedNotification } from '../../helpers/notifications';
-import { useUserLazyQuery } from '../../graphql/queries/user.generated';
+import { sortPostsAscendingTime } from '../../utils/shared';
+import { useGetUserInfoLazyQuery } from '../../graphql/queries/getUserInfo.generated';
+import ProfileCard from '../../components/shared/ProfileCard';
+import PostThumbnail from '../../components/shared/PostThumbnail';
+import ListEmptyComponent from '../../components/shared/ListEmptyComponent';
+import ProfileScreenPlaceholder from '../../components/placeholders/ProfileScreen.Placeholder';
+import ConnectionsBottomSheet from '../../components/shared/ConnectionsBottomSheet';
+import IconButton from '../../components/shared/Iconbutton';
+import GoBackHeader from '../../components/shared/layout/headers/GoBackHeader';
+import ConfirmationModal from '../../components/shared/ComfirmationModal';
+
 
 
 const ProfileViewScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
-  const [userInfo, setUserInfo] = useState()
-  const [getUser] = useUserLazyQuery({
-    onCompleted: (res) => setUserInfo(res?.user),
-    onError: (err) => console.log(err), 
-    fetchPolicy: 'cache-and-network'
-  })
+
+  
   const { goBack } = useNavigation();
 
   // const userId = useNavigationParam('userId');
@@ -64,15 +66,15 @@ const ProfileViewScreen: React.FC = () => {
     // const { user: { avatar, following, followers, name, handle, about } } = data;
     return (
       <ProfileCard
-        avatar={userInfo?.avatarFilePath}
+        avatar={user?.avatarFilePath}
         onFollowingOpen={onFollowingOpen}
         onFollowersOpen={onFollowersOpen}
         following={'100'}
         followers={'200'}
-        name={userInfo?.name}
-        handle={'hihihi'}
-        renderInteractions={() => <UserInteractions targetId={'userId'} avatar={userInfo?.avatarFilePath} handle={'hihi'} />}
-        about={userInfo?.intro}
+        name={user?.name}
+        nickname={user?.nickname}
+        renderInteractions={() => <UserInteractions targetId={'userId'} avatar={user?.avatarFilePath} name={user?.name} />}
+        about={user?.intro}
       />
     );
   };
