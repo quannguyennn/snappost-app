@@ -35,13 +35,15 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, capti
 
   const [mediaIndex, setMediaIndex] = useState(0);
 
-  const navigateToPost = () => navigate(AppRoutes.POST_VIEW_SCREEN, { postId: id });
+  const navigateToPost = () => {
+    navigate(AppRoutes.POST_VIEW_SCREEN, { postId: id });
+  };
 
   const readableTime = moment(time).fromNow();
   const readableLikes = parseLikes(likes);
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity activeOpacity={0.9} onPress={navigateToPost} style={styles.container}>
       <Carousel
         data={uri}
         renderItem={({ item, index }: { item: any; index: number }) => {
@@ -75,23 +77,23 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, capti
         inactiveDotScale={0.6}
       />
 
-      <View style={styles.upperContent}>
+      <TouchableOpacity onPress={navigateToPost} style={styles.upperContent}>
         <FastImage source={{ uri: author.avatar }} style={styles.avatarImage} />
         <View>
           <Text style={styles.handleText}>{author.name}</Text>
           <Text style={styles.timeText}>{readableTime}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
 
-      <View style={styles.lowerContent}>
+      <TouchableOpacity onPress={navigateToPost} style={styles.lowerContent}>
         <View style={styles.likeContent}>
           <AntDesign name="heart" color={isLike ? ThemeStatic.like : ThemeStatic.unlike} size={IconSizes.x5} />
           <Text style={styles.likesText}>{readableLikes}</Text>
         </View>
 
         <TransformText text={caption ?? ''} />
-      </View>
-    </View>
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
 };
 

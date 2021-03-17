@@ -18,6 +18,8 @@ type User implements Node {
   updatedAt: DateTime!
   avatarFilePath: String
   followStatus: FollowStatus
+  nFollowing: [User!]
+  nFollower: [User!]
 }
 
 """
@@ -125,7 +127,7 @@ type Comments implements Node {
 
 type Query {
   me: User!
-  user(id: Float!): User
+  getUserInfo(id: Float!): User
   searchUser(page: Float!, limit: Float!, isRestricted: Boolean = false, keyword: String!): UserConnection!
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media

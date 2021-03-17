@@ -47,7 +47,119 @@ export type GetPostDetailQueryResponse = { __typename?: 'Query' } & {
                   | 'createdAt'
                   | 'updatedAt'
                   | 'avatarFilePath'
-                >
+                  | 'followStatus'
+                > & {
+                    nFollowing?: Types.Maybe<
+                      Array<
+                        { __typename?: 'User' } & Pick<
+                          Types.User,
+                          | 'id'
+                          | 'name'
+                          | 'nickname'
+                          | 'intro'
+                          | 'zaloId'
+                          | 'avatar'
+                          | 'isNew'
+                          | 'createdAt'
+                          | 'updatedAt'
+                          | 'avatarFilePath'
+                          | 'followStatus'
+                        > & {
+                            nFollowing?: Types.Maybe<
+                              Array<
+                                { __typename?: 'User' } & Pick<
+                                  Types.User,
+                                  | 'id'
+                                  | 'name'
+                                  | 'nickname'
+                                  | 'intro'
+                                  | 'zaloId'
+                                  | 'avatar'
+                                  | 'isNew'
+                                  | 'createdAt'
+                                  | 'updatedAt'
+                                  | 'avatarFilePath'
+                                  | 'followStatus'
+                                >
+                              >
+                            >;
+                            nFollower?: Types.Maybe<
+                              Array<
+                                { __typename?: 'User' } & Pick<
+                                  Types.User,
+                                  | 'id'
+                                  | 'name'
+                                  | 'nickname'
+                                  | 'intro'
+                                  | 'zaloId'
+                                  | 'avatar'
+                                  | 'isNew'
+                                  | 'createdAt'
+                                  | 'updatedAt'
+                                  | 'avatarFilePath'
+                                  | 'followStatus'
+                                >
+                              >
+                            >;
+                          }
+                      >
+                    >;
+                    nFollower?: Types.Maybe<
+                      Array<
+                        { __typename?: 'User' } & Pick<
+                          Types.User,
+                          | 'id'
+                          | 'name'
+                          | 'nickname'
+                          | 'intro'
+                          | 'zaloId'
+                          | 'avatar'
+                          | 'isNew'
+                          | 'createdAt'
+                          | 'updatedAt'
+                          | 'avatarFilePath'
+                          | 'followStatus'
+                        > & {
+                            nFollowing?: Types.Maybe<
+                              Array<
+                                { __typename?: 'User' } & Pick<
+                                  Types.User,
+                                  | 'id'
+                                  | 'name'
+                                  | 'nickname'
+                                  | 'intro'
+                                  | 'zaloId'
+                                  | 'avatar'
+                                  | 'isNew'
+                                  | 'createdAt'
+                                  | 'updatedAt'
+                                  | 'avatarFilePath'
+                                  | 'followStatus'
+                                >
+                              >
+                            >;
+                            nFollower?: Types.Maybe<
+                              Array<
+                                { __typename?: 'User' } & Pick<
+                                  Types.User,
+                                  | 'id'
+                                  | 'name'
+                                  | 'nickname'
+                                  | 'intro'
+                                  | 'zaloId'
+                                  | 'avatar'
+                                  | 'isNew'
+                                  | 'createdAt'
+                                  | 'updatedAt'
+                                  | 'avatarFilePath'
+                                  | 'followStatus'
+                                >
+                              >
+                            >;
+                          }
+                      >
+                    >;
+                  }
               >;
               capabilities?: Types.Maybe<
                 { __typename?: 'MediaCapability' } & Pick<
@@ -71,7 +183,45 @@ export type GetPostDetailQueryResponse = { __typename?: 'Query' } & {
           | 'createdAt'
           | 'updatedAt'
           | 'avatarFilePath'
-        >
+          | 'followStatus'
+        > & {
+            nFollowing?: Types.Maybe<
+              Array<
+                { __typename?: 'User' } & Pick<
+                  Types.User,
+                  | 'id'
+                  | 'name'
+                  | 'nickname'
+                  | 'intro'
+                  | 'zaloId'
+                  | 'avatar'
+                  | 'isNew'
+                  | 'createdAt'
+                  | 'updatedAt'
+                  | 'avatarFilePath'
+                  | 'followStatus'
+                >
+              >
+            >;
+            nFollower?: Types.Maybe<
+              Array<
+                { __typename?: 'User' } & Pick<
+                  Types.User,
+                  | 'id'
+                  | 'name'
+                  | 'nickname'
+                  | 'intro'
+                  | 'zaloId'
+                  | 'avatar'
+                  | 'isNew'
+                  | 'createdAt'
+                  | 'updatedAt'
+                  | 'avatarFilePath'
+                  | 'followStatus'
+                >
+              >
+            >;
+          }
       >;
     };
 };
@@ -119,6 +269,85 @@ export const GetPostDetailDocument = gql`
           createdAt
           updatedAt
           avatarFilePath
+          followStatus
+          nFollowing {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+            nFollowing {
+              id
+              name
+              nickname
+              intro
+              zaloId
+              avatar
+              isNew
+              createdAt
+              updatedAt
+              avatarFilePath
+              followStatus
+            }
+            nFollower {
+              id
+              name
+              nickname
+              intro
+              zaloId
+              avatar
+              isNew
+              createdAt
+              updatedAt
+              avatarFilePath
+              followStatus
+            }
+          }
+          nFollower {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+            nFollowing {
+              id
+              name
+              nickname
+              intro
+              zaloId
+              avatar
+              isNew
+              createdAt
+              updatedAt
+              avatarFilePath
+              followStatus
+            }
+            nFollower {
+              id
+              name
+              nickname
+              intro
+              zaloId
+              avatar
+              isNew
+              createdAt
+              updatedAt
+              avatarFilePath
+              followStatus
+            }
+          }
         }
         capabilities {
           canCopy
@@ -139,6 +368,33 @@ export const GetPostDetailDocument = gql`
         createdAt
         updatedAt
         avatarFilePath
+        followStatus
+        nFollowing {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+        }
+        nFollower {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+        }
       }
     }
   }

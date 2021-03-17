@@ -37,6 +37,8 @@ export type User = Node & {
   updatedAt: Scalars['DateTime'];
   avatarFilePath?: Maybe<Scalars['String']>;
   followStatus?: Maybe<FollowStatus>;
+  nFollowing?: Maybe<Array<User>>;
+  nFollower?: Maybe<Array<User>>;
 };
 
 /** Node */
@@ -139,7 +141,7 @@ export type Comments = Node & {
 export type Query = {
   __typename?: 'Query';
   me: User;
-  user?: Maybe<User>;
+  getUserInfo?: Maybe<User>;
   searchUser: UserConnection;
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
@@ -148,7 +150,7 @@ export type Query = {
   myPost: PostConnection;
 };
 
-export type QueryUserArgs = {
+export type QueryGetUserInfoArgs = {
   id: Scalars['Float'];
 };
 

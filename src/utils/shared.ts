@@ -29,10 +29,7 @@ export const getImageFromLibrary = async (height: number, width: number, circula
       noPermissionNotification();
     }
   }
-};
-export const sortPostsAscendingTime = (array: string[]) =>
-  // @ts-ignore
-  [...array].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
 
 export const parseConnectionsCount = (connectionCount: number) => {
   // parse larger numbers here

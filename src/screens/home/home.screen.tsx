@@ -47,15 +47,6 @@ const HomeScreen = React.memo(() => {
     }
   }, [getNewFeed, refresh]);
 
-  const refreshControl = () => {
-    const onRefresh = () => {
-      try {
-        setRefresh(true);
-      } catch {}
-    };
-
-    return <RefreshControl tintColor={theme.text02} refreshing={loading} onRefresh={onRefresh} />;
-  };
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -98,7 +89,9 @@ const HomeScreen = React.memo(() => {
 
   const content = (
     <FlatGrid
-      refreshControl={refreshControl()}
+      onRefresh={() => {
+        setRefresh(true);
+      }}
       itemDimension={responsiveWidth(85)}
       showsVerticalScrollIndicator={false}
       keyExtractor={(item) => item.id.toString()}
@@ -120,7 +113,7 @@ const HomeScreen = React.memo(() => {
       <IconButton
         hasBadge={hasBadge}
         badgeCount={unreadMessages}
-        onPress={() => {}}
+        onPress={() => { }}
         Icon={() => <FontAwesome name="send" size={IconSizes.x5} color={theme.text01} />}
       />
     );
