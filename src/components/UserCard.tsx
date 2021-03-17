@@ -1,30 +1,35 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import type { Modalize } from 'react-native-modalize';
 import { useRecoilValue } from 'recoil';
+import { useUserInfo } from '../hooks/useUserInfo';
 import { AppRoutes } from '../navigator/app-routes';
 import { themeState } from '../recoil/theme/atoms';
 import { Typography } from '../theme';
-import { ThemeColors } from '../types/theme';
+import type { ThemeColors } from '../types/theme';
 import NativeImage from './shared/NativeImage';
 
 const { FontWeights, FontSizes } = Typography;
 
 interface UserCardProps {
-  userId: string;
+  userId: string | number;
   avatar: string;
-  handle: string;
+  nickname: string;
   name: string;
   style?: StyleProp<ViewStyle>;
   onPress?: any;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ userId, avatar, handle, name, onPress, style }) => {
+const UserCard: React.FC<UserCardProps> = ({ userId, avatar, nickname, name, onPress, style }) => {
   const theme = useRecoilValue(themeState);
   const { navigate } = useNavigation();
+  const user = useUserInfo(userId);
 
   const navigateToProfile = () => {
-    // if (userId === user.id) {
+    console.log(111);
+    
+    // if (userId === user?.id) {
     //   return;
     // }
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId });
@@ -34,9 +39,9 @@ const UserCard: React.FC<UserCardProps> = ({ userId, avatar, handle, name, onPre
     <TouchableOpacity activeOpacity={0.95} onPress={onPress || navigateToProfile} style={[styles().container, style]}>
       <NativeImage uri={avatar} style={styles(theme).avatarImage} />
       <View style={styles().info}>
-        <Text style={styles(theme).handleText}>{handle}</Text>
+        <Text style={styles(theme).handleText}>{name} </Text>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles(theme).nameText}>
-          {name}
+          {nickname}
         </Text>
       </View>
     </TouchableOpacity>

@@ -34,82 +34,7 @@ export type MeQueryResponse = { __typename?: 'Query' } & {
             | 'updatedAt'
             | 'avatarFilePath'
             | 'followStatus'
-          > & {
-              nFollowing?: Types.Maybe<
-                Array<
-                  { __typename?: 'User' } & Pick<
-                    Types.User,
-                    | 'id'
-                    | 'name'
-                    | 'nickname'
-                    | 'intro'
-                    | 'zaloId'
-                    | 'avatar'
-                    | 'isNew'
-                    | 'createdAt'
-                    | 'updatedAt'
-                    | 'avatarFilePath'
-                    | 'followStatus'
-                  > & {
-                      nFollower?: Types.Maybe<
-                        Array<
-                          { __typename?: 'User' } & Pick<
-                            Types.User,
-                            | 'id'
-                            | 'name'
-                            | 'nickname'
-                            | 'intro'
-                            | 'zaloId'
-                            | 'avatar'
-                            | 'isNew'
-                            | 'createdAt'
-                            | 'updatedAt'
-                            | 'avatarFilePath'
-                            | 'followStatus'
-                          > & {
-                              nFollowing?: Types.Maybe<
-                                Array<
-                                  { __typename?: 'User' } & Pick<
-                                    Types.User,
-                                    | 'id'
-                                    | 'name'
-                                    | 'nickname'
-                                    | 'intro'
-                                    | 'zaloId'
-                                    | 'avatar'
-                                    | 'isNew'
-                                    | 'createdAt'
-                                    | 'updatedAt'
-                                    | 'avatarFilePath'
-                                    | 'followStatus'
-                                  >
-                                >
-                              >;
-                              nFollower?: Types.Maybe<
-                                Array<
-                                  { __typename?: 'User' } & Pick<
-                                    Types.User,
-                                    | 'id'
-                                    | 'name'
-                                    | 'nickname'
-                                    | 'intro'
-                                    | 'zaloId'
-                                    | 'avatar'
-                                    | 'isNew'
-                                    | 'createdAt'
-                                    | 'updatedAt'
-                                    | 'avatarFilePath'
-                                    | 'followStatus'
-                                  >
-                                >
-                              >;
-                            }
-                        >
-                      >;
-                    }
-                >
-              >;
-            }
+          >
         >
       >;
       nFollower?: Types.Maybe<
@@ -159,58 +84,6 @@ export const MeDocument = gql`
         updatedAt
         avatarFilePath
         followStatus
-        nFollowing {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-            nFollowing {
-              id
-              name
-              nickname
-              intro
-              zaloId
-              avatar
-              isNew
-              createdAt
-              updatedAt
-              avatarFilePath
-              followStatus
-            }
-            nFollower {
-              id
-              name
-              nickname
-              intro
-              zaloId
-              avatar
-              isNew
-              createdAt
-              updatedAt
-              avatarFilePath
-              followStatus
-            }
-          }
-        }
       }
       nFollower {
         id

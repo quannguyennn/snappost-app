@@ -1,30 +1,29 @@
-import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks';
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from 'react-navigation-hooks';
-import { FollowInteraction, IconSizes, Routes, PollIntervals, Errors } from '@app/constants';
-import { AppContext } from '@app/context';
-import client from '@app/graphql/client';
-import { MUTATION_CREATE_TEMPORARY_CHAT, MUTATION_UPDATE_FOLLOWING } from '@app/graphql/mutation';
-import { QUERY_CHAT_EXISTS, QUERY_DOES_FOLLOW } from '@app/graphql/query';
-import { LoadingIndicator } from '@app/layout';
-import { Typography } from '@app/theme';
-import { ThemeColors } from '@app/types/theme';
-import { crashlytics } from '@app/utils/firebase';
-import { tryAgainLaterNotification } from '@app/utils/notifications';
+import { Typography } from '../../../theme';
+import LoadingIndicator from '../../../components/shared/LoadingIndicator';
+import { useRecoilValue } from 'recoil';
+import { themeState } from '../../../recoil/theme/atoms';
+import type { ThemeColors } from '../../../types/theme';
+import { useNavigation } from '@react-navigation/native';
+import { tryAgainLaterNotification } from '../../../helpers/notifications';
+import { PollIntervals } from '../../../utils/constants';
+import { FollowInteraction } from '../../../types/constants';
+import { AppRoutes } from '../../../navigator/app-routes';
+import { IconSizes } from '../../../theme/Icon';
 
 const { FontWeights, FontSizes } = Typography;
 
 interface UserInteractionsProps {
   targetId: string,
   avatar: string,
-  handle: string
+  name: string
 };
 
-const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, handle }) => {
+const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, name }) => {
 
   const { navigate } = useNavigation();
-  const { user, theme } = useContext(AppContext);
+  const theme = useRecoilValue(themeState);
   const {
     data: doesFollowData,
     loading: doesFollowLoading,
@@ -35,7 +34,7 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, h
   });
 
   const [updateFollowing, { loading: updateFollowingLoading }] = useMutation(MUTATION_UPDATE_FOLLOWING);
-  const [createTemporaryChat] = useMutation(MUTATION_CREATE_TEMPORARY_CHAT);
+
 
   let content = <LoadingIndicator size={IconSizes.x0} color={theme.white} />;
 
@@ -70,32 +69,34 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, h
     }
   };
 
-  const messageInteraction = async () => {
-    try {
-      const { data: { chatExists } } = await client.query({
-        query: QUERY_CHAT_EXISTS,
-        variables: { userId: user.id, targetId },
-        fetchPolicy: 'no-cache'
-      });
+  // const messageInteraction = async () => {
+  //   try {
+  //     const { data: { chatExists } } = await client.query({
+  //       query: QUERY_CHAT_EXISTS,
+  //       variables: { userId: user.id, targetId },
+  //       fetchPolicy: 'no-cache'
+  //     });
 
-      if (chatExists) {
-        navigate(Routes.ConversationScreen, { chatId: chatExists.id, avatar, handle, targetId });
-      } else {
-        const { data } = await createTemporaryChat();
-        navigate(Routes.ConversationScreen, { chatId: data.createTemporaryChat.id, avatar, handle, targetId });
-      }
-    } catch ({ message }) {
-      tryAgainLaterNotification();
-      crashlytics.recordCustomError(Errors.INITIALIZE_CHAT, message);
-    }
-  };
+  //     if (chatExists) {
+  //       navigate(AppRoutes.ConversationScreen, { chatId: chatExists.id, avatar, name, targetId });
+  //     } else {
+  //       const { data } = await createTemporaryChat();
+  //       navigate(AppRoutes.ConversationScreen, { chatId: data.createTemporaryChat.id, avatar, name, targetId });
+  //     }
+  //   } catch ({ message }) {
+  //     tryAgainLaterNotification();
+  //     // crashlytics.recordCustomError(Errors.INITIALIZE_CHAT, message);
+  //   }
+  // };
 
   return (
     <View style={styles().container}>
       <TouchableOpacity activeOpacity={0.90} onPress={followInteraction} style={styles(theme).followInteraction}>
         {content}
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={0.90} onPress={messageInteraction} style={styles(theme).messageInteraction}>
+      <TouchableOpacity activeOpacity={0.90} 
+      // onPress={messageInteraction} 
+      style={styles(theme).messageInteraction}>
         <Text style={styles(theme).messageInteractionText}>MESSAGE</Text>
       </TouchableOpacity>
     </View>

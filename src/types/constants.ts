@@ -27,3 +27,12 @@ export type PollIntervalsType = {
   lastSeen: number;
   blockList: number;
 };
+
+export type FollowInteractionType = {
+  FOLLOW: string;
+  UNFOLLOW: string;
+};
+export const FollowInteraction: FollowInteractionType = {
+  FOLLOW: 'FOLLOW',
+  UNFOLLOW: 'UNFOLLOW'
+};

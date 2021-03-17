@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
-import { responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveWidth } from 'react-native-responsive-dimensions'; 
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Checkbox from 'react-native-modest-checkbox';
 
 import { themeState, themeTypeState } from '../../../recoil/theme/atoms';
 import { useNavigation } from '@react-navigation/core';
-import { ThemeColors, ThemeVariantType } from '../../../types/theme';
+import type { ThemeColors, ThemeVariantType } from '../../../types/theme';
 import { saveThemeType, storage } from '../../../helpers/storage';
 import { AppRoutes } from '../../../navigator/app-routes';
 import { useApolloClient } from '@apollo/client';

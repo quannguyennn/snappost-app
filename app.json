@@ -1,6 +1,6 @@
 {
   "name": "DemoApp",
   "displayName": "DemoApp",
-  "API_URL": "http://376709658483.ngrok.io/graphql",
-  "UPLOAD_URL": "http://376709658483.ngrok.io/api/v1/media/upload"
+  "API_URL": "http://2e9391515c1a.ngrok.io/graphql",
+  "UPLOAD_URL": "http://2e9391515c1a.ngrok.io/api/v1/media/upload"
 }

@@ -1,10 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
-import { AppContext } from '@app/context';
-import { BottomSheetHeader, Option } from '@app/layout';
-import { ThemeStatic } from '@app/theme';
-import { ThemeColors } from '@app/types/theme';
+import { useRecoilValue } from 'recoil';
+import Option from '../../../components/shared/controls/Option';
+import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
+import { themeState } from '../../../recoil/theme/atoms';
+import { ThemeStatic } from '../../../theme/Colors';
+import type { ThemeColors } from '../../../types/theme';
+
+
+
 
 interface ProfileOptionsBottomSheetProps {
   ref: React.Ref<any>,
@@ -13,7 +18,7 @@ interface ProfileOptionsBottomSheetProps {
 
 const ProfileOptionsBottomSheet: React.FC<ProfileOptionsBottomSheetProps> = React.forwardRef(({ onBlockUser }, ref) => {
 
-  const { theme } = useContext(AppContext);
+  const theme = useRecoilValue(themeState);
 
   return (
     <Modalize

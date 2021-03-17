@@ -24,6 +24,11 @@ import { themeState } from '../../recoil/theme/atoms';
 import { Typography, ThemeStatic, PostDimensions } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
+import { useGetPostDetailLazyQuery } from '../../graphql/queries/getPostDetail.generated';
+import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
+import FastImage from 'react-native-fast-image';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import TransformText from '../../components/shared/TransformText';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -34,64 +39,31 @@ const PostViewScreen: React.FC = () => {
     params: { postId },
   } = useRoute<RouteProp<AppStackParamList, AppRoutes.POST_VIEW_SCREEN>>();
 
-  const [postData, setPostData] = useState<any>({});
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [lastTap, setLastTap] = useState(Date.now());
+  const [mediaIndex, setMediaIndex] = useState(0);
 
-  const [loading, setLoading] = useState(true);
+  const [getPostDetail, { data: fetchData, loading }] = useGetPostDetailLazyQuery({
+    onError: () => somethingWentWrongErrorNotification(),
+  });
 
-  //   const { data: postSubscriptionData, loading: postSubscriptionLoading } = useSubscription(SUBSCRIPTION_POST, {
-  //     variables: { postId },
-  //   });
+  const data = fetchData?.getPostDetail;
 
+  useEffect(() => {
+    getPostDetail({ variables: { id: postId } });
+  }, [getPostDetail, postId]);
+  
   const scrollViewRef = useRef();
   const postOptionsBottomSheetRef = useRef();
   const editPostBottomSheetRef = useRef();
   const likesBottomSheetRef = useRef();
   const likeBounceAnimationRef = createRef();
 
-  //   useEffect(() => {
-  //     if (!postSubscriptionLoading) {
-  //       setPostData(postSubscriptionData);
-  //     } else if (postSubscriptionLoading) {
-  //       if (postQueryCalled && !postQueryLoading) {
-  //         setPostData(postQueryData);
-  //       } else if (!postQueryCalled) {
-  //         queryPost();
-  //       }
-  //     }
-  //   }, [postQueryData, postQueryCalled, postQueryLoading, postSubscriptionData, postSubscriptionLoading]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPostData({
-        post: {
-          id: '1',
-          uri: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-          caption: 'Mlem mlem',
-          likes: [],
-          createdAt: '2020-09-17 08:34:40.221711',
-          author: {
-            id: '2',
-            avatar: 'https://i.redd.it/eqkolvkcy2wy.jpg',
-            handle: 'Quan',
-          },
-        },
-      });
-      setLoading(false);
-    }, 500);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
-
-  //   const [likeInteraction, { loading: likeInteractionLoading }] = useMutation(MUTATION_LIKE_INTERACTION);
-
   const confirmationToggle = () => {
     setIsConfirmModalVisible(!isConfirmModalVisible);
   };
 
-  const navigateToProfile = (userId: string) => {
+  const navigateToProfile = (userId: number) => {
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId });
   };
 
@@ -138,39 +110,27 @@ const PostViewScreen: React.FC = () => {
     confirmationToggle();
   };
 
-  const onDeleteConfirm = (uri: string) => {
+  const onDeleteConfirm = (id: number) => {
     confirmationToggle();
     goBack();
-    // postDeletedNotification();
-    // deletePost({ variables: { postId } });
-    // deleteFromStorage(uri);
   };
 
   let content = <PostViewScreenPlaceholder />;
 
-  if (!loading) {
-    const {
-      // @ts-ignore
-      post: {
-        author: { id: userId, avatar, handle },
-        comments,
-        uri,
-        likes,
-        caption,
-        createdAt,
-      },
-    } = postData;
+  if (!loading && data) {
+    const { mediasPath, rawCaption, totalLike, createdAt, creatorInfo, isLike } = data;
 
     const readableTime = moment(createdAt).fromNow();
-    const isLiked = Math.round(Math.random()) === 0 ? false : true;
-    const readableLikes = Math.round(Math.random() * 100);
 
     content = (
       <>
-        <TouchableOpacity activeOpacity={0.9} onPress={() => navigateToProfile(userId)} style={styles().postHeader}>
-          <NativeImage uri={avatar} style={styles(theme).avatarImage} />
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => navigateToProfile(creatorInfo?.id ?? 0)}
+          style={styles().postHeader}>
+          <NativeImage uri={creatorInfo?.avatarFilePath ?? ''} style={styles(theme).avatarImage} />
           <View style={{ flex: 1 }}>
-            <Text style={styles(theme).handleText}>{handle}</Text>
+            <Text style={styles(theme).handleText}>{creatorInfo?.name}</Text>
             <Text style={styles(theme).timeText}>{readableTime}</Text>
           </View>
           <IconButton
@@ -178,52 +138,69 @@ const PostViewScreen: React.FC = () => {
             Icon={() => <Entypo name="dots-three-vertical" size={IconSizes.x4} color={theme.text01} />}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleDoubleTap(isLiked)} activeOpacity={1}>
-          <NativeImage uri={uri} style={styles(theme).postImage} />
+        <View>
+          <Carousel
+            data={mediasPath?.map((item) => item.filePath) ?? []}
+            renderItem={({ item, index }: { item: any; index: number }) => {
+              return (
+                <TouchableOpacity onPress={() => handleDoubleTap(isLike)} activeOpacity={1}>
+                  <FastImage key={`post-image-${index}`} source={{ uri: item }} style={styles(theme).postImage} />
+                </TouchableOpacity>
+              );
+            }}
+            sliderWidth={PostDimensions.Large.width}
+            itemWidth={PostDimensions.Large.width}
+            layout="default"
+            inactiveSlideScale={1}
+            containerCustomStyle={[styles(theme).postImage, { marginTop: 25 }]}
+            onSnapToItem={(slideIndex) => setMediaIndex(slideIndex)}
+            hasParallaxImages={true}
+          />
+          <Pagination
+            containerStyle={{ marginBottom: -40, marginTop: -20 }}
+            dotsLength={mediasPath?.length ?? 0}
+            activeDotIndex={mediaIndex}
+            renderDots={(activeIndex) => {
+              return mediasPath?.map((e, index) => (
+                <View style={[styles(theme).dot, activeIndex === index ? styles(theme).activeDot : null]} />
+              ));
+            }}
+            inactiveDotOpacity={0.4}
+            inactiveDotScale={0.6}
+          />
           <LikeBounceAnimation ref={likeBounceAnimationRef} />
-        </TouchableOpacity>
+        </View>
         <View style={styles().likes}>
-          <BounceView scale={1.5} onPress={() => likeInteractionHandler(isLiked)}>
-            <AntDesign name="heart" color={isLiked ? ThemeStatic.like : ThemeStatic.unlike} size={IconSizes.x5} />
+          <BounceView scale={1.5} onPress={() => likeInteractionHandler(isLike)}>
+            <AntDesign name="heart" color={isLike ? ThemeStatic.like : ThemeStatic.unlike} size={IconSizes.x5} />
           </BounceView>
           <Text onPress={openLikes} style={styles(theme).likesText}>
-            {readableLikes}
+            {totalLike}
           </Text>
         </View>
-        <Text style={styles(theme).captionText}>
-          <Text onPress={() => navigateToProfile(userId)} style={styles(theme).handleText}>
-            {handle}
-          </Text>
-          {caption}
-        </Text>
-        <Comments postId={postId} comments={comments} />
+        <View style={styles(theme).captionText}>
+          <TransformText username={creatorInfo?.name ?? ''} text={rawCaption ?? ''} />
+        </View>
+        <Comments postId={postId} comments={[]} />
       </>
     );
   }
 
   let bottomSheets;
 
-  if (!loading) {
-    const {
-      // @ts-ignore
-      post: {
-        author: { id: authorId },
-        uri,
-        likes,
-        caption,
-      },
-    } = postData;
+  if (!loading && data) {
+    const { id, creatorInfo, rawCaption } = data;
 
     bottomSheets = (
       <>
         <PostOptionsBottomSheet
           ref={postOptionsBottomSheetRef}
-          authorId={authorId}
-          postId={postId}
+          authorId={creatorInfo?.id ?? 0}
+          postId={id}
           onPostEdit={onPostEdit}
           onPostDelete={onPostDelete}
         />
-        <EditPostBottomSheet ref={editPostBottomSheetRef} postId={postId} caption={caption} />
+        <EditPostBottomSheet ref={editPostBottomSheetRef} postId={id} caption={rawCaption ?? ''} />
         <ConfirmationModal
           label="Delete"
           title="Delete post?"
@@ -231,9 +208,9 @@ const PostViewScreen: React.FC = () => {
           color={ThemeStatic.delete}
           isVisible={isConfirmModalVisible}
           toggle={confirmationToggle}
-          onConfirm={() => onDeleteConfirm(uri)}
+          onConfirm={() => onDeleteConfirm(id)}
         />
-        <LikesBottomSheet ref={likesBottomSheetRef} likes={likes} onUserPress={navigateToProfile} />
+        <LikesBottomSheet ref={likesBottomSheetRef} likes={[]} onUserPress={navigateToProfile} />
       </>
     );
   }
@@ -282,6 +259,7 @@ const styles = (theme = {} as ThemeColors) =>
       ...FontWeights.Regular,
       ...FontSizes.Body,
       color: theme.text01,
+      marginRight: 4,
     },
     timeText: {
       ...FontWeights.Light,
@@ -292,7 +270,6 @@ const styles = (theme = {} as ThemeColors) =>
     postImage: {
       ...PostDimensions.Large,
       alignSelf: 'center',
-      marginTop: 25,
       borderRadius: 10,
       backgroundColor: theme.placeholder,
     },
@@ -312,6 +289,23 @@ const styles = (theme = {} as ThemeColors) =>
       color: theme.text01,
       marginTop: 10,
       marginBottom: 20,
+      alignItems: 'flex-start',
+      flexDirection: 'row',
+    },
+    dot: {
+      backgroundColor: 'transparent',
+      borderColor: ThemeStatic.accent,
+      borderWidth: 1,
+      width: 10,
+      height: 10,
+      borderRadius: 10,
+      marginLeft: 3,
+      marginRight: 3,
+      marginTop: 3,
+      marginBottom: 3,
+    },
+    activeDot: {
+      backgroundColor: ThemeStatic.accent,
     },
   });
 

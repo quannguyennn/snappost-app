@@ -95,10 +95,10 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
         onFollowingOpen={onFollowingOpen}
         onFollowersOpen={onFollowersOpen}
         avatar={me?.avatarFilePath ?? ""}
-        following={me?.nFollowing as number ?? 0}
-        followers={me?.nFollower as number ?? 0}
+        following={me?.nFollowing?.length ?? 0}
+        followers={me?.nFollower?.length ?? 0}
         name={me?.name ?? ''}
-        handle={me?.nickname ?? ""}
+        nickname={me?.nickname ?? ""}
         about={me?.intro ?? ""}
       />
     );
@@ -119,7 +119,8 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
 
   let content = <ProfileScreenPlaceholder />;
   // loading : query user
-  if (loading) {
+  console.log(me, 'data');
+  if (!loading) {
 
     content = (
       <>
@@ -133,8 +134,8 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
         />
-        <ConnectionsBottomSheet ref={followingBottomSheetRef} data={following} type={Connections.FOLLOWING} />
-        <ConnectionsBottomSheet ref={followersBottomSheetRef} data={followers} type={Connections.FOLLOWERS} />
+        <ConnectionsBottomSheet ref={followingBottomSheetRef} data={me?.nFollowing} type={Connections.FOLLOWING} />
+        <ConnectionsBottomSheet ref={followersBottomSheetRef} data={me?.nFollower} type={Connections.FOLLOWERS} />
         {/* <EditProfileBottomSheet
          ref={editProfileBottomSheetRef}
          avatar={meInfo?.avatarFilePath}

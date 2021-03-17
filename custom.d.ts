@@ -4,3 +4,4 @@ declare module '*.svg' {
 }
 
 declare module 'react-native-picker-scrollview';
+declare module 'react-native-modest-checkbox';

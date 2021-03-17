@@ -23,58 +23,6 @@ query getUserInfo($id: Float!) {
       updatedAt
       avatarFilePath
       followStatus
-      nFollowing {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
-        nFollower {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
-      }
     }
     nFollower {
       id
