@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import { Typography } from '../../theme';
-import { ThemeColors } from '../../types/theme';
+import type { ThemeColors } from '../../types/theme';
 import Button from './controls/Button';
 
 const { FontWeights, FontSizes } = Typography;

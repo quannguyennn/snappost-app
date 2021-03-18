@@ -10,7 +10,7 @@ import ProfileOptionsBottomSheet from './components/ProfileOptionsBottomSheet';
 import UserInteractions from './components/UserInteractions';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { PostDimensions, ThemeStatic } from '../../theme';
 import { Connections } from '../../utils/constants';
 import { IconSizes } from '../../theme/Icon';
@@ -26,12 +26,16 @@ import ConnectionsBottomSheet from '../../components/shared/ConnectionsBottomShe
 import IconButton from '../../components/shared/Iconbutton';
 import GoBackHeader from '../../components/shared/layout/headers/GoBackHeader';
 import ConfirmationModal from '../../components/shared/ComfirmationModal';
+import { useUserInfo } from '../../hooks/useUserInfo';
+import type { AppRoutes } from '../../navigator/app-routes';
+import type { RootStackParamList } from '../../navigator/root.navigator';
 
 
 
 const ProfileViewScreen: React.FC = () => {
+  const {params: {userId}} = useRoute<RouteProp<RootStackParamList, AppRoutes.PROFILE_VIEW_SCREEN>>()
   const theme = useRecoilValue(themeState);
-
+  const user = useUserInfo(userId);
   
   const { goBack } = useNavigation();
 
@@ -69,8 +73,8 @@ const ProfileViewScreen: React.FC = () => {
         avatar={user?.avatarFilePath}
         onFollowingOpen={onFollowingOpen}
         onFollowersOpen={onFollowersOpen}
-        following={'100'}
-        followers={'200'}
+        following={user?.nFollowing?.length}
+        followers={user?.nFollower?.length}
         name={user?.name}
         nickname={user?.nickname}
         renderInteractions={() => <UserInteractions targetId={'userId'} avatar={user?.avatarFilePath} name={user?.name} />}
@@ -111,16 +115,15 @@ const ProfileViewScreen: React.FC = () => {
         <ConnectionsBottomSheet
           viewMode
           ref={followingBottomSheetRef}
-          //following
-          data={'10000'}
-          handle={'hihihi'}
+          data={user?.nFollowing}
+          name={user?.name}
           type={Connections.FOLLOWING}
         />
         <ConnectionsBottomSheet
           viewMode
           ref={followersBottomSheetRef}
-          data={'followers'}
-          handle={'handle'}
+          data={user?.nFollower}
+          name={user?.name}
           type={Connections.FOLLOWERS}
         />
       </>
@@ -138,7 +141,7 @@ const ProfileViewScreen: React.FC = () => {
     toggleBlockConfirmationModal();
     // await blockUser({ variables: { from: 'user.id', to: 'userId' } });
     goBack();
-    userBlockedNotification('handle')
+    userBlockedNotification('name')
   };
 
   const IconRight = () => <IconButton

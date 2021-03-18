@@ -29,7 +29,7 @@ export const RootNavigator = (props: Partial<RootStackNavigatorProps>): React.Re
       ) : (
         <Stack.Screen name={AppRoutes.AUTH} component={AuthNavigator} />
       )}
-        <Stack.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
+    <Stack.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
 
     </Stack.Navigator>
   );

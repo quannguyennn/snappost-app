@@ -144,9 +144,11 @@ export type Query = {
   me: User;
   getUserInfo?: Maybe<User>;
   searchUser: UserConnection;
+  isAvailable: Scalars['Boolean'];
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
   getNewFeed: PostConnection;
+  getExplorePost: PostConnection;
   getPostDetail: Post;
   myPost: PostConnection;
 };
@@ -162,6 +164,10 @@ export type QuerySearchUserArgs = {
   keyword: Scalars['String'];
 };
 
+export type QueryIsAvailableArgs = {
+  nickname: Scalars['String'];
+};
+
 export type QueryMediasArgs = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
@@ -175,6 +181,11 @@ export type QueryMediaArgs = {
 export type QueryGetNewFeedArgs = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
+};
+
+export type QueryGetExplorePostArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
 };
 
 export type QueryGetPostDetailArgs = {
@@ -205,6 +216,7 @@ export type Mutation = {
   updatePost: Post;
   removePost: Scalars['Boolean'];
   reactToPost: Scalars['Boolean'];
+  reportPost: Scalars['Boolean'];
 };
 
 export type MutationUpdateUserInfoArgs = {
@@ -268,10 +280,14 @@ export type MutationUpdatePostArgs = {
 };
 
 export type MutationRemovePostArgs = {
-  id: Scalars['ID'];
+  id: Scalars['Float'];
 };
 
 export type MutationReactToPostArgs = {
+  postId: Scalars['Float'];
+};
+
+export type MutationReportPostArgs = {
   postId: Scalars['Float'];
 };
 

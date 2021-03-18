@@ -18,10 +18,11 @@ interface FormInputProps {
   characterRestriction?: number;
   children?: any;
   error?: string;
+  onBlur?: () => void
 }
 
 const FormInput: React.FC<FormInputProps> = React.forwardRef(
-  ({ label, placeholder, value, onChangeText, children, multiline, characterRestriction, error }, ref) => {
+  ({ label, placeholder, value, onChangeText, children, multiline, characterRestriction, error, onBlur }, ref) => {
     const theme = useRecoilValue(themeState);
     return (
       <TextField
@@ -39,6 +40,7 @@ const FormInput: React.FC<FormInputProps> = React.forwardRef(
         label={label}
         placeholder={placeholder}
         placeholderTextColor={theme.text02}
+        onBlur={onBlur}
         onChangeText={onChangeText}
         value={value}
         multiline={multiline || false}

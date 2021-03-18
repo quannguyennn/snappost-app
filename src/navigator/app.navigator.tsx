@@ -16,7 +16,7 @@ export type MainTabParamList = {
   [AppRoutes.NOTIFICATION_TAB]: undefined;
   [AppRoutes.PROFILE_TAB]: undefined;
   [AppRoutes.EXPLORE_TAB]: undefined;
-  [AppRoutes.PROFILE_VIEW_SCREEN]: undefined;
+  // [AppRoutes.PROFILE_VIEW_SCREEN]: undefined;
 };
 
 export type AppStackParamList = {
@@ -24,7 +24,7 @@ export type AppStackParamList = {
   [AppRoutes.MESSAGE_SCREEN]: undefined;
   [AppRoutes.CONVERSATION_SCREEN]: undefined;
   [AppRoutes.NOTIFICATION_VIEW_SCREEN]: undefined;
-  [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: number };
+  // [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: number };
   [AppRoutes.POST_VIEW_SCREEN]: { postId: number };
   [AppRoutes.UPLOAD_STACK]: undefined;
 };
@@ -39,7 +39,7 @@ export const MainNavigator = () => (
     <Tab.Screen name={AppRoutes.EXPLORE_TAB} component={ExploreScreen} />
     <Tab.Screen name={AppRoutes.NOTIFICATION_TAB} component={NotificationNavigator} />
     <Tab.Screen name={AppRoutes.PROFILE_TAB} component={ProfileNavigator} />
-    <Tab.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
+    {/* <Tab.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} /> */}
 
   </Tab.Navigator>
 );

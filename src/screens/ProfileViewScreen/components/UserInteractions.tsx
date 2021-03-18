@@ -16,8 +16,8 @@ const { FontWeights, FontSizes } = Typography;
 
 interface UserInteractionsProps {
   targetId: string,
-  avatar: string,
-  name: string
+  avatar: string | undefined | null,
+  name: string | undefined
 };
 
 const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, name }) => {

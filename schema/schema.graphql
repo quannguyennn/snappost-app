@@ -130,9 +130,11 @@ type Query {
   me: User!
   getUserInfo(id: Float!): User
   searchUser(page: Float!, limit: Float!, isRestricted: Boolean = false, keyword: String!): UserConnection!
+  isAvailable(nickname: String!): Boolean!
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!
+  getExplorePost(page: Float!, limit: Float!): PostConnection!
   getPostDetail(id: Float!): Post!
   myPost(page: Float!, limit: Float!): PostConnection!
 }
@@ -153,8 +155,9 @@ type Mutation {
   removeComment(id: Float!): Boolean!
   createPost(input: CreatePostInput!): Post!
   updatePost(input: UpdatePostInput!): Post!
-  removePost(id: ID!): Boolean!
+  removePost(id: Float!): Boolean!
   reactToPost(postId: Float!): Boolean!
+  reportPost(postId: Float!): Boolean!
 }
 
 input UpdateUserInput {

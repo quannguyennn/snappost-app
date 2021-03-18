@@ -44,17 +44,17 @@ const EditProfile: React.FC<EditProfileProps> = ({ onEdit }) => {
 };
 
 interface ProfileCardProps {
-  avatar: string;
+  avatar: string | undefined | null;
   editable?: boolean;
   onEdit?: any;
   onFollowingOpen: any;
   onFollowersOpen: any;
-  following: number;
-  followers: number;
-  nickname: string;
-  name: string;
+  following: number | undefined ;
+  followers: number | undefined ;
+  nickname: string | undefined;
+  name: string | undefined;
   renderInteractions?: any;
-  about: string;
+  about: string | undefined;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({

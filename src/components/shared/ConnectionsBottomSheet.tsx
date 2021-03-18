@@ -16,15 +16,14 @@ import type { ThemeColors } from '../../types/theme';
 interface ConnectionsBottomSheetProps {
   ref: React.Ref<any>;
   viewMode?: boolean;
-  data: string[];
-  name: string;
+  data: undefined | string[];
+  name?: string | undefined;
   type: string;
 }
 
 const ConnectionsBottomSheet: React.FC<ConnectionsBottomSheetProps> = React.forwardRef(
   ({ viewMode, name, data, type }, ref) => {
     const theme = useRecoilValue(themeState);
-console.log(data, 'data bottomsheet');
 
     let heading: string;
     let subHeading: string;

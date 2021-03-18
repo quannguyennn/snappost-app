@@ -135,7 +135,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
           ref={editProfileBottomSheetRef}
           avatar={me?.avatarFilePath ?? ''}
           name={me?.name ?? ''}
-          handle={me?.nickname ?? ''}
+          nickname={me?.nickname ?? ''}
           about={me?.intro ?? ''}
         />
       </>
