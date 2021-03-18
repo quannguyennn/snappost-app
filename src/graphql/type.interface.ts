@@ -46,7 +46,7 @@ export type Node = {
   id: Scalars['Float'];
 };
 
-export type FollowStatus = 'WAITING' | 'ACCEPT';
+export type FollowStatus = 'IS_ME' | 'WAITING' | 'ACCEPT';
 
 export type UserConnection = {
   __typename?: 'UserConnection';
@@ -72,12 +72,9 @@ export type Media = Node & {
   filePath?: Maybe<Scalars['String']>;
   mimeType?: Maybe<Scalars['String']>;
   isDeleted: Scalars['Boolean'];
-  ownerId?: Maybe<Scalars['Float']>;
   type: FileType;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  owner?: Maybe<User>;
-  capabilities?: Maybe<MediaCapability>;
 };
 
 export type FileType = 'FILE' | 'DIR';
@@ -86,15 +83,6 @@ export type MediaConnection = {
   __typename?: 'MediaConnection';
   items?: Maybe<Array<Media>>;
   meta: BasePaginationMeta;
-};
-
-export type MediaCapability = {
-  __typename?: 'MediaCapability';
-  canCopy?: Maybe<Scalars['Boolean']>;
-  canDelete?: Maybe<Scalars['Boolean']>;
-  canDownload?: Maybe<Scalars['Boolean']>;
-  canEdit?: Maybe<Scalars['Boolean']>;
-  canRename?: Maybe<Scalars['Boolean']>;
 };
 
 /** AuthConnection */

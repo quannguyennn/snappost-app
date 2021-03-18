@@ -1,0 +1,3 @@
+mutation reportPost($postId: Float!) {
+  reportPost(postId: $postId)
+}

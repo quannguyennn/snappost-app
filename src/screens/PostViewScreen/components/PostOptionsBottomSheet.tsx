@@ -4,6 +4,9 @@ import { Modalize } from 'react-native-modalize';
 import { useRecoilValue } from 'recoil';
 import Option from '../../../components/shared/controls/Option';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
+import { useReportPostMutation } from '../../../graphql/mutations/reportPost.generated';
+import { postReportedNotification, somethingWentWrongErrorNotification } from '../../../helpers/notifications';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { themeState } from '../../../recoil/theme/atoms';
 import { ThemeStatic } from '../../../theme';
 import type { ThemeColors } from '../../../types/theme';
@@ -19,12 +22,21 @@ interface PostOptionsBottomSheetProps {
 const PostOptionsBottomSheet: React.FC<PostOptionsBottomSheetProps> = React.forwardRef(
   ({ authorId, postId, onPostEdit, onPostDelete }, ref) => {
     const theme = useRecoilValue(themeState);
-    // const [reportPost] = useMutation(MUTATION_REPORT_POST, { variables: { postId } });
-    const isOwnPost = Math.round(Math.random());
+    const user = useCurrentUser();
+    const [reportPost] = useReportPostMutation({
+      onCompleted: () => {
+        postReportedNotification();
+      },
+      onError: (err) => {
+        console.log('report post', err);
+        somethingWentWrongErrorNotification();
+      },
+    });
+
+    const isOwnPost = authorId === user?.id ?? 0;
 
     const onPostReport = () => {
-      // reportPost();
-      // postReportedNotification();
+      reportPost({ variables: { postId } });
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       ref.current.close();

@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { AppContext } from '../../../context';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';
 import { IconSizes } from '../../../theme/Icon';
 import { HandleAvailableColor, ThemeStatic } from '../../../theme';
@@ -10,65 +9,66 @@ import BottomSheetHeader from '../../../components/shared/layout/headers/BottomS
 import FormInput from '../../../components/shared/controls/FormInput';
 import Button from '../../../components/shared/controls/Button';
 import type { ThemeColors } from '../../../types/theme';
-import { cos } from 'react-native-reanimated';
-import { useIsAvailableLazyQuery } from '../../../graphql/queries/isAvailable.generated';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import { useRecoilValue } from 'recoil';
+import { themeState } from '../../../recoil/theme/atoms';
 
 interface EditProfileBottomSheetProps {
   ref: React.Ref<any>;
   avatar: string;
   name: string;
-  nickname: string;
+  handle: string;
   about: string;
 }
 
 const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forwardRef(
-  ({ avatar, name, nickname, about }, ref) => {
-    const { user, updateUser: updateUserContext, theme } = useContext(AppContext);
+  ({ avatar, name, handle, about }, ref) => {
+    const user = useCurrentUser();
+    const theme = useRecoilValue(themeState);
 
-    const [editableAvatar, setEditableAvatar] = useState(avatar);
-    const [editableName, setEditableName] = useState(name);
-    const [editableNickname, setEditableNickname] = useState(nickname);
+    const [editableAvatar, setEditableAvatar] = useState('');
+    const [editableName, setEditableName] = useState('');
+    const [editableHandle, setEditableHandle] = useState('');
     const [handleError, setHandleError] = useState('');
-    const [editableAbout, setEditableAbout] = useState(about);
+    const [editableAbout, setEditableAbout] = useState('');
     const [isUploading, setIsUploading] = useState(false);
 
+    // const [queryIsHandleAvailable, {
+    //   loading: isHandleAvailableLoading,
+    //   called: isHandleAvailableCalled,
+    //   data: isHandleAvailableData
+    // }] = useLazyQuery(QUERY_HANDLE_AVAILABLE);
+
+    // const [updateUser] = useMutation(MUTATION_UPDATE_USER);
+
+    useEffect(() => {
+      setEditableAvatar(avatar);
+      setEditableName(name);
+      setEditableHandle(handle);
+      setEditableAbout(about);
+    }, [about, avatar, name, handle]);
+
     // useEffect(() => {
-    //   setEditableAvatar(avatar);
-    //   setEditableName(name);
-    //   setEditableNickname(nickname);
-    //   setEditableAbout(about);
-    // }, []);
+    //   queryIsHandleAvailable({
+    //     variables: {
+    //       userId: user.id,
+    //       handle: editableHandle
+    //     }
+    //   });
+    // }, [editableHandle]);
+    //
+    // useEffect(() => {
+    //   if (!isHandleAvailableLoading && isHandleAvailableCalled) {
+    //     const { isHandleAvailable } = isHandleAvailableData;
+    //     if (!isHandleAvailable) {
+    //       setHandleError('username not available');
+    //     } else {
+    //       if (!editableHandle) setHandleError('username cannot be empty')
+    //       else setHandleError('');
+    //     }
+    //   }
+    // }, [editableHandle, isHandleAvailableLoading, isHandleAvailableCalled, isHandleAvailableData]);
 
-    const [queryIsAvalable, {
-      loading: isHandleAvailableLoading,
-      called: isHandleAvailableCalled,
-      data: isHandleAvailableData
-    }] = useIsAvailableLazyQuery({
-      onCompleted: (res) => console.log(res),
-      onError: (err) => console.log(err)
-    })
-
-    const checkAvailable = () => {
-      queryIsAvalable({
-        variables: {
-          nickname
-        }
-      })
-    }
-
-     useEffect(() => {
-   
-      // const { isHandleAvailable } : any = isHandleAvailableData;
-      if (!isHandleAvailableData?.isAvailable) {
-        setHandleError('Nickname not available');
-      } else {
-        if (!editableNickname) setHandleError('Nickname cannot be empty')
-        else setHandleError('');
-      
-    }
-  }, [editableNickname, isHandleAvailableData?.isAvailable]);
-
-  
     const onAvatarPick = async () => {
       //@ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -76,30 +76,81 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
       setEditableAvatar(path);
     };
 
-    const setHandle = (nickname: string) => {
-      if (!nickname) {
+    // const onDone = async () => {
+    //   const { isHandleAvailable } = isHandleAvailableData;
+    //
+    //   if (!editableName.trim().length) {
+    //     showErrorNotification('Name cannot be empty');
+    //     return;
+    //   }
+    //   if (editableAbout.trim().length > 200) {
+    //     inputLimitErrorNotification('About', 'less', 200);
+    //     return;
+    //   }
+    //   if (!isHandleAvailable) {
+    //     showErrorNotification('Username is not available');
+    //     return;
+    //   }
+    //   if (!editableHandle) {
+    //     showErrorNotification('Username cannot be empty');
+    //     return;
+    //   }
+    //   if (editableHandle.split(' ').length > 1) {
+    //     showErrorNotification('Username cannot contain blank spaces');
+    //     return;
+    //   }
+
+    //   const avatarChanged = avatar !== editableAvatar;
+    //
+    //   try {
+    //     setIsUploading(true);
+    //
+    //     const updatedProfileData = {
+    //       userId: user.id,
+    //       avatar: editableAvatar,
+    //       name: editableName.trim(),
+    //       handle: editableHandle.trim(),
+    //       about: editableAbout.trim()
+    //     };
+    //
+    //     if (avatarChanged) {
+    //       const { downloadURL } = await uploadToStorage(Asset.avatar, editableAvatar, user.id);
+    //       //@ts-ignore
+    //       updatedProfileData.avatar = downloadURL;
+    //     }
+    //
+    //     const { data: { updateUser: { id, avatar: updatedAvatar, handle: updatedHandle } } } = await updateUser({ variables: updatedProfileData });
+    //     updateUserContext({ id, avatar: updatedAvatar, handle: updatedHandle });
+    //     setIsUploading(false);
+    //     //@ts-ignore
+    //     ref.current.close();
+    //   } catch ({ message }) {
+    //     if (avatarChanged) {
+    //       uploadErrorNotification('Avatar');
+    //     } else {
+    //       somethingWentWrongErrorNotification();
+    //     }
+    //     crashlytics.recordCustomError(Errors.ASSET_UPLOAD, message);
+    //   }
+    // };
+
+    const setHandle = (handle: string) => {
+      if (!handle) {
         setHandleError('username cannot be empty');
       }
-      setEditableNickname(nickname);
+      setEditableHandle(handle);
     };
 
-    // let content = (
-    //   <View>
-    //     <LoadingIndicator size={IconSizes.x00} color={ThemeStatic.accent} />
-    //   </View>
-    // );
-
-    // if (!isHandleAvailableLoading && isHandleAvailableCalled) {
-    //   content = (
-    //     <MaterialIcons
-    //       //@ts-ignore
-    //       name={isHandleAvailableData?.isHandleAvailable ? 'done' : 'close'}
-    //       //@ts-ignore
-    //       color={HandleAvailableColor[isHandleAvailableData?.isHandleAvailable]}
-    //       size={IconSizes.x6}
-    //     />
-    //   );
-    // }
+    let content = (
+      <View>
+        <LoadingIndicator size={IconSizes.x00} color={theme.accent} />
+      </View>
+    );
+    // isHandleAvailableLoading
+    //isHandleAvailableCalled
+    if (true) {
+      content = <MaterialIcons name={true ? 'done' : 'close'} color={HandleAvailableColor.true} size={IconSizes.x6} />;
+    }
 
     const Icon = () => <MaterialIcons name="done" color={ThemeStatic.white} size={IconSizes.x5} />;
 
@@ -111,7 +162,7 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
         modalStyle={styles(theme).container}
         adjustToContentHeight>
         <BottomSheetHeader heading="Edit profile" subHeading="Edit your personal information" />
-        <View style={styles().content}>
+        <View style={styles(theme).content}>
           <ImageBackground
             source={{ uri: editableAvatar ? editableAvatar : '' }}
             style={styles(theme).avatar}
@@ -130,14 +181,12 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
           />
           <FormInput
             ref={null}
-            label="Nickname"
+            label="Username"
             placeholder="example: doggo"
             error={handleError}
-            value={editableNickname}
-            onChangeText={setHandle}
-            onBlur={checkAvailable}
-            >
-            {/* {content} */}
+            value={editableHandle}
+            onChangeText={setHandle}>
+            {content}
           </FormInput>
           <FormInput
             ref={null}
@@ -149,12 +198,12 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
             characterRestriction={200}
           />
           <Button
-            // Icon={Icon}
+            Icon={Icon}
             label="Done"
             // onDone
             onPress={() => null}
             loading={isUploading}
-            containerStyle={styles().doneButton}
+            containerStyle={styles(theme).doneButton}
           />
         </View>
       </Modalize>

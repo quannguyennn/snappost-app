@@ -123,12 +123,12 @@ export const wsLink = new WebSocketLink({
     reconnect: true,
     lazy: true,
     timeout: 1000,
-    connectionParams: async () => {
-      const token = await storage.get('accessToken');
-      return {
-        authorization: token ? `Bearer ${token}` : null,
-      };
-    },
+  },
+  connectionParams: async () => {
+    const token = await storage.get('accessToken');
+    return {
+      authorization: token ? `Bearer ${token}` : null,
+    };
   },
 });
 

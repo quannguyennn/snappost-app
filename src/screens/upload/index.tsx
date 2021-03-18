@@ -22,6 +22,7 @@ import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
 import { LIMIT_MEDIA } from '../../utils/constants';
 import { convertToNormalVideoUri } from '../../utils/shared';
+import { noPermissionNotification } from '../../helpers/notifications';
 
 const { FontSizes } = Typography;
 
@@ -66,6 +67,7 @@ const UploadScreen: React.FC = () => {
     const getMedia = async () => {
       setLoading(true);
       if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+        noPermissionNotification();
         return;
       }
       CameraRoll.getPhotos({ first: page * 50, assetType: 'Photos' }).then((res) => {

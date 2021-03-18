@@ -25,5 +25,5 @@ export const PollIntervals: PollIntervalsType = {
   interaction: 1000,
   notification: 2 * 1000,
   lastSeen: 10 * 1000,
-  blockList: 1000
+  blockList: 1000,
 };

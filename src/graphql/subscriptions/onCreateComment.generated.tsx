@@ -23,7 +23,6 @@ export type OnCreateCommentSubscriptionResponse = { __typename?: 'Subscription' 
         | 'createdAt'
         | 'updatedAt'
         | 'avatarFilePath'
-        | 'followStatus'
       >;
     };
 };
@@ -49,7 +48,6 @@ export const OnCreateCommentDocument = gql`
         createdAt
         updatedAt
         avatarFilePath
-        followStatus
       }
     }
   }

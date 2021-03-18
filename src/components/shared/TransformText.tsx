@@ -103,6 +103,7 @@ const TransformText: React.FC<TransformTextProps> = ({ text, username }) => {
       transformText(text);
       setInit(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, init]);
 
   return (

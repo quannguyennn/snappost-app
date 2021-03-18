@@ -6,6 +6,12 @@ mutation createPost($input: CreatePostInput!) {
     caption
     createdAt
     updatedAt
+    mediasPath {
+      filePath
+    }
+    totalLike
+    isLike
+    rawCaption
     creatorInfo {
       ...UserFragment
     }
