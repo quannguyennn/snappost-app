@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useRef } from 'react';
+import React from 'react';
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
-import type { Modalize } from 'react-native-modalize';
 import { useRecoilValue } from 'recoil';
 import { useUserInfo } from '../hooks/useUserInfo';
 import { AppRoutes } from '../navigator/app-routes';
@@ -14,6 +13,7 @@ const { FontWeights, FontSizes } = Typography;
 
 interface UserCardProps {
   userId: string | number;
+
   avatar: string;
   nickname: string;
   name: string;
@@ -27,11 +27,9 @@ const UserCard: React.FC<UserCardProps> = ({ userId, avatar, nickname, name, onP
   const user = useUserInfo(userId);
 
   const navigateToProfile = () => {
-    console.log(111);
-    
-    // if (userId === user?.id) {
-    //   return;
-    // }
+    if (userId === user?.id) {
+      return;
+    }
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId });
   };
 

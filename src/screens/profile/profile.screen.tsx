@@ -5,7 +5,7 @@ import Header from '../../components/shared/layout/headers/Header';
 import IconButton from '../../components/shared/Iconbutton';
 import { IconSizes } from '../../theme/Icon';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import SettingsBottomSheet from './components/SettingsBottomSheet';
 import ProfileCard from '../../components/shared/ProfileCard';
@@ -21,36 +21,70 @@ import { Connections } from '../../utils/constants';
 import type { Modalize } from 'react-native-modalize';
 import type { ThemeColors } from '../../types/theme';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
-import { useMyPostLazyQuery } from '../../graphql/queries/myPost.generated';
+import { MyPostQueryResponse, useMyPostLazyQuery } from '../../graphql/queries/myPost.generated';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import EditProfileBottomSheet from './components/EditProfileBottomSheet';
+import { myPostState } from '../../recoil/app/atoms';
 
 const ProfileScreen: React.FunctionComponent = React.memo(() => {
-  const { navigate } = useNavigation();
   const theme = useRecoilValue(themeState);
 
   const me = useCurrentUser();
 
-  const [refresh, setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+  const [myPost, setMyPost] = useRecoilState(myPostState);
+  const [init, setInit] = useState(true);
 
   const [getMyPost, { data: fetchData, loading, fetchMore }] = useMyPostLazyQuery({
-    onError: () => somethingWentWrongErrorNotification(),
-    onCompleted: () => {},
+    fetchPolicy: 'cache-and-network',
+    onError: (err) => {
+      console.log('my post', err);
+      somethingWentWrongErrorNotification();
+    },
+    onCompleted: (res) => {
+      setMyPost(res.myPost.items);
+      setRefresh(false);
+    },
   });
 
   const currentPage =
     Number(fetchData?.myPost?.meta.currentPage) >= 0 ? Number(fetchData?.myPost?.meta.currentPage) : 1;
   const totalPages = Number(fetchData?.myPost?.meta.totalPages) >= 0 ? Number(fetchData?.myPost?.meta.totalPages) : 2;
 
-  const data = fetchData?.myPost?.items;
+  // const data = fetchData?.myPost.items;
 
   useEffect(() => {
-    if (refresh) {
+    if (refresh || init) {
       getMyPost({
-        variables: { limit: 10, page: 1 },
+        variables: { limit: 20, page: 1 },
       });
     }
-  }, [getMyPost, refresh]);
+    setInit(false);
+  }, [getMyPost, refresh, init]);
+
+  const loadMore = () => {
+    if (Number(currentPage) < Number(totalPages)) {
+      fetchMore &&
+        fetchMore({
+          variables: { limit: 20, page: currentPage + 1 },
+          updateQuery: (prev: MyPostQueryResponse, { fetchMoreResult }) => {
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            const prevItem = prev?.myPost?.items ? prev?.myPost?.items : [];
+            const nextItem = fetchMoreResult.myPost?.items ? fetchMoreResult.myPost?.items : [];
+            setMyPost([...prevItem, ...nextItem]);
+            return Object.assign({}, prev, {
+              myPost: {
+                items: [...prevItem, ...nextItem],
+                meta: fetchMoreResult.myPost?.meta,
+                __typename: 'PostConnection',
+              },
+            });
+          },
+        });
+    }
+  };
 
   const editProfileBottomSheetRef = useRef<Modalize>(null);
   const settingsBottomSheetRef = useRef<Modalize>(null);
@@ -102,8 +136,8 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
 
   // @ts-ignore
   const renderItem = ({ item }) => {
-    const { id, uri } = item;
-    return <PostThumbnail id={id} uri={uri} dimensions={PostDimensions.Medium} />;
+    const { id, mediasPath } = item;
+    return <PostThumbnail id={id} uri={mediasPath[0].filePath} dimensions={PostDimensions.Medium} />;
   };
 
   const IconRight = () => (
@@ -113,19 +147,22 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
     />
   );
 
-  let content = <ProfileScreenPlaceholder />;
-  // loading : query user
-  console.log(me, 'data');
-  if (!loading) {
+  let content = loading && !myPost?.length ? <ProfileScreenPlaceholder /> : null;
+
+  if (!loading || myPost?.length) {
     content = (
       <>
         <FlatGrid
+          onRefresh={() => setRefresh(true)}
+          refreshing={refresh}
           staticDimension={responsiveWidth(94)}
           ListHeaderComponent={ListHeaderComponent}
           itemDimension={150}
-          data={data}
+          data={myPost}
           ListEmptyComponent={() => <ListEmptyComponent listType="posts" spacing={30} />}
           style={styles().postGrid}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => loadMore()}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
         />

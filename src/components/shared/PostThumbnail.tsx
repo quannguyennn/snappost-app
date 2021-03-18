@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Dimensions, ThemeColors } from '../../types/theme';
+import type { Dimensions, ThemeColors } from '../../types/theme';
 import { AppRoutes } from '../../navigator/app-routes';
 import NativeImage from './NativeImage';
 import { AppContext } from '../../context';
@@ -34,6 +34,7 @@ const styles = (theme = {} as ThemeColors) =>
       backgroundColor: theme.placeholder,
       overflow: 'hidden',
       borderRadius: 5,
+      marginTop: 10,
     },
     thumbnailImage: {
       flex: 1,

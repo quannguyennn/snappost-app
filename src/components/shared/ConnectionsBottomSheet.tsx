@@ -6,11 +6,13 @@ import { FlatGrid } from 'react-native-super-grid';
 import SvgBanner from './SvgBanner';
 import { Images } from '../../assets1/icons';
 import UserCard from '../UserCard';
-import { Connection, Connections } from '../../utils/constants';
+import { Connections } from '../../utils/constants';
 import BottomSheetHeader from './layout/headers/BottomSheetHeader';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import type { ThemeColors } from '../../types/theme';
+import { useNavigation } from '@react-navigation/core';
+import { AppRoutes } from '../../navigator/app-routes';
 // import type { User } from '../../graphql/type.interface';
 
 interface ConnectionsBottomSheetProps {
@@ -24,7 +26,7 @@ interface ConnectionsBottomSheetProps {
 const ConnectionsBottomSheet: React.FC<ConnectionsBottomSheetProps> = React.forwardRef(
   ({ viewMode, name, data, type }, ref) => {
     const theme = useRecoilValue(themeState);
-console.log(data, 'data bottomsheet');
+    const { navigate } = useNavigation();
 
     let heading: string;
     let subHeading: string;
@@ -51,7 +53,6 @@ console.log(data, 'data bottomsheet');
 
     // @ts-ignore
     const renderItem = ({ item }) => {
-
       const { id, avatarFilePath, nickname, name } = item;
       return <UserCard userId={id} avatar={avatarFilePath} name={name} nickname={nickname} />;
     };

@@ -8,7 +8,7 @@ import EditPostBottomSheet from './components/EditPostBottomSheet';
 import LikeBounceAnimation from './components/LikeBounceAnimation';
 import LikesBottomSheet from './components/LikesBottomSheet';
 import PostOptionsBottomSheet from './components/PostOptionsBottomSheet';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
 import PostViewScreenPlaceholder from '../../components/placeholders/PostViewScreen.Placeholder';
@@ -23,20 +23,29 @@ import { themeState } from '../../recoil/theme/atoms';
 import { Typography, ThemeStatic, PostDimensions } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
-import { GetPostDetailQueryResponse, useGetPostDetailLazyQuery } from '../../graphql/queries/getPostDetail.generated';
-import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
+import { GetPostDetailQueryResponse, useGetPostDetailQuery } from '../../graphql/queries/getPostDetail.generated';
+import {
+  postDeletedNotification,
+  somethingWentWrongErrorNotification,
+  tryAgainLaterNotification,
+} from '../../helpers/notifications';
 import FastImage from 'react-native-fast-image';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import TransformText from '../../components/shared/TransformText';
 import CommentList from './components/Comments';
 import { useOnCreateCommentSubscription } from '../../graphql/subscriptions/onCreateComment.generated';
 import { useReactToPostMutation } from '../../graphql/mutations/reactToPost.generated';
+import { useRemovePostMutation } from '../../graphql/mutations/removePost.generated';
+import { myPostState, newFeedState } from '../../recoil/app/atoms';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { PollIntervals } from '../../utils/constants';
 
 const { FontWeights, FontSizes } = Typography;
 
 const PostViewScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
   const { navigate, goBack } = useNavigation();
+  const user = useCurrentUser();
   const {
     params: { postId },
   } = useRoute<RouteProp<AppStackParamList, AppRoutes.POST_VIEW_SCREEN>>();
@@ -47,6 +56,8 @@ const PostViewScreen: React.FC = () => {
   const [comments, setComments] = useState<GetPostDetailQueryResponse['getPostDetail']['postComments']>([]);
   const [isLike, setIsLike] = useState(false);
   const [totalLike, setTotalLike] = useState(0);
+  const [post, setPost] = useRecoilState(newFeedState);
+  const [myPost, setMyPost] = useRecoilState(myPostState);
 
   const [reactToPost] = useReactToPostMutation({
     onError: () => somethingWentWrongErrorNotification(),
@@ -60,7 +71,9 @@ const PostViewScreen: React.FC = () => {
     },
   });
 
-  const [getPostDetail, { data: fetchData, loading }] = useGetPostDetailLazyQuery({
+  const { data: fetchData, loading } = useGetPostDetailQuery({
+    pollInterval: PollIntervals.postView,
+    variables: { id: postId },
     onError: (err) => {
       console.log('post detail', err);
       somethingWentWrongErrorNotification();
@@ -76,18 +89,43 @@ const PostViewScreen: React.FC = () => {
 
   const data = fetchData?.getPostDetail;
 
-  useOnCreateCommentSubscription({
+  // useOnCreateCommentSubscription({
+  //   variables: { postId },
+  //   onSubscriptionData: ({ subscriptionData }) => {
+  //     console.log(subscriptionData, 111);
+  //   },
+  // });
+
+  const { data: commentSub, error, loading: subLoading } = useOnCreateCommentSubscription({
     variables: { postId },
-    onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData);
-    },
     fetchPolicy: 'network-only',
   });
 
-  useEffect(() => {
-    getPostDetail({ variables: { id: postId } });
-  }, [getPostDetail, postId]);
-  
+  console.log(commentSub, 222, error, subLoading);
+
+  const [deletePost] = useRemovePostMutation({
+    onCompleted: () => {
+      handleUpdatePostState();
+    },
+    onError: () => {
+      tryAgainLaterNotification();
+    },
+  });
+
+  const handleUpdatePostState = () => {
+    const tempPost = post?.filter((item) => item.id !== postId);
+    const tempMyPost = myPost?.filter((item) => item.id !== postId);
+    setPost(tempPost);
+    setMyPost(tempMyPost);
+    confirmationToggle();
+    goBack();
+    postDeletedNotification();
+  };
+
+  // useEffect(() => {
+  //   getPostDetail({ variables: { id: postId } });
+  // }, [getPostDetail, postId]);
+
   const scrollViewRef = useRef();
   const postOptionsBottomSheetRef = useRef();
   const editPostBottomSheetRef = useRef();
@@ -99,6 +137,9 @@ const PostViewScreen: React.FC = () => {
   };
 
   const navigateToProfile = (userId: number) => {
+    if (userId === user?.id ?? 0) {
+      return;
+    }
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId });
   };
 
@@ -152,8 +193,7 @@ const PostViewScreen: React.FC = () => {
   };
 
   const onDeleteConfirm = (id: number) => {
-    confirmationToggle();
-    goBack();
+    deletePost({ variables: { id } });
   };
 
   let content = <PostViewScreenPlaceholder />;

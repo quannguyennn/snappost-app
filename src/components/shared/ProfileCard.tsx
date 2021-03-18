@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 
 import { Typography } from '../../theme';
@@ -85,18 +85,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <Connections onPress={onFollowersOpen} total={parseConnectionsCount(followers)} type="FOLLOWERS" />
       </View>
       <View style={styles(theme).nickname}>
-        <Text style={styles(theme).usernicknameText}>{nickname}</Text>
-        <Text style={styles(theme).nameText}>{name}</Text>
+        <Text style={styles(theme).usernicknameText}>{name}</Text>
+        <Text style={styles(theme).nameText}>{nickname}</Text>
       </View>
       {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
       {renderInteractions && renderInteractions()}
-      {
-        about ? <View style={styles(theme).about}>
+      {about ? (
+        <View style={styles(theme).about}>
           <Text style={styles(theme).aboutTitle}>About</Text>
           <Text style={styles(theme).aboutText}>{about}</Text>
-        </View> : null
-      }
-
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -107,6 +106,7 @@ const styles = (theme = {} as ThemeColors) =>
       paddingTop: 10,
       paddingBottom: 4,
       paddingHorizontal: 10,
+      marginBottom: 10,
     },
     info: {
       flexDirection: 'row',

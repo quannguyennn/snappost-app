@@ -18,8 +18,6 @@ interface CommentsProps {
 }
 
 const CommentList: React.FC<CommentsProps> = ({ postId, comments = [] }) => {
-  const theme = useRecoilValue(themeState);
-
   const renderItem = ({ item }: { item: any }) => {
     const { id, creatorId, creatorInfo, content, createdAt } = item;
 

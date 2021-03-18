@@ -34,12 +34,13 @@ export const inputLimitErrorNotification = (type: string, condition: string, lim
     duration: 4000,
   });
 
-export const somethingWentWrongErrorNotification = () => showMessage({
-  message: 'Oops, please try again later',
-  icon: 'danger',
-  type: 'danger',
-  duration: 4000,
-});
+export const somethingWentWrongErrorNotification = () =>
+  showMessage({
+    message: 'Oops, please try again later',
+    icon: 'danger',
+    type: 'danger',
+    duration: 4000,
+  });
 
 export const showErrorNotification = (message: string) =>
   showMessage({

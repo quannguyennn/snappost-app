@@ -1,23 +1,19 @@
-
 import React, { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
 import Entypo from 'react-native-vector-icons/Entypo';
-
-
 import ProfileOptionsBottomSheet from './components/ProfileOptionsBottomSheet';
 import UserInteractions from './components/UserInteractions';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { PostDimensions, ThemeStatic } from '../../theme';
-import { Connections } from '../../utils/constants';
+import { Connections, PollIntervals } from '../../utils/constants';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
 import { userBlockedNotification } from '../../helpers/notifications';
 import { sortPostsAscendingTime } from '../../utils/shared';
-import { useGetUserInfoLazyQuery } from '../../graphql/queries/getUserInfo.generated';
 import ProfileCard from '../../components/shared/ProfileCard';
 import PostThumbnail from '../../components/shared/PostThumbnail';
 import ListEmptyComponent from '../../components/shared/ListEmptyComponent';
@@ -26,16 +22,17 @@ import ConnectionsBottomSheet from '../../components/shared/ConnectionsBottomShe
 import IconButton from '../../components/shared/Iconbutton';
 import GoBackHeader from '../../components/shared/layout/headers/GoBackHeader';
 import ConfirmationModal from '../../components/shared/ComfirmationModal';
-
-
+import type { AppStackParamList } from '../../navigator/app.navigator';
+import type { AppRoutes } from '../../navigator/app-routes';
+import { useGetUserInfoQuery } from '../../graphql/queries/getUserInfo.generated';
 
 const ProfileViewScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
 
-  
   const { goBack } = useNavigation();
-
-  // const userId = useNavigationParam('userId');
+  const {
+    params: { userId },
+  } = useRoute<RouteProp<AppStackParamList, AppRoutes.PROFILE_VIEW_SCREEN>>();
 
   const [blockConfirmationModal, setBlockConfirmationModal] = useState(false);
 
@@ -45,6 +42,11 @@ const ProfileViewScreen: React.FC = () => {
   //   fetchPolicy: 'network-only'
   // });
 
+  const { data, loading, error } = useGetUserInfoQuery({
+    variables: { id: userId },
+    pollInterval: PollIntervals.profileView,
+  });
+
   // const [blockUser] = useMutation(MUTATION_BLOCK_USER);
 
   const followingBottomSheetRef = useRef();
@@ -52,12 +54,16 @@ const ProfileViewScreen: React.FC = () => {
   const profileOptionsBottomSheetRef = useRef();
 
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const onFollowingOpen = () => followingBottomSheetRef.current.open();
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const onFollowersOpen = () => followersBottomSheetRef.current.open();
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const onProfileOptionsOpen = () => profileOptionsBottomSheetRef.current.open();
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const onProfileOptionsClose = () => profileOptionsBottomSheetRef.current.close();
 
   const toggleBlockConfirmationModal = () => setBlockConfirmationModal(!blockConfirmationModal);
@@ -73,7 +79,9 @@ const ProfileViewScreen: React.FC = () => {
         followers={'200'}
         name={user?.name}
         nickname={user?.nickname}
-        renderInteractions={() => <UserInteractions targetId={'userId'} avatar={user?.avatarFilePath} name={user?.name} />}
+        renderInteractions={() => (
+          <UserInteractions targetId={'userId'} avatar={user?.avatarFilePath} name={user?.name} />
+        )}
         about={user?.intro}
       />
     );
@@ -81,13 +89,7 @@ const ProfileViewScreen: React.FC = () => {
 
   const renderItem = ({ item }: any) => {
     const { id, uri } = item;
-    return (
-      <PostThumbnail
-        id={id}
-        uri={uri}
-        dimensions={PostDimensions.Medium}
-      />
-    );
+    return <PostThumbnail id={id} uri={uri} dimensions={PostDimensions.Medium} />;
   };
 
   let content = <ProfileScreenPlaceholder viewMode />;
@@ -103,7 +105,7 @@ const ProfileViewScreen: React.FC = () => {
           ListHeaderComponent={ListHeaderComponent}
           itemDimension={150}
           data={sortedPosts}
-          ListEmptyComponent={() => <ListEmptyComponent listType='posts' spacing={30} />}
+          ListEmptyComponent={() => <ListEmptyComponent listType="posts" spacing={30} />}
           style={styles().postGrid}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
@@ -138,18 +140,16 @@ const ProfileViewScreen: React.FC = () => {
     toggleBlockConfirmationModal();
     // await blockUser({ variables: { from: 'user.id', to: 'userId' } });
     goBack();
-    userBlockedNotification('handle')
+    userBlockedNotification('handle');
   };
 
-  const IconRight = () => <IconButton
-    onPress={onProfileOptionsOpen}
-    style={styles().profileOptions}
-    Icon={() => <Entypo
-      name='dots-three-vertical'
-      size={IconSizes.x5}
-      color={theme.text01}
-    />}
-  />;
+  const IconRight = () => (
+    <IconButton
+      onPress={onProfileOptionsOpen}
+      style={styles().profileOptions}
+      Icon={() => <Entypo name="dots-three-vertical" size={IconSizes.x5} color={theme.text01} />}
+    />
+  );
 
   return (
     <View style={styles(theme).container}>
@@ -157,9 +157,9 @@ const ProfileViewScreen: React.FC = () => {
       {content}
       <ProfileOptionsBottomSheet ref={profileOptionsBottomSheetRef} onBlockUser={onBlockUser} />
       <ConfirmationModal
-        label='Confirm'
-        title='Block'
-        description='Are you sure you want to block this user?'
+        label="Confirm"
+        title="Block"
+        description="Are you sure you want to block this user?"
         color={ThemeStatic.delete}
         isVisible={blockConfirmationModal}
         toggle={toggleBlockConfirmationModal}
@@ -169,19 +169,20 @@ const ProfileViewScreen: React.FC = () => {
   );
 };
 
-const styles = (theme = {} as ThemeColors) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.base
-  },
-  postGrid: {
-    flex: 1,
-    marginHorizontal: 10
-  },
-  profileOptions: {
-    flex: 1,
-    alignItems: 'flex-end'
-  }
-});
+const styles = (theme = {} as ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.base,
+    },
+    postGrid: {
+      flex: 1,
+      marginHorizontal: 10,
+    },
+    profileOptions: {
+      flex: 1,
+      alignItems: 'flex-end',
+    },
+  });
 
 export default ProfileViewScreen;

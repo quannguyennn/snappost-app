@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import PostCard from './components/PostCard';
 import { useState } from 'react';
@@ -19,11 +19,12 @@ import { GetNewFeedQueryResponse, useGetNewFeedLazyQuery } from '../../graphql/q
 import type { Post } from '../../graphql/type.interface';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import { newFeedState } from '../../recoil/app/atoms';
+import LoadingIndicator from '../../components/shared/LoadingIndicator';
 
 const HomeScreen = React.memo(() => {
   const theme = useRecoilValue(themeState);
-  const [refresh, setRefresh] = useState(true);
-
+  const [refresh, setRefresh] = useState(false);
+  const [init, setInit] = useState(true);
   const [posts, setPosts] = useRecoilState(newFeedState);
 
   const [getNewFeed, { data: fetchNewFeed, loading, fetchMore }] = useGetNewFeedLazyQuery({
@@ -33,7 +34,7 @@ const HomeScreen = React.memo(() => {
       setRefresh(false);
     },
     onError: (err) => {
-      console.log(err);
+      console.log('new Feed', err);
       somethingWentWrongErrorNotification();
     },
   });
@@ -46,24 +47,26 @@ const HomeScreen = React.memo(() => {
   const data = posts;
 
   useEffect(() => {
-    if (refresh) {
+    if (refresh || init) {
       getNewFeed({
-        variables: { limit: 10, page: 1 },
+        variables: { limit: 20, page: 1 },
       });
     }
-  }, [getNewFeed, refresh]);
+    setInit(false);
+  }, [getNewFeed, refresh, init]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
       fetchMore &&
         fetchMore({
-          variables: { limit: 10, page: currentPage + 1 },
+          variables: { limit: 20, page: currentPage + 1 },
           updateQuery: (prev: GetNewFeedQueryResponse, { fetchMoreResult }) => {
             if (!fetchMoreResult) {
               return prev;
             }
             const prevItem = prev?.getNewFeed?.items ? prev?.getNewFeed?.items : [];
             const nextItem = fetchMoreResult.getNewFeed?.items ? fetchMoreResult.getNewFeed?.items : [];
+            setPosts([...prevItem, ...nextItem]);
             return Object.assign({}, prev, {
               getNewFeed: {
                 items: [...prevItem, ...nextItem],
@@ -105,7 +108,7 @@ const HomeScreen = React.memo(() => {
       style={styles().postList}
       spacing={20}
       renderItem={renderItem}
-      onEndReachedThreshold={0.5}
+      onEndReachedThreshold={0.4}
       refreshing={refresh}
       onEndReached={() => loadMore()}
     />

@@ -20,6 +20,7 @@ import { useUpdateUserInfoMutation } from '../../graphql/mutations/updateUserInf
 import { themeState } from '../../recoil/theme/atoms';
 import { isLoginState } from '../../recoil/auth/atoms';
 import { MeDocument } from '../../graphql/queries/me.generated';
+import { saveToken } from '../../helpers/storage';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -55,6 +56,10 @@ const LoginScreen = memo<Props>(() => {
     update: async (proxy, { data, errors }) => {
       if (data?.loginWithSNS?.user) {
         const user = data?.loginWithSNS?.user;
+        await saveToken({
+          accessToken: data.loginWithSNS.accessToken ?? '',
+          refreshToken: data.loginWithSNS.refreshToken ?? '',
+        });
         proxy.writeQuery({
           query: MeDocument,
           data: {

@@ -3,4 +3,5 @@ export enum AppAtoms {
   ThemeType = 'ThemeType',
   IsLogin = 'IsLogin',
   NEW_FEED = 'NewFeed',
+  My_POST = 'MyPost',
 }

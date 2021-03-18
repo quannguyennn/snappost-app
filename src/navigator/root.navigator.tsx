@@ -7,12 +7,10 @@ import { AppRoutes } from './app-routes';
 
 import { useRecoilValue } from 'recoil';
 import { isLoginState } from '../recoil/auth/atoms';
-import ProfileViewScreen from '../screens/ProfileViewScreen';
 
 export type RootStackParamList = {
   [AppRoutes.AUTH]: undefined;
   [AppRoutes.APP]: undefined;
-  [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: number };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -29,8 +27,6 @@ export const RootNavigator = (props: Partial<RootStackNavigatorProps>): React.Re
       ) : (
         <Stack.Screen name={AppRoutes.AUTH} component={AuthNavigator} />
       )}
-        <Stack.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
-
     </Stack.Navigator>
   );
 };

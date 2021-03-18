@@ -8,74 +8,10 @@ query myPost($page: Float!, $limit: Float!) {
       rawCaption
       createdAt
       updatedAt
-      postComments {
-        id
-        creatorId
-        postId
-        parentId
-        content
-        createdAt
-        updatedAt
-      }
       totalLike
       isLike
       mediasPath {
-        id
-        fileSize
-        name
         filePath
-        mimeType
-        isDeleted
-        ownerId
-        type
-        createdAt
-        updatedAt
-        owner {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
-        capabilities {
-          canCopy
-          canDelete
-          canDownload
-          canEdit
-          canRename
-        }
       }
       creatorInfo {
         id
@@ -89,84 +25,6 @@ query myPost($page: Float!, $limit: Float!) {
         updatedAt
         avatarFilePath
         followStatus
-        nFollowing {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
-        nFollower {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
       }
     }
     meta {

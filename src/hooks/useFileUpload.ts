@@ -46,7 +46,7 @@ export const useFileUpload = (config?: AxiosRequestConfig) => {
             }
           })
           .catch((err) => {
-            uploadErrorNotification("Media")
+            uploadErrorNotification('Media');
             return reject(err.message);
           });
       });

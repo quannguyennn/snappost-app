@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import Foundation from 'react-native-vector-icons/Foundation';
 import { Mention, MentionInput, Tag } from 'react-native-complete-mentions';
 import GoBackHeader from '../../../components/shared/layout/headers/GoBackHeader';
@@ -23,6 +23,7 @@ import { SearchUserQueryResponse, useSearchUserLazyQuery } from '../../../graphq
 import FastImage from 'react-native-fast-image';
 import useDebounce from '../../../screens/ExploreScreen/hooks/useDebounce';
 import { BarIndicator } from 'react-native-indicators';
+import { myPostState, newFeedState } from '../../../recoil/app/atoms';
 
 const { FontSizes } = Typography;
 
@@ -56,6 +57,8 @@ const CaptionScreen = React.memo(() => {
   const [extractValue, setExtractValue] = useState('');
   const [tracking, setTracking] = useState(false);
   const [keyword, setKeyword] = useState('');
+  const [post, setPost] = useRecoilState(newFeedState);
+  const [myPost, setMyPost] = useRecoilState(myPostState);
   const debouncedKeyword = useDebounce(keyword, 150);
 
   const [searchUser, { data: fetchUser, loading: searchLoading, fetchMore }] = useSearchUserLazyQuery({
@@ -107,9 +110,13 @@ const CaptionScreen = React.memo(() => {
   };
 
   const [createPost, { loading: createLoading }] = useCreatePostMutation({
-    onCompleted: () => {
+    onCompleted: (res) => {
       setLoading(false);
       postUploadedNotification();
+      const temp = [...post];
+      const temp1 = [...myPost];
+      setPost([res.createPost, ...post]);
+      setMyPost([res.createPost, ...myPost]);
       navigate(AppRoutes.HOME_TAB);
     },
     onError: (err) => {

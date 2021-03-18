@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { AppContext } from '../../../context';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';
 import { IconSizes } from '../../../theme/Icon';
 import { HandleAvailableColor, ThemeStatic } from '../../../theme';
@@ -10,6 +9,9 @@ import BottomSheetHeader from '../../../components/shared/layout/headers/BottomS
 import FormInput from '../../../components/shared/controls/FormInput';
 import Button from '../../../components/shared/controls/Button';
 import type { ThemeColors } from '../../../types/theme';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import { useRecoilValue } from 'recoil';
+import { themeState } from '../../../recoil/theme/atoms';
 
 interface EditProfileBottomSheetProps {
   ref: React.Ref<any>;
@@ -21,7 +23,8 @@ interface EditProfileBottomSheetProps {
 
 const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forwardRef(
   ({ avatar, name, handle, about }, ref) => {
-    const { user, updateUser: updateUserContext, theme } = useContext(AppContext);
+    const user = useCurrentUser();
+    const theme = useRecoilValue(themeState);
 
     const [editableAvatar, setEditableAvatar] = useState('');
     const [editableName, setEditableName] = useState('');
@@ -43,7 +46,7 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
       setEditableName(name);
       setEditableHandle(handle);
       setEditableAbout(about);
-    }, []);
+    }, [about, avatar, name, handle]);
 
     // useEffect(() => {
     //   queryIsHandleAvailable({
@@ -159,7 +162,7 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
         modalStyle={styles(theme).container}
         adjustToContentHeight>
         <BottomSheetHeader heading="Edit profile" subHeading="Edit your personal information" />
-        <View style={styles().content}>
+        <View style={styles(theme).content}>
           <ImageBackground
             source={{ uri: editableAvatar ? editableAvatar : '' }}
             style={styles(theme).avatar}
@@ -200,7 +203,7 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
             // onDone
             onPress={() => null}
             loading={isUploading}
-            containerStyle={styles().doneButton}
+            containerStyle={styles(theme).doneButton}
           />
         </View>
       </Modalize>

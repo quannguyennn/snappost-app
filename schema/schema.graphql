@@ -35,6 +35,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 enum FollowStatus {
+  IS_ME
   WAITING
   ACCEPT
 }
@@ -60,12 +61,9 @@ type Media implements Node {
   filePath: String
   mimeType: String
   isDeleted: Boolean!
-  ownerId: Float
   type: FileType!
   createdAt: DateTime!
   updatedAt: DateTime!
-  owner: User
-  capabilities: MediaCapability
 }
 
 enum FileType {
@@ -76,14 +74,6 @@ enum FileType {
 type MediaConnection {
   items: [Media!]
   meta: BasePaginationMeta!
-}
-
-type MediaCapability {
-  canCopy: Boolean
-  canDelete: Boolean
-  canDownload: Boolean
-  canEdit: Boolean
-  canRename: Boolean
 }
 
 """
@@ -130,9 +120,11 @@ type Query {
   me: User!
   getUserInfo(id: Float!): User
   searchUser(page: Float!, limit: Float!, isRestricted: Boolean = false, keyword: String!): UserConnection!
+  isAvailable(nickname: String!): Boolean!
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!
+  getExplorePost(page: Float!, limit: Float!): PostConnection!
   getPostDetail(id: Float!): Post!
   myPost(page: Float!, limit: Float!): PostConnection!
 }
@@ -153,8 +145,9 @@ type Mutation {
   removeComment(id: Float!): Boolean!
   createPost(input: CreatePostInput!): Post!
   updatePost(input: UpdatePostInput!): Post!
-  removePost(id: ID!): Boolean!
+  removePost(id: Float!): Boolean!
   reactToPost(postId: Float!): Boolean!
+  reportPost(postId: Float!): Boolean!
 }
 
 input UpdateUserInput {

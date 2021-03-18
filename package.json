@@ -18,7 +18,7 @@
     "typegen": "graphql-codegen --config codegen/typegen.yml"
   },
   "dependencies": {
-    "@apollo/client": "3.3.6",
+    "@apollo/client": "3.3.8",
     "@gorhom/bottom-sheet": "3.0.1",
     "@hookform/resolvers": "1.2.0",
     "@react-native-community/async-storage": "2.0.0-rc.1",
