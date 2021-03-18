@@ -11,14 +11,6 @@ export type GetPostDetailQueryResponse = { __typename?: 'Query' } & {
     Types.Post,
     'id' | 'creatorId' | 'medias' | 'caption' | 'rawCaption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike'
   > & {
-      postComments?: Types.Maybe<
-        Array<
-          { __typename?: 'Comments' } & Pick<
-            Types.Comments,
-            'id' | 'creatorId' | 'postId' | 'parentId' | 'content' | 'createdAt'
-          > & { creatorInfo: { __typename?: 'User' } & Pick<Types.User, 'name' | 'nickname' | 'avatarFilePath'> }
-        >
-      >;
       mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
       creatorInfo?: Types.Maybe<
         { __typename?: 'User' } & Pick<
@@ -49,19 +41,6 @@ export const GetPostDetailDocument = gql`
       rawCaption
       createdAt
       updatedAt
-      postComments {
-        id
-        creatorId
-        postId
-        parentId
-        content
-        createdAt
-        creatorInfo {
-          name
-          nickname
-          avatarFilePath
-        }
-      }
       totalLike
       isLike
       mediasPath {

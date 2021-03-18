@@ -22,7 +22,6 @@ export type AppStackParamList = {
   [AppRoutes.MAIN_TAB]: undefined;
   [AppRoutes.MESSAGE_SCREEN]: undefined;
   [AppRoutes.CONVERSATION_SCREEN]: undefined;
-  [AppRoutes.NOTIFICATION_VIEW_SCREEN]: undefined;
   [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: number };
   [AppRoutes.POST_VIEW_SCREEN]: { postId: number };
   [AppRoutes.UPLOAD_STACK]: undefined;

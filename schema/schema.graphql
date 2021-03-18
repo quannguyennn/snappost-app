@@ -93,7 +93,6 @@ type Post implements Node {
   rawCaption: String
   createdAt: DateTime!
   updatedAt: DateTime!
-  postComments: [Comments!]
   totalLike: Float!
   isLike: Boolean!
   mediasPath: [Media!]
@@ -116,6 +115,11 @@ type Comments implements Node {
   creatorInfo: User!
 }
 
+type CommentConnection {
+  items: [Comments!]
+  meta: BasePaginationMeta!
+}
+
 type Query {
   me: User!
   getUserInfo(id: Float!): User
@@ -123,6 +127,7 @@ type Query {
   isAvailable(nickname: String!): Boolean!
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
+  getPostComment(page: Float!, limit: Float!, postId: Float!): CommentConnection!
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!
   getExplorePost(page: Float!, limit: Float!): PostConnection!
   getPostDetail(id: Float!): Post!

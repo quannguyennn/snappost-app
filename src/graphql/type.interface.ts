@@ -102,7 +102,6 @@ export type Post = Node & {
   rawCaption?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  postComments?: Maybe<Array<Comments>>;
   totalLike: Scalars['Float'];
   isLike: Scalars['Boolean'];
   mediasPath?: Maybe<Array<Media>>;
@@ -127,6 +126,12 @@ export type Comments = Node & {
   creatorInfo: User;
 };
 
+export type CommentConnection = {
+  __typename?: 'CommentConnection';
+  items?: Maybe<Array<Comments>>;
+  meta: BasePaginationMeta;
+};
+
 export type Query = {
   __typename?: 'Query';
   me: User;
@@ -135,6 +140,7 @@ export type Query = {
   isAvailable: Scalars['Boolean'];
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
+  getPostComment: CommentConnection;
   getNewFeed: PostConnection;
   getExplorePost: PostConnection;
   getPostDetail: Post;
@@ -164,6 +170,12 @@ export type QueryMediasArgs = {
 
 export type QueryMediaArgs = {
   id: Scalars['Float'];
+};
+
+export type QueryGetPostCommentArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
+  postId: Scalars['Float'];
 };
 
 export type QueryGetNewFeedArgs = {

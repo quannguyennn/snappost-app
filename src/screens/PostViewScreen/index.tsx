@@ -53,7 +53,6 @@ const PostViewScreen: React.FC = () => {
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [lastTap, setLastTap] = useState(Date.now());
   const [mediaIndex, setMediaIndex] = useState(0);
-  const [comments, setComments] = useState<GetPostDetailQueryResponse['getPostDetail']['postComments']>([]);
   const [isLike, setIsLike] = useState(false);
   const [totalLike, setTotalLike] = useState(0);
   const [post, setPost] = useRecoilState(newFeedState);
@@ -81,27 +80,25 @@ const PostViewScreen: React.FC = () => {
     onCompleted: (res) => {
       setTotalLike(res.getPostDetail.totalLike);
       setIsLike(res.getPostDetail.isLike);
-      setComments(
-        res.getPostDetail.postComments || ([] as GetPostDetailQueryResponse['getPostDetail']['postComments']),
-      );
     },
   });
 
   const data = fetchData?.getPostDetail;
 
-  // useOnCreateCommentSubscription({
-  //   variables: { postId },
-  //   onSubscriptionData: ({ subscriptionData }) => {
-  //     console.log(subscriptionData, 111);
-  //   },
-  // });
-
-  const { data: commentSub, error, loading: subLoading } = useOnCreateCommentSubscription({
+  useOnCreateCommentSubscription({
     variables: { postId },
-    fetchPolicy: 'network-only',
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) console.log("comment sub", subscriptionData.error)
+
+    },
   });
 
-  console.log(commentSub, 222, error, subLoading);
+  // const { data: commentSub, error, loading: subLoading } = useOnCreateCommentSubscription({
+  //   variables: { postId },
+  //   fetchPolicy: 'network-only',
+  // });
+
+  // console.log(commentSub, 222, error, subLoading);
 
   const [deletePost] = useRemovePostMutation({
     onCompleted: () => {
@@ -262,7 +259,7 @@ const PostViewScreen: React.FC = () => {
         <View style={styles(theme).captionText}>
           <TransformText username={creatorInfo?.name ?? ''} text={rawCaption ?? ''} />
         </View>
-        <CommentList postId={postId} comments={comments} />
+        <CommentList postId={postId} />
       </>
     );
   }

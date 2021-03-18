@@ -8,15 +8,6 @@ query getNewFeed($limit: Int, $page: Int) {
       rawCaption
       createdAt
       updatedAt
-      postComments {
-        id
-        creatorId
-        postId
-        parentId
-        content
-        createdAt
-        updatedAt
-      }
       totalLike
       isLike
       mediasPath {

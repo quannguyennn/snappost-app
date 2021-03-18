@@ -19,7 +19,6 @@ import { GetNewFeedQueryResponse, useGetNewFeedLazyQuery } from '../../graphql/q
 import type { Post } from '../../graphql/type.interface';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import { newFeedState } from '../../recoil/app/atoms';
-import LoadingIndicator from '../../components/shared/LoadingIndicator';
 
 const HomeScreen = React.memo(() => {
   const theme = useRecoilValue(themeState);
@@ -121,7 +120,7 @@ const HomeScreen = React.memo(() => {
       <IconButton
         hasBadge={hasBadge}
         badgeCount={unreadMessages}
-        onPress={() => {}}
+        onPress={() => { }}
         Icon={() => <FontAwesome name="send" size={IconSizes.x5} color={theme.text01} />}
       />
     );

@@ -1,0 +1,124 @@
+query getExplorePost($page: Float!, $limit: Float!) {
+  getExplorePost(page: $page, limit: $limit) {
+    items {
+      id
+      creatorId
+      medias
+      caption
+      rawCaption
+      createdAt
+      updatedAt
+      totalLike
+      isLike
+      mediasPath {
+        id
+        fileSize
+        name
+        filePath
+        mimeType
+        isDeleted
+        type
+        createdAt
+        updatedAt
+      }
+      creatorInfo {
+        id
+        name
+        nickname
+        intro
+        zaloId
+        avatar
+        isNew
+        createdAt
+        updatedAt
+        avatarFilePath
+        followStatus
+        nFollowing {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+          nFollowing {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+          }
+          nFollower {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+          }
+        }
+        nFollower {
+          id
+          name
+          nickname
+          intro
+          zaloId
+          avatar
+          isNew
+          createdAt
+          updatedAt
+          avatarFilePath
+          followStatus
+          nFollowing {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+          }
+          nFollower {
+            id
+            name
+            nickname
+            intro
+            zaloId
+            avatar
+            isNew
+            createdAt
+            updatedAt
+            avatarFilePath
+            followStatus
+          }
+        }
+      }
+    }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
+    }
+  }
+}

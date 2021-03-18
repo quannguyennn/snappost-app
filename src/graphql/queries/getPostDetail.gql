@@ -7,19 +7,6 @@ query getPostDetail($id: Float!) {
     rawCaption
     createdAt
     updatedAt
-    postComments {
-      id
-      creatorId
-      postId
-      parentId
-      content
-      createdAt
-      creatorInfo {
-        name
-        nickname
-        avatarFilePath
-      }
-    }
     totalLike
     isLike
     mediasPath {
