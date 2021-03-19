@@ -49,7 +49,7 @@ const PostOptionsBottomSheet: React.FC<PostOptionsBottomSheetProps> = React.forw
       subHeading = 'Manage your post';
       content = (
         <>
-          <Option label="Edit" iconName="md-create" onPress={onPostEdit} />
+          {/* <Option label="Edit" iconName="md-create" onPress={onPostEdit} /> */}
           <Option label="Delete" iconName="md-trash" color={ThemeStatic.delete} onPress={onPostDelete} />
         </>
       );

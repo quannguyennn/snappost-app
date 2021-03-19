@@ -270,7 +270,7 @@ const PostViewScreen: React.FC = () => {
   let bottomSheets;
 
   if (!loading && data) {
-    const { id, creatorInfo, rawCaption } = data;
+    const { id, creatorInfo } = data;
 
     bottomSheets = (
       <>

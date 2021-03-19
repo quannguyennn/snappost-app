@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View, RefreshControl } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
 import { PrimaryImageGroup, SecondaryImageGroup } from './ExplorePostCard';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../../recoil/theme/atoms';
-import { ExplorePost } from '../../../types/utils';
+import type { ExplorePost } from '../../../types/utils';
 import { parseGridImages } from '../../../utils/shared';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';
 import ListEmptyComponent from '../../../components/shared/ListEmptyComponent';
@@ -15,11 +15,18 @@ interface ExploreGridProps {
   onRefresh: () => void;
   tintColor: string;
   onEndReached: () => void;
-
+  refresh: boolean;
   loading?: boolean;
 }
 
-const ExploreGrid: React.FC<ExploreGridProps> = ({ posts, onRefresh, tintColor, onEndReached, loading = false }) => {
+const ExploreGrid: React.FC<ExploreGridProps> = ({
+  refresh,
+  posts,
+  onRefresh,
+  tintColor,
+  onEndReached,
+  loading = false,
+}) => {
   const theme = useRecoilValue(themeState);
 
   const renderItem = ({ item, index }: { item: ExplorePost[]; index: number }) => {
@@ -45,6 +52,7 @@ const ExploreGrid: React.FC<ExploreGridProps> = ({ posts, onRefresh, tintColor, 
   return (
     <View style={styles.container}>
       <FlatGrid
+        refreshing={refresh}
         staticDimension={responsiveWidth(92)}
         refreshControl={refreshControl()}
         itemDimension={responsiveWidth(92)}

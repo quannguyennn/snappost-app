@@ -1,4 +1,4 @@
 export type ExplorePost = {
-  id: string;
+  id: number;
   uri: string;
 };
