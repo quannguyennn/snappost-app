@@ -9,6 +9,8 @@ target 'DemoApp' do
   use_react_native!(:path => config["reactNativePath"])
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
   target 'DemoAppTests' do
     inherit! :complete
     # Pods for testing

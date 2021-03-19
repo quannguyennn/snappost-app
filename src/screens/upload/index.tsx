@@ -102,25 +102,12 @@ const UploadScreen: React.FC = () => {
       return <View />;
     }
     const mediaToshow = selectedMedias.length ? selectedMedias[selectedMedias.length - 1].metadata : medias[lastIndex];
-    if (mediaToshow.node.type === 'image') {
       return (
         <Image
           style={[styles(theme).bigMedia, { resizeMode: 'contain' }]}
           source={{ uri: mediaToshow.node.image.uri }}
         />
       );
-    } else {
-      return (
-        <Video
-          key={convertToNormalVideoUri(mediaToshow)}
-          muted
-          source={{
-            uri: convertToNormalVideoUri(mediaToshow),
-          }}
-          style={styles(theme).bigMedia}
-        />
-      );
-    }
   };
 
   // const openCamera = (type: 'photo' | 'video') => {
@@ -181,15 +168,6 @@ const UploadScreen: React.FC = () => {
       />
       <View style={styles(theme).selectedMediaContainer}>{renderBigMedia()}</View>
 
-      {/* <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 20, marginVertical: 8 }}>
-        <Pressable onPress={() => openCamera('photo')} style={styles(theme).cameraBtn}>
-          <Feather name="camera" size={20} color={ThemeStatic.white} />
-        </Pressable>
-        <Pressable onPress={() => openCamera('video')} style={styles(theme).cameraBtn}>
-          <Feather name="video" size={20} color={ThemeStatic.white} />
-        </Pressable>
-      </View> */}
-
       <FlatList
         data={medias}
         style={{ flex: 1 }}
@@ -204,9 +182,7 @@ const UploadScreen: React.FC = () => {
             style={[styles(theme).image]}
             onPress={() => (selectable ? handleSelectMedia(index, item) : null)}>
             <Image source={{ uri: item.node.image.uri }} style={{ height: '100%', width: '100%' }} />
-            {item.node.type !== 'image' ? (
-              <Text style={styles(theme).durationText}>{Math.round(item.node.image.playableDuration ?? 0)}s</Text>
-            ) : null}
+
             <View style={[styles(theme).tickContainer, getSelectedIndex(index) !== -1 && styles(theme).selectedTick]}>
               {getSelectedIndex(index) !== -1 ? (
                 <Text style={styles(theme).indexText}>{getSelectedIndex(index) + 1}</Text>

@@ -55,8 +55,8 @@ const styles = (theme = {} as ThemeColors) =>
       elevation: 8,
       justifyContent: 'center',
       alignItems: 'center',
-      position: 'absolute',
-      bottom: -10,
+      // position: 'absolute',
+      bottom: 10,
     },
   });
 

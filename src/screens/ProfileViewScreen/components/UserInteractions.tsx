@@ -11,6 +11,8 @@ import { PollIntervals } from '../../../utils/constants';
 import { FollowInteraction } from '../../../types/constants';
 import { AppRoutes } from '../../../navigator/app-routes';
 import { IconSizes } from '../../../theme/Icon';
+import { useUserInfo } from '../../../hooks/useUserInfo';
+import type { FollowStatus } from '../../../graphql/type.interface';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -18,27 +20,20 @@ interface UserInteractionsProps {
   targetId: string,
   avatar: string | undefined | null,
   name: string | undefined
+  isFollow: FollowStatus
 };
 
-const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, name }) => {
+const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, name, isFollow }) => {
 
   const { navigate } = useNavigation();
   const theme = useRecoilValue(themeState);
-  const {
-    data: doesFollowData,
-    loading: doesFollowLoading,
-    error: doesFollowError
-  } = useQuery(QUERY_DOES_FOLLOW, {
-    variables: { userId: user.id, targetId },
-    pollInterval: PollIntervals.interaction
-  });
 
   const [updateFollowing, { loading: updateFollowingLoading }] = useMutation(MUTATION_UPDATE_FOLLOWING);
 
 
   let content = <LoadingIndicator size={IconSizes.x0} color={theme.white} />;
 
-  if (!doesFollowLoading && !updateFollowingLoading && !doesFollowError) {
+  if (isFollow !== 'IS_ME' && !updateFollowingLoading && !doesFollowError) {
     const { doesFollow } = doesFollowData;
     content = (
       <Text style={styles(theme).followInteractionText}>
@@ -94,8 +89,8 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, n
       <TouchableOpacity activeOpacity={0.90} onPress={followInteraction} style={styles(theme).followInteraction}>
         {content}
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={0.90} 
-      // onPress={messageInteraction} 
+      <TouchableOpacity activeOpacity={0.90}
+      // onPress={messageInteraction}
       style={styles(theme).messageInteraction}>
         <Text style={styles(theme).messageInteractionText}>MESSAGE</Text>
       </TouchableOpacity>

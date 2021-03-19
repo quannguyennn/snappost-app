@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { merge } from 'lodash';
 import { UPLOAD_URL } from '../environment/env';
 import { request } from '../helpers/request';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { storage } from '../helpers/storage';
 import type { Media } from '../graphql/type.interface';
 import { uploadErrorNotification } from '..//helpers/notifications';
@@ -20,11 +20,12 @@ export const useFileUpload = (config?: AxiosRequestConfig) => {
 
         const imageInfo = {
           uri: Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
-          type: file.type,
+          type: file.type ?? "image/jpeg",
           name: file.fileName === null || file.fileName === undefined ? imgName : file.fileName,
           height: file.height,
           width: file.width,
         };
+
 
         formData.append('file', imageInfo);
         formData.append('height', file.height);

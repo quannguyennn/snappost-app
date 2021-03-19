@@ -11,6 +11,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
+import com.reactnativecommunity.cameraroll.CameraRollPackage;
 
 
 public class MainApplication extends Application implements ReactApplication {
@@ -48,7 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
     SoLoader.init(this, /* native exopackage */ false);
     ZaloSDKApplication.wrap(this);
 
-    initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+//     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 
   /**

@@ -25,14 +25,15 @@ import ConfirmationModal from '../../components/shared/ComfirmationModal';
 import type { AppStackParamList } from '../../navigator/app.navigator';
 import type { AppRoutes } from '../../navigator/app-routes';
 import { useGetUserInfoQuery } from '../../graphql/queries/getUserInfo.generated';
+import { useUserInfo } from '../../hooks/useUserInfo';
 
 const ProfileViewScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
-
   const { goBack } = useNavigation();
   const {
     params: { userId },
   } = useRoute<RouteProp<AppStackParamList, AppRoutes.PROFILE_VIEW_SCREEN>>();
+  const user = useUserInfo(userId)
 
   const [blockConfirmationModal, setBlockConfirmationModal] = useState(false);
 
