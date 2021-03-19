@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, TouchableOpacity, Text } from 'react-native';
+import ConnectionsPlaceholder from '../../../components/placeholders/Connection.Placeholder';
 import ListEmptyComponent from '../../../components/shared/ListEmptyComponent';
-import { GetPostCommentQueryResponse, useGetPostCommentLazyQuery } from '../../../graphql/queries/getPostComment.generated';
+import {
+  GetPostCommentQueryResponse,
+  useGetPostCommentLazyQuery,
+} from '../../../graphql/queries/getPostComment.generated';
+import { useOnCreateCommentSubscription } from '../../../graphql/subscriptions/onCreateComment.generated';
+import { useOnDeleteCommentSubscription } from '../../../graphql/subscriptions/onDeleteComment.generated';
 import { showErrorNotification } from '../../../helpers/notifications';
 import { Typography } from '../../../theme';
 import type { ThemeColors } from '../../../types/theme';
@@ -14,18 +20,19 @@ interface CommentsProps {
 }
 
 const CommentList: React.FC<CommentsProps> = ({ postId }) => {
-  const [init, setInit] = useState(true)
-  const [comments, setComments] = useState<GetPostCommentQueryResponse["getPostComment"]["items"]>([])
-  const [getPostComment, { data: fetchData, fetchMore }] = useGetPostCommentLazyQuery({
+  const [comments, setComments] = useState<GetPostCommentQueryResponse['getPostComment']['items']>([]);
+  const [init, setInit] = useState(true);
+  const [getPostComment, { data: fetchData, fetchMore, loading }] = useGetPostCommentLazyQuery({
     onCompleted: (res) => {
-      setComments([...res.getPostComment.items ?? []].reverse())
+      setInit(false);
+      setComments([...(res.getPostComment.items ?? [])].reverse());
     },
     onError: (err) => {
-      console.log("post comment", err);
-      showErrorNotification("Can't fetch comments. Please try again.")
+      console.log('post comment', err);
+      showErrorNotification("Can't fetch comments. Please try again.");
     },
-    fetchPolicy: "cache-and-network"
-  })
+    fetchPolicy: 'cache-and-network',
+  });
 
   const currentPage =
     Number(fetchData?.getPostComment?.meta.currentPage) >= 0 ? Number(fetchData?.getPostComment?.meta.currentPage) : 1;
@@ -35,11 +42,12 @@ const CommentList: React.FC<CommentsProps> = ({ postId }) => {
   useEffect(() => {
     getPostComment({
       variables: {
-        postId, limit: 5, page: 1
-      }
-    })
-    setInit(false)
-  }, [postId])
+        postId,
+        limit: 5,
+        page: 1,
+      },
+    });
+  }, [postId, getPostComment]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -65,6 +73,30 @@ const CommentList: React.FC<CommentsProps> = ({ postId }) => {
     }
   };
 
+  useOnCreateCommentSubscription({
+    variables: { postId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log('comment sub', subscriptionData.error);
+      } else {
+        // @ts-ignore
+        setComments([...comments, subscriptionData.data?.onCreateComment]);
+      }
+    },
+  });
+
+  useOnDeleteCommentSubscription({
+    variables: { postId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log('delete comment sub', subscriptionData.error);
+      } else {
+        // @ts-ignore
+        setComments([...comments].filter((item) => item.id !== subscriptionData.data?.onDeleteComment.id));
+      }
+    },
+  });
+
   const renderItem = ({ item }: { item: any }) => {
     const { id, creatorId, creatorInfo, content, createdAt } = item;
 
@@ -82,21 +114,32 @@ const CommentList: React.FC<CommentsProps> = ({ postId }) => {
   };
 
   return (
-    <FlatList
-      bounces={false}
-      showsVerticalScrollIndicator={false}
-      data={comments}
-      renderItem={renderItem}
-      style={styles().listStyle}
-      ListHeaderComponent={currentPage < totalPages && comments?.length ? <TouchableOpacity onPress={() => loadMore()} activeOpacity={0.9}><Text style={{ fontSize: 16, marginBottom: 5 }}>See ealier comments...</Text></TouchableOpacity> : null}
-      ListEmptyComponent={() => (
-        <ListEmptyComponent
-          placeholder="Be the first one to comment"
-          placeholderStyle={styles().placeholderStyle}
-          spacing={10}
-        />
-      )}
-    />
+    <>
+      {loading && init ? <ConnectionsPlaceholder /> : null}
+      <FlatList
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+        data={comments}
+        renderItem={renderItem}
+        style={styles().listStyle}
+        ListHeaderComponent={
+          !init && currentPage < totalPages ? (
+            <TouchableOpacity onPress={() => loadMore()} activeOpacity={0.9}>
+              <Text style={{ fontSize: 16, marginBottom: 5 }}>See ealier comments...</Text>
+            </TouchableOpacity>
+          ) : null
+        }
+        ListEmptyComponent={() =>
+          !init ? (
+            <ListEmptyComponent
+              placeholder="Be the first one to comment"
+              placeholderStyle={styles().placeholderStyle}
+              spacing={10}
+            />
+          ) : null
+        }
+      />
+    </>
   );
 };
 

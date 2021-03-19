@@ -1,5 +1,5 @@
 {
   "possibleTypes": {
-    "Node": ["User", "Follow", "Media", "Post", "Comments"]
+    "Node": ["User", "Follow", "Media", "Post", "Comments", "Like"]
   }
 }

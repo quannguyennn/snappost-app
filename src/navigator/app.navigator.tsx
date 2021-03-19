@@ -10,6 +10,7 @@ import PostViewScreen from '../screens/PostViewScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import { NotificationNavigator } from './notification.navigator';
 import ProfileViewScreen from '../screens/ProfileViewScreen';
+import EditCaptionScreen from '../screens/upload/EditCaptionScreen';
 
 export type MainTabParamList = {
   [AppRoutes.HOME_TAB]: undefined;
@@ -25,6 +26,7 @@ export type AppStackParamList = {
   [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: number };
   [AppRoutes.POST_VIEW_SCREEN]: { postId: number };
   [AppRoutes.UPLOAD_STACK]: undefined;
+  [AppRoutes.EDIT_CATION_SCREEN]: { postId: number };
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -46,15 +48,10 @@ export const AppNavigator = () => {
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MAIN_TAB} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MESSAGE_SCREEN} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.CONVERSATION_SCREEN} component={MainNavigator} />
-
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name={AppRoutes.NOTIFICATION_VIEW_SCREEN}
-        component={MainNavigator}
-      />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.POST_VIEW_SCREEN} component={PostViewScreen} />
       <Stack.Screen name={AppRoutes.UPLOAD_STACK} component={UploadStackNavigator} />
       <Stack.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
+      <Stack.Screen name={AppRoutes.EDIT_CATION_SCREEN} component={EditCaptionScreen} />
     </Stack.Navigator>
   );
 };

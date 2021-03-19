@@ -1,3 +1,3 @@
-mutation removeComment($id: Float!) {
-  removeComment(id: $id)
+mutation removeComment($postId: Float!, $id: Float!) {
+  removeComment(postId: $postId, id: $id)
 }

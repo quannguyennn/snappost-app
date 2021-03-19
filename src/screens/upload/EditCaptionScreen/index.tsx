@@ -5,25 +5,19 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import Foundation from 'react-native-vector-icons/Foundation';
 import { Mention, MentionInput, Tag } from 'react-native-complete-mentions';
 import GoBackHeader from '../../../components/shared/layout/headers/GoBackHeader';
-import { AppRoutes } from '../../../navigator/app-routes';
-import type { UploadStackParamList } from '../../../navigator/upload.navigator';
+import type { AppRoutes } from '../../../navigator/app-routes';
 import { themeState } from '../../../recoil/theme/atoms';
 import { Typography, ThemeStatic } from '../../../theme';
 import { IconSizes } from '../../../theme/Icon';
 import type { ThemeColors } from '../../../types/theme';
-import { useFileUpload } from '../../../hooks/useFileUpload';
-import type { Media } from '../../../graphql/type.interface';
-import { useCreatePostMutation } from '../../../graphql/mutations/createPost.generated';
-import {
-  postUploadedNotification,
-  somethingWentWrongErrorNotification,
-  uploadErrorNotification,
-} from '../../../helpers/notifications';
+import { somethingWentWrongErrorNotification } from '../../../helpers/notifications';
 import { SearchUserQueryResponse, useSearchUserLazyQuery } from '../../../graphql/queries/searchUser.generated';
 import FastImage from 'react-native-fast-image';
 import useDebounce from '../../../screens/ExploreScreen/hooks/useDebounce';
 import { BarIndicator } from 'react-native-indicators';
 import { myPostState, newFeedState } from '../../../recoil/app/atoms';
+import type { AppStackParamList } from '../../../navigator/app.navigator';
+import { useGetPostDetailLazyQuery } from '../../../graphql/queries/getPostDetail.generated';
 
 const { FontSizes } = Typography;
 
@@ -42,12 +36,11 @@ function UserSuggestion({ data, onPress }: { data: any; onPress: () => void }) {
   );
 }
 
-const CaptionScreen = React.memo(() => {
-  const [uploadMedia] = useFileUpload();
-
+const EditCaptionScreen = React.memo(() => {
   const {
-    params: { medias },
-  } = useRoute<RouteProp<UploadStackParamList, AppRoutes.CAPTION_SCREEN>>();
+    params: { postId },
+  } = useRoute<RouteProp<AppStackParamList, AppRoutes.EDIT_CATION_SCREEN>>();
+
   const theme = useRecoilValue(themeState);
   const styles = useStyle(theme);
   const { navigate } = useNavigation();
@@ -61,9 +54,22 @@ const CaptionScreen = React.memo(() => {
   const [myPost, setMyPost] = useRecoilState(myPostState);
   const debouncedKeyword = useDebounce(keyword, 150);
 
+  const [getPostDetail, { data: fetchPost }] = useGetPostDetailLazyQuery({
+    onError: (err) => console.log('edit post detail', err),
+    onCompleted: (res) => {
+      setLoading(false);
+      setContent(res.getPostDetail.rawCaption ?? '');
+    },
+  });
+
+  const data = fetchPost?.getPostDetail;
+
   const [searchUser, { data: fetchUser, loading: searchLoading, fetchMore }] = useSearchUserLazyQuery({
     fetchPolicy: 'cache-and-network',
-    onError: () => somethingWentWrongErrorNotification(),
+    onError: (err) => {
+      console.log('search mention', err);
+      somethingWentWrongErrorNotification();
+    },
   });
 
   const currentPage =
@@ -72,6 +78,11 @@ const CaptionScreen = React.memo(() => {
     Number(fetchUser?.searchUser?.meta.totalPages) >= 0 ? Number(fetchUser?.searchUser?.meta.totalPages) : 2;
 
   const suggestedUsers = fetchUser?.searchUser?.items;
+
+  useEffect(() => {
+    setLoading(true);
+    getPostDetail({ variables: { id: postId } });
+  }, [getPostDetail, postId]);
 
   useEffect(() => {
     if (debouncedKeyword.trim()) {
@@ -109,24 +120,24 @@ const CaptionScreen = React.memo(() => {
     }
   };
 
-  const [createPost, { loading: createLoading }] = useCreatePostMutation({
-    onCompleted: (res) => {
-      setLoading(false);
-      postUploadedNotification();
-      //@ts-ignore
-      const temp = [...post];
-      //@ts-ignore
-      const temp1 = [...myPost];
-      setPost([res.createPost, ...post]);
-      setMyPost([res.createPost, ...myPost]);
-      navigate(AppRoutes.HOME_TAB);
-    },
-    onError: (err) => {
-      console.log(err);
-      setLoading(false);
-      somethingWentWrongErrorNotification();
-    },
-  });
+  // const [createPost, { loading: createLoading }] = useCreatePostMutation({
+  //   onCompleted: (res) => {
+  //     setLoading(false);
+  //     postUploadedNotification();
+  //     //@ts-ignore
+  //     const temp = [...post];
+  //     //@ts-ignore
+  //     const temp1 = [...myPost];
+  //     setPost([res.createPost, ...post]);
+  //     setMyPost([res.createPost, ...myPost]);
+  //     navigate(AppRoutes.HOME_TAB);
+  //   },
+  //   onError: (err) => {
+  //     console.log(err);
+  //     setLoading(false);
+  //     somethingWentWrongErrorNotification();
+  //   },
+  // });
 
   const renderText = (mention: Mention) => {
     return <Text style={{ color: theme.accent }}>{mention.name}</Text>;
@@ -143,27 +154,6 @@ const CaptionScreen = React.memo(() => {
 
   const handleUpload = async () => {
     setLoading(true);
-    const mediaProcessPromise: Promise<Media>[] = medias.map((item) => {
-      return uploadMedia(item.metadata.node.image);
-    });
-
-    Promise.all(mediaProcessPromise)
-      .then((res) => {
-        const medias = res.map((item) => Number(item.id));
-        createPost({
-          variables: {
-            input: {
-              medias,
-              caption: content,
-              rawCaption: extractValue,
-            },
-          },
-        });
-      })
-      .catch(() => {
-        setLoading(false);
-        uploadErrorNotification('Media');
-      });
   };
 
   return (
@@ -172,17 +162,19 @@ const CaptionScreen = React.memo(() => {
         iconSize={IconSizes.x7}
         IconRight={() => (
           <TouchableOpacity
-            disabled={createLoading || searchLoading || loading}
+            disabled={searchLoading || loading}
             style={{ flexDirection: 'row', alignItems: 'center' }}
             onPress={handleUpload}>
-            <Text style={{ color: ThemeStatic.accent, ...FontSizes.Label }}>Share</Text>
+            <Text style={{ color: ThemeStatic.accent, ...FontSizes.Label }}>Save</Text>
           </TouchableOpacity>
         )}
       />
       <View style={styles.contentContainer}>
         <View style={styles.postContainer}>
-          <ImageBackground style={styles.imageContainer} source={{ uri: medias[0].metadata.node.image.uri }}>
-            {medias.length > 1 ? (
+          <ImageBackground
+            style={styles.imageContainer}
+            source={{ uri: (data && data.mediasPath && data?.mediasPath[0].filePath) ?? '' }}>
+            {data && data.medias && data?.medias?.length > 1 ? (
               <Foundation name="page-multiple" color={ThemeStatic.white} style={styles.imageIcon} />
             ) : null}
           </ImageBackground>
@@ -274,4 +266,4 @@ const useStyle = (theme = {} as ThemeColors) =>
     },
   });
 
-export default CaptionScreen;
+export default EditCaptionScreen;

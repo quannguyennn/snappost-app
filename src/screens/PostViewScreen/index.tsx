@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import React, { createRef, useEffect, useRef, useState } from 'react';
+import React, { createRef, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -23,7 +23,7 @@ import { themeState } from '../../recoil/theme/atoms';
 import { Typography, ThemeStatic, PostDimensions } from '../../theme';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
-import { GetPostDetailQueryResponse, useGetPostDetailQuery } from '../../graphql/queries/getPostDetail.generated';
+import { useGetPostDetailQuery } from '../../graphql/queries/getPostDetail.generated';
 import {
   postDeletedNotification,
   somethingWentWrongErrorNotification,
@@ -33,12 +33,13 @@ import FastImage from 'react-native-fast-image';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import TransformText from '../../components/shared/TransformText';
 import CommentList from './components/Comments';
-import { useOnCreateCommentSubscription } from '../../graphql/subscriptions/onCreateComment.generated';
 import { useReactToPostMutation } from '../../graphql/mutations/reactToPost.generated';
 import { useRemovePostMutation } from '../../graphql/mutations/removePost.generated';
 import { myPostState, newFeedState } from '../../recoil/app/atoms';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { PollIntervals } from '../../utils/constants';
+import { useOnLikePostSubscription } from '../../graphql/subscriptions/onLikePost.generated';
+import { useOnUnLikePostSubscription } from '../../graphql/subscriptions/onUnLikePost.generated';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -62,11 +63,6 @@ const PostViewScreen: React.FC = () => {
     onError: () => somethingWentWrongErrorNotification(),
     onCompleted: (res) => {
       setIsLike(res.reactToPost);
-      if (res.reactToPost) {
-        setTotalLike(totalLike + 1);
-      } else {
-        setTotalLike(totalLike - 1);
-      }
     },
   });
 
@@ -84,21 +80,6 @@ const PostViewScreen: React.FC = () => {
   });
 
   const data = fetchData?.getPostDetail;
-
-  useOnCreateCommentSubscription({
-    variables: { postId },
-    onSubscriptionData: ({ subscriptionData }) => {
-      if (subscriptionData.error) console.log("comment sub", subscriptionData.error)
-
-    },
-  });
-
-  // const { data: commentSub, error, loading: subLoading } = useOnCreateCommentSubscription({
-  //   variables: { postId },
-  //   fetchPolicy: 'network-only',
-  // });
-
-  // console.log(commentSub, 222, error, subLoading);
 
   const [deletePost] = useRemovePostMutation({
     onCompleted: () => {
@@ -119,9 +100,30 @@ const PostViewScreen: React.FC = () => {
     postDeletedNotification();
   };
 
-  // useEffect(() => {
-  //   getPostDetail({ variables: { id: postId } });
-  // }, [getPostDetail, postId]);
+  useOnLikePostSubscription({
+    variables: { postId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log('like post sub', subscriptionData.error);
+      } else {
+        // @ts-ignore
+        setTotalLike(totalLike + 1);
+      }
+    },
+  });
+
+  useOnUnLikePostSubscription({
+    variables: { postId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log('unlike post sub', subscriptionData.error);
+      } else {
+        // @ts-ignore
+        // const temp = [...user];
+        setTotalLike(totalLike - 1);
+      }
+    },
+  });
 
   const scrollViewRef = useRef();
   const postOptionsBottomSheetRef = useRef();
@@ -180,8 +182,9 @@ const PostViewScreen: React.FC = () => {
 
   const onPostEdit = () => {
     closeOptions();
+    navigate(AppRoutes.EDIT_CATION_SCREEN, { postId });
     // @ts-ignore
-    editPostBottomSheetRef.current.open();
+    // editPostBottomSheetRef.current.open();
   };
 
   const onPostDelete = () => {
@@ -278,7 +281,7 @@ const PostViewScreen: React.FC = () => {
           onPostEdit={onPostEdit}
           onPostDelete={onPostDelete}
         />
-        <EditPostBottomSheet ref={editPostBottomSheetRef} postId={id} caption={rawCaption ?? ''} />
+        {/* <EditPostBottomSheet ref={editPostBottomSheetRef} postId={id} caption={rawCaption ?? ''} /> */}
         <ConfirmationModal
           label="Delete"
           title="Delete post?"
@@ -288,7 +291,7 @@ const PostViewScreen: React.FC = () => {
           toggle={confirmationToggle}
           onConfirm={() => onDeleteConfirm(id)}
         />
-        <LikesBottomSheet ref={likesBottomSheetRef} likes={[]} onUserPress={navigateToProfile} />
+        <LikesBottomSheet ref={likesBottomSheetRef} postId={postId} onUserPress={navigateToProfile} />
       </>
     );
   }

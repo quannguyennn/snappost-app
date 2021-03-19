@@ -12,8 +12,7 @@ import NativeImage from './shared/NativeImage';
 const { FontWeights, FontSizes } = Typography;
 
 interface UserCardProps {
-  userId: string | number;
-
+  userId: number;
   avatar: string;
   nickname: string;
   name: string;

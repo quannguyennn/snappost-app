@@ -1,0 +1,10 @@
+query getUserLikePost($postId: Float!) {
+  getUserLikePost(postId: $postId) {
+    id
+    name
+    nickname
+    intro
+    avatar
+    avatarFilePath
+  }
+}

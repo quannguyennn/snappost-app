@@ -1,0 +1,16 @@
+subscription onLikePost($postId: Float!) {
+  onLikePost(postId: $postId) {
+    id
+    postId
+    userId
+    createdAt
+    creatorInfo {
+      id
+      name
+      nickname
+      intro
+      zaloId
+      avatarFilePath
+    }
+  }
+}

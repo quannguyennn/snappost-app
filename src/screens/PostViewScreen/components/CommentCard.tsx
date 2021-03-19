@@ -26,7 +26,7 @@ interface CommentCardProps {
   time: string;
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ commentId, authorId, avatar, handle, body, time }) => {
+const CommentCard: React.FC<CommentCardProps> = ({ commentId, authorId, avatar, handle, body, time, postId }) => {
   const theme = useRecoilValue(themeState);
   const { navigate } = useNavigation();
 
@@ -51,7 +51,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ commentId, authorId, avatar, 
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         swipeableRef.current.close();
-        deleteComment({ variables: { id: commentId } });
+        deleteComment({ variables: { id: commentId, postId } });
       });
     }
   };

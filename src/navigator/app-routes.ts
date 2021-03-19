@@ -13,6 +13,7 @@ export enum AppRoutes {
   UPLOAD_TAB = 'UploadTab',
   FILTER_SCREEN = 'FilterScreen',
   CAPTION_SCREEN = 'CaptionScreen',
+  EDIT_CATION_SCREEN = 'EditCaptionScreen',
   NOTIFICATION_TAB = 'NotificationTab',
   PROFILE_TAB = 'ProfileTab',
 

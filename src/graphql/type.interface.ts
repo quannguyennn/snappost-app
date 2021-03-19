@@ -126,10 +126,26 @@ export type Comments = Node & {
   creatorInfo: User;
 };
 
+export type CommentDeletePayload = {
+  __typename?: 'CommentDeletePayload';
+  id: Scalars['Float'];
+  postId: Scalars['Float'];
+};
+
 export type CommentConnection = {
   __typename?: 'CommentConnection';
   items?: Maybe<Array<Comments>>;
   meta: BasePaginationMeta;
+};
+
+export type Like = Node & {
+  __typename?: 'Like';
+  id: Scalars['Float'];
+  postId: Scalars['Float'];
+  userId: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  creatorInfo: User;
+  postInfo: Post;
 };
 
 export type Query = {
@@ -140,6 +156,7 @@ export type Query = {
   isAvailable: Scalars['Boolean'];
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
+  getUserLikePost: Array<User>;
   getPostComment: CommentConnection;
   getNewFeed: PostConnection;
   getExplorePost: PostConnection;
@@ -170,6 +187,10 @@ export type QueryMediasArgs = {
 
 export type QueryMediaArgs = {
   id: Scalars['Float'];
+};
+
+export type QueryGetUserLikePostArgs = {
+  postId: Scalars['Float'];
 };
 
 export type QueryGetPostCommentArgs = {
@@ -268,6 +289,7 @@ export type MutationUpdateCommentArgs = {
 };
 
 export type MutationRemoveCommentArgs = {
+  postId: Scalars['Float'];
   id: Scalars['Float'];
 };
 
@@ -344,9 +366,24 @@ export type UpdatePostInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  onLikePost: Like;
+  onUnLikePost: Like;
   onCreateComment: Comments;
+  onDeleteComment: CommentDeletePayload;
+};
+
+export type SubscriptionOnLikePostArgs = {
+  postId: Scalars['Float'];
+};
+
+export type SubscriptionOnUnLikePostArgs = {
+  postId: Scalars['Float'];
 };
 
 export type SubscriptionOnCreateCommentArgs = {
+  postId: Scalars['Float'];
+};
+
+export type SubscriptionOnDeleteCommentArgs = {
   postId: Scalars['Float'];
 };

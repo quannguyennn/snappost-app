@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -9,62 +10,75 @@ import ConnectionsPlaceholder from '../../../components/placeholders/Connection.
 import ImageBanner from '../../../components/shared/ImageBanner';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import UserCard from '../../../components/UserCard';
+import {
+  GetUserLikePostQueryResponse,
+  useGetUserLikePostQuery,
+} from '../../../graphql/queries/getUserLikePost.generated';
+import { useOnLikePostSubscription } from '../../../graphql/subscriptions/onLikePost.generated';
+import { useOnUnLikePostSubscription } from '../../../graphql/subscriptions/onUnLikePost.generated';
 import { themeState } from '../../../recoil/theme/atoms';
 import type { ThemeColors } from '../../../types/theme';
 
 interface LikesBottomSheetProps {
   ref: React.Ref<any>;
-  likes: number[];
+  postId: number;
   onUserPress: (userId: number) => void;
 }
 
-const LikesBottomSheet: React.FC<LikesBottomSheetProps> = React.forwardRef(({ likes, onUserPress }, ref) => {
+const LikesBottomSheet: React.FC<LikesBottomSheetProps> = React.forwardRef(({ postId, onUserPress }, ref) => {
   const theme = useRecoilValue(themeState);
 
-  // const { data, loading, error } = useQuery(QUERY_LIKE_USERS, {
-  //   variables: { likes },
-  //   fetchPolicy: 'network-only',
-  // });
+  const [users, setUsers] = useState<GetUserLikePostQueryResponse['getUserLikePost']>([]);
+
+  const { loading, error } = useGetUserLikePostQuery({
+    variables: { postId },
+    fetchPolicy: 'network-only',
+    onCompleted: (res) => setUsers(res.getUserLikePost),
+  });
 
   let content = <ConnectionsPlaceholder />;
 
   const ListEmptyComponent = () => <ImageBanner img={Images.emptyLike} placeholder="No likes yet" spacing={16} />;
 
   const renderItem = ({ item }: any) => {
-    const { id, avatar, handle, name } = item;
-    return <UserCard userId={id} avatar={avatar} handle={handle} name={name} onPress={() => onUserPress(id)} />;
+    const { id, avatarFilePath, nickname, name } = item;
+    return (
+      <UserCard userId={id} avatar={avatarFilePath} nickname={nickname} name={name} onPress={() => onUserPress(id)} />
+    );
   };
 
-  if (true) {
-    const likeUsers = [
-      {
-        userId: '1',
-        avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZCQk1_Y-Y_cmK36Dt6LwTn9SNf3o2pYamnw&usqp=CAU',
-        handle: 'Quan',
-      },
-      {
-        userId: '2',
-        avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZCQk1_Y-Y_cmK36Dt6LwTn9SNf3o2pYamnw&usqp=CAU',
-        handle: 'Quan',
-      },
-      {
-        userId: '3',
-        avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZCQk1_Y-Y_cmK36Dt6LwTn9SNf3o2pYamnw&usqp=CAU',
-        handle: 'Quan',
-      },
-      {
-        userId: '4',
-        avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZCQk1_Y-Y_cmK36Dt6LwTn9SNf3o2pYamnw&usqp=CAU',
-        handle: 'Quan',
-      },
-    ];
+  useOnLikePostSubscription({
+    variables: { postId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log('like post sub', subscriptionData.error);
+      } else {
+        // @ts-ignore
+        setUsers([subscriptionData.data?.onLikePost.creatorInfo, ...users]);
+      }
+    },
+  });
 
+  useOnUnLikePostSubscription({
+    variables: { postId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log('unlike post sub', subscriptionData.error);
+      } else {
+        // @ts-ignore
+        // const temp = [...user];
+        setUsers([...users].filter((item) => item.id !== subscriptionData.data?.onUnLikePost.userId));
+      }
+    },
+  });
+
+  if (!loading && !error) {
     content = (
       <FlatGrid
         bounces={false}
         itemDimension={responsiveWidth(85)}
         showsVerticalScrollIndicator={false}
-        data={likeUsers}
+        data={users}
         itemContainerStyle={styles().listItemContainer}
         contentContainerStyle={styles().listContentContainer}
         ListEmptyComponent={ListEmptyComponent}

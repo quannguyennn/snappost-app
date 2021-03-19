@@ -1,0 +1,6 @@
+subscription onDeleteComment($postId: Float!) {
+  onDeleteComment(postId: $postId) {
+    id
+    postId
+  }
+}
