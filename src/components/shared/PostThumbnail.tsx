@@ -5,14 +5,17 @@ import type { Dimensions, ThemeColors } from '../../types/theme';
 import { AppRoutes } from '../../navigator/app-routes';
 import NativeImage from './NativeImage';
 import { AppContext } from '../../context';
+import Foundation from 'react-native-vector-icons/Foundation';
+import { ThemeStatic } from '../../theme/Colors';
 
 interface PostThumbnailProps {
   id: string;
   uri: string;
   dimensions: Dimensions;
+  nPost: number;
 }
 
-const PostThumbnail: React.FC<PostThumbnailProps> = ({ id, uri, dimensions }) => {
+const PostThumbnail: React.FC<PostThumbnailProps> = ({ id, uri, dimensions, nPost }) => {
   const { theme } = useContext(AppContext);
   const { navigate } = useNavigation();
 
@@ -24,6 +27,13 @@ const PostThumbnail: React.FC<PostThumbnailProps> = ({ id, uri, dimensions }) =>
       activeOpacity={0.95}
       style={[styles(theme).container, { ...dimensions }]}>
       <NativeImage uri={uri} style={styles().thumbnailImage} />
+      {nPost > 1 ? <Foundation name="page-multiple" color={ThemeStatic.white} style={{
+        fontSize: 18,
+        position: 'absolute',
+        top: 5,
+        right: 5,
+      }} />
+        : null}
     </TouchableOpacity>
   );
 };

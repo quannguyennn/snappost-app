@@ -1,9 +1,30 @@
 fragment UserFragment on User {
-  id
-  avatarFilePath
-  nickname
-  name
-  intro
-  zaloId
-  isNew
+    id
+    name
+    nickname
+    intro
+    zaloId
+    avatar
+    isNew
+    avatarFilePath
+    nFollowing {
+      id
+      name
+      nickname
+      intro
+      zaloId
+      avatar
+      isNew
+      avatarFilePath
+    }
+    nFollower {
+      id
+      name
+      nickname
+      intro
+      zaloId
+      avatar
+      isNew
+      avatarFilePath
+    }
 }

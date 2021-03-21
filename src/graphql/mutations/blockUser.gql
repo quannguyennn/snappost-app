@@ -1,0 +1,15 @@
+mutation blockUser($id: Float!) {
+  blockUser(id: $id) {
+    id
+    name
+    nickname
+    intro
+    zaloId
+    avatar
+    isNew
+    blocked
+    createdAt
+    updatedAt
+    avatarFilePath
+  }
+}

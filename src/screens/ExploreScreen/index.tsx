@@ -106,7 +106,7 @@ const ExploreScreen: React.FC = () => {
 
   const [
     getExplorePost,
-    { data: fetchPost, loading: postsLoading, fetchMore: fetchMorePost, called },
+    { data: fetchPost, loading: postsLoading, fetchMore: fetchMorePost, called, refetch },
   ] = useGetExplorePostLazyQuery({
     onError: (err) => {
       console.log('explore post', err);
@@ -119,8 +119,11 @@ const ExploreScreen: React.FC = () => {
   });
 
   useEffect(() => {
-    if (init || refresh) {
-      getExplorePost({ variables: { limit: 20, page: 1 } });
+    if (init) {
+      getExplorePost({ variables: { limit: 21, page: 1 } });
+    }
+    if (refresh) {
+      refetch && refetch()
     }
     setInit(false);
   }, [init, refresh, getExplorePost]);
@@ -132,11 +135,12 @@ const ExploreScreen: React.FC = () => {
 
   const postsData = fetchPost?.getExplorePost.items;
 
+
   const loadMorePost = () => {
     if (Number(currentPagePost) < Number(totalPagesPost)) {
       fetchMorePost &&
         fetchMorePost({
-          variables: { limit: 20, page: currentPagePost + 1 },
+          variables: { limit: 21, page: currentPagePost + 1 },
           updateQuery: (prev: GetExplorePostQueryResponse, { fetchMoreResult }) => {
             if (!fetchMoreResult) {
               return prev;
@@ -172,7 +176,7 @@ const ExploreScreen: React.FC = () => {
   const onRefresh = () => {
     try {
       setRefresh(true);
-    } catch {}
+    } catch { }
   };
 
   const onUserRefresh = () => {

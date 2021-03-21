@@ -45,10 +45,11 @@ const HomeScreen = React.memo(() => {
 
   const data = posts;
 
+
   useEffect(() => {
     if (refresh || init) {
       getNewFeed({
-        variables: { limit: 20, page: 1 },
+        variables: { limit: 12, page: 1 },
       });
     }
     setInit(false);
@@ -58,7 +59,7 @@ const HomeScreen = React.memo(() => {
     if (Number(currentPage) < Number(totalPages)) {
       fetchMore &&
         fetchMore({
-          variables: { limit: 20, page: currentPage + 1 },
+          variables: { limit: 12, page: currentPage + 1 },
           updateQuery: (prev: GetNewFeedQueryResponse, { fetchMoreResult }) => {
             if (!fetchMoreResult) {
               return prev;
@@ -107,7 +108,7 @@ const HomeScreen = React.memo(() => {
       style={styles().postList}
       spacing={20}
       renderItem={renderItem}
-      onEndReachedThreshold={0.4}
+      onEndReachedThreshold={0.3}
       refreshing={refresh}
       onEndReached={() => loadMore()}
     />
@@ -131,6 +132,9 @@ const HomeScreen = React.memo(() => {
       <HomeHeader IconRight={IconRight} />
       {content}
       {loading && !posts?.length ? <PostCardPlaceholder /> : null}
+      {
+        loading && posts?.length ? <ActivityIndicator style={{ marginVertical: 5 }} /> : null
+      }
     </View>
   );
 });

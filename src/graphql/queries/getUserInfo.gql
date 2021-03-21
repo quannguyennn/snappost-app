@@ -9,6 +9,7 @@ query getUserInfo($id: Float!) {
     isNew
     createdAt
     updatedAt
+    isRequestFollowMe
     avatarFilePath
     followStatus
     nFollowing {
@@ -22,7 +23,6 @@ query getUserInfo($id: Float!) {
       createdAt
       updatedAt
       avatarFilePath
-      followStatus
     }
     nFollower {
       id
@@ -35,7 +35,6 @@ query getUserInfo($id: Float!) {
       createdAt
       updatedAt
       avatarFilePath
-      followStatus
     }
   }
 }

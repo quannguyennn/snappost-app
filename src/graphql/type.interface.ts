@@ -33,9 +33,11 @@ export type User = Node & {
   zaloId: Scalars['String'];
   avatar?: Maybe<Scalars['Float']>;
   isNew: Scalars['Boolean'];
+  blocked: Array<Scalars['Float']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   avatarFilePath?: Maybe<Scalars['String']>;
+  isRequestFollowMe: Scalars['Boolean'];
   followStatus?: Maybe<FollowStatus>;
   nFollowing?: Maybe<Array<User>>;
   nFollower?: Maybe<Array<User>>;
@@ -154,6 +156,7 @@ export type Query = {
   getUserInfo?: Maybe<User>;
   searchUser: UserConnection;
   isAvailable: Scalars['Boolean'];
+  getBlockedUser?: Maybe<Array<User>>;
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
   getUserLikePost: Array<User>;
@@ -162,6 +165,7 @@ export type Query = {
   getExplorePost: PostConnection;
   getPostDetail: Post;
   myPost: PostConnection;
+  getUserPost: PostConnection;
 };
 
 export type QueryGetUserInfoArgs = {
@@ -218,9 +222,17 @@ export type QueryMyPostArgs = {
   limit: Scalars['Float'];
 };
 
+export type QueryGetUserPostArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
+  userId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   updateUserInfo: User;
+  blockUser: User;
+  unBlockUser: User;
   uploadMedia: Media;
   uploadMediaToS3: Media;
   removeMedia: Media;
@@ -228,6 +240,7 @@ export type Mutation = {
   createDir: Media;
   FollowUser: Scalars['Boolean'];
   UnFollowUser: Scalars['Boolean'];
+  handleFollowRequest: Scalars['Boolean'];
   loginWithSNS: AuthConnection;
   logout: Scalars['Boolean'];
   createComment: Comments;
@@ -242,6 +255,14 @@ export type Mutation = {
 
 export type MutationUpdateUserInfoArgs = {
   input: UpdateUserInput;
+};
+
+export type MutationBlockUserArgs = {
+  id: Scalars['Float'];
+};
+
+export type MutationUnBlockUserArgs = {
+  id: Scalars['Float'];
 };
 
 export type MutationUploadMediaArgs = {
@@ -274,6 +295,11 @@ export type MutationFollowUserArgs = {
 
 export type MutationUnFollowUserArgs = {
   id: Scalars['Float'];
+};
+
+export type MutationHandleFollowRequestArgs = {
+  accept: Scalars['Boolean'];
+  userId: Scalars['Float'];
 };
 
 export type MutationLoginWithSnsArgs = {

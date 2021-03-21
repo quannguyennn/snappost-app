@@ -8,7 +8,6 @@ query me {
     avatar
     isNew
     avatarFilePath
-    followStatus
     nFollowing {
       id
       name
@@ -29,7 +28,6 @@ query me {
       avatar
       isNew
       avatarFilePath
-      followStatus
     }
   }
 }

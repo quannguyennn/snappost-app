@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Typography } from '../../../theme';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';
@@ -11,56 +11,49 @@ import { PollIntervals } from '../../../utils/constants';
 import { FollowInteraction } from '../../../types/constants';
 import { AppRoutes } from '../../../navigator/app-routes';
 import { IconSizes } from '../../../theme/Icon';
-import { useUserInfo } from '../../../hooks/useUserInfo';
-import type { FollowStatus } from '../../../graphql/type.interface';
+import type { FollowStatus, Maybe } from '../../../graphql/type.interface';
+import { useFollowUserMutation } from '../../../graphql/mutations/FollowUser.generated';
+import { useUnFollowUserMutation } from '../../../graphql/mutations/UnFollowUser.generated';
 
 const { FontWeights, FontSizes } = Typography;
 
 interface UserInteractionsProps {
-  targetId: string,
-  avatar: string | undefined | null,
-  name: string | undefined
-  isFollow: FollowStatus
+  targetId: number,
+  isFollow: Maybe<FollowStatus> | undefined,
+  onInteract: () => void;
 };
 
-const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, name, isFollow }) => {
-
+const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow, onInteract }) => {
   const { navigate } = useNavigation();
   const theme = useRecoilValue(themeState);
 
-  const [updateFollowing, { loading: updateFollowingLoading }] = useMutation(MUTATION_UPDATE_FOLLOWING);
+  const [follow, { loading: followLoading }] = useFollowUserMutation({
+    onCompleted: () => {
+      onInteract()
+    }
+  });
+  const [unFollow, { loading: unFollowLoading }] = useUnFollowUserMutation({
+    onCompleted: () => {
+      onInteract()
+    }
+  });
 
 
   let content = <LoadingIndicator size={IconSizes.x0} color={theme.white} />;
 
-  if (isFollow !== 'IS_ME' && !updateFollowingLoading && !doesFollowError) {
-    const { doesFollow } = doesFollowData;
+  if (!followLoading && !unFollowLoading) {
     content = (
       <Text style={styles(theme).followInteractionText}>
-        {`${doesFollow ? 'FOLLOWING' : 'FOLLOW'}`}
+        {`${isFollow === "WAITING" ? 'REQUEST SENT' : 'FOLLOW'}`}
       </Text>
     );
   }
 
   const followInteraction = () => {
-    if (doesFollowLoading) return;
-
-    const { doesFollow } = doesFollowData;
-    const updateFollowingArgs = { userId: user.id, targetId };
-    if (doesFollow) {
-      updateFollowing({
-        variables: {
-          ...updateFollowingArgs,
-          action: FollowInteraction.UNFOLLOW
-        }
-      });
+    if (isFollow === "ACCEPT" || isFollow === "WAITING") {
+      unFollow({ variables: { id: targetId } })
     } else {
-      updateFollowing({
-        variables: {
-          ...updateFollowingArgs,
-          action: FollowInteraction.FOLLOW
-        }
-      });
+      follow({ variables: { id: targetId } })
     }
   };
 
@@ -90,8 +83,8 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, avatar, n
         {content}
       </TouchableOpacity>
       <TouchableOpacity activeOpacity={0.90}
-      // onPress={messageInteraction}
-      style={styles(theme).messageInteraction}>
+        // onPress={messageInteraction}
+        style={styles(theme).messageInteraction}>
         <Text style={styles(theme).messageInteractionText}>MESSAGE</Text>
       </TouchableOpacity>
     </View>

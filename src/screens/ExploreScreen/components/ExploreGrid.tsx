@@ -61,7 +61,7 @@ const ExploreGrid: React.FC<ExploreGridProps> = ({
         ListEmptyComponent={() => <ListEmptyComponent placeholder="No posts found" spacing={60} />}
         spacing={5}
         onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.3}
         ListFooterComponent={ListFooterComponent}
         renderItem={renderItem}
       />

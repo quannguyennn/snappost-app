@@ -14,9 +14,11 @@ type User implements Node {
   zaloId: String!
   avatar: Float
   isNew: Boolean!
+  blocked: [Float!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   avatarFilePath: String
+  isRequestFollowMe: Boolean!
   followStatus: FollowStatus
   nFollowing: [User!]
   nFollower: [User!]
@@ -139,6 +141,7 @@ type Query {
   getUserInfo(id: Float!): User
   searchUser(page: Float!, limit: Float!, isRestricted: Boolean = false, keyword: String!): UserConnection!
   isAvailable(nickname: String!): Boolean!
+  getBlockedUser: [User!]
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
   getUserLikePost(postId: Float!): [User!]!
@@ -147,10 +150,13 @@ type Query {
   getExplorePost(page: Float!, limit: Float!): PostConnection!
   getPostDetail(id: Float!): Post!
   myPost(page: Float!, limit: Float!): PostConnection!
+  getUserPost(page: Float!, limit: Float!, userId: Float!): PostConnection!
 }
 
 type Mutation {
   updateUserInfo(input: UpdateUserInput!): User!
+  blockUser(id: Float!): User!
+  unBlockUser(id: Float!): User!
   uploadMedia(provider: String = "LOCAL", parentId: ID, file: Upload!): Media!
   uploadMediaToS3(parentId: ID, file: Upload!): Media!
   removeMedia(id: ID): Media!
@@ -158,6 +164,7 @@ type Mutation {
   createDir(parentId: ID, dirName: String!): Media!
   FollowUser(id: Float!): Boolean!
   UnFollowUser(id: Float!): Boolean!
+  handleFollowRequest(accept: Boolean!, userId: Float!): Boolean!
   loginWithSNS(input: NewUserInput!): AuthConnection!
   logout: Boolean!
   createComment(input: CreateCommentInput!): Comments!

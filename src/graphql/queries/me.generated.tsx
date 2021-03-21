@@ -7,7 +7,7 @@ export type MeQueryVariables = Types.Exact<{ [key: string]: never }>;
 export type MeQueryResponse = { __typename?: 'Query' } & {
   me: { __typename?: 'User' } & Pick<
     Types.User,
-    'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'isNew' | 'avatarFilePath' | 'followStatus'
+    'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'isNew' | 'avatarFilePath'
   > & {
       nFollowing?: Types.Maybe<
         Array<
@@ -21,7 +21,7 @@ export type MeQueryResponse = { __typename?: 'Query' } & {
         Array<
           { __typename?: 'User' } & Pick<
             Types.User,
-            'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'isNew' | 'avatarFilePath' | 'followStatus'
+            'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'isNew' | 'avatarFilePath'
           >
         >
       >;
@@ -39,7 +39,6 @@ export const MeDocument = gql`
       avatar
       isNew
       avatarFilePath
-      followStatus
       nFollowing {
         id
         name
@@ -60,7 +59,6 @@ export const MeDocument = gql`
         avatar
         isNew
         avatarFilePath
-        followStatus
       }
     }
   }

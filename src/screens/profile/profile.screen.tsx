@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, View } from 'react-native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Header from '../../components/shared/layout/headers/Header';
 import IconButton from '../../components/shared/Iconbutton';
 import { IconSizes } from '../../theme/Icon';
@@ -13,7 +13,6 @@ import { PostDimensions } from '../../theme';
 import PostThumbnail from '../../components/shared/PostThumbnail';
 import AboutBottomSheet from './components/AboutBottomSheet';
 import ProfileScreenPlaceholder from '../../components/placeholders/ProfileScreen.Placeholder';
-import { responsiveWidth } from 'react-native-responsive-dimensions';
 import ListEmptyComponent from '../../components/shared/ListEmptyComponent';
 import { FlatGrid } from 'react-native-super-grid';
 import ConnectionsBottomSheet from '../../components/shared/ConnectionsBottomSheet';
@@ -25,15 +24,27 @@ import { MyPostQueryResponse, useMyPostLazyQuery } from '../../graphql/queries/m
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import EditProfileBottomSheet from './components/EditProfileBottomSheet';
 import { myPostState } from '../../recoil/app/atoms';
+import { useMeLazyQuery } from '../../graphql/queries/me.generated';
+import BlockListBottomSheet from './components/BlockListBottomSheet';
 
 const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const theme = useRecoilValue(themeState);
-
+  const isFocused = useIsFocused()
   const me = useCurrentUser();
+  const [getMe] = useMeLazyQuery({
+    onCompleted: () => { setUpdate(false) }
+  })
 
   const [refresh, setRefresh] = useState(false);
   const [myPost, setMyPost] = useRecoilState(myPostState);
   const [init, setInit] = useState(true);
+  const [update, setUpdate] = useState(false)
+
+  useEffect(() => {
+    if (update || isFocused) {
+      getMe()
+    }
+  }, [update, isFocused])
 
   const [getMyPost, { data: fetchData, loading, fetchMore }] = useMyPostLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -51,12 +62,11 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
     Number(fetchData?.myPost?.meta.currentPage) >= 0 ? Number(fetchData?.myPost?.meta.currentPage) : 1;
   const totalPages = Number(fetchData?.myPost?.meta.totalPages) >= 0 ? Number(fetchData?.myPost?.meta.totalPages) : 2;
 
-  // const data = fetchData?.myPost.items;
-
   useEffect(() => {
     if (refresh || init) {
+      getMe();
       getMyPost({
-        variables: { limit: 20, page: 1 },
+        variables: { limit: 15, page: 1 },
       });
     }
     setInit(false);
@@ -66,7 +76,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
     if (Number(currentPage) < Number(totalPages)) {
       fetchMore &&
         fetchMore({
-          variables: { limit: 20, page: currentPage + 1 },
+          variables: { limit: 15, page: currentPage + 1 },
           updateQuery: (prev: MyPostQueryResponse, { fetchMoreResult }) => {
             if (!fetchMoreResult) {
               return prev;
@@ -137,7 +147,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
   // @ts-ignore
   const renderItem = ({ item }) => {
     const { id, mediasPath } = item;
-    return <PostThumbnail id={id} uri={mediasPath[0].filePath} dimensions={PostDimensions.Medium} />;
+    return <PostThumbnail nPost={mediasPath?.length} id={id} uri={mediasPath[0].filePath} dimensions={PostDimensions.Small} />;
   };
 
   const IconRight = () => (
@@ -151,17 +161,15 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
 
   if (!loading || myPost?.length) {
     content = (
-      <>
+      <View style={{ flex: 1 }}>
         <FlatGrid
           onRefresh={() => setRefresh(true)}
           refreshing={refresh}
-          staticDimension={responsiveWidth(94)}
           ListHeaderComponent={ListHeaderComponent}
-          itemDimension={150}
           data={myPost}
           ListEmptyComponent={() => <ListEmptyComponent listType="posts" spacing={30} />}
           style={styles().postGrid}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={0.3}
           onEndReached={() => loadMore()}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
@@ -174,8 +182,9 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
           name={me?.name ?? ''}
           nickname={me?.nickname ?? ''}
           about={me?.intro ?? ''}
+          onUpdate={() => setUpdate(true)}
         />
-      </>
+      </View>
     );
   }
 
@@ -183,12 +192,16 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
     <SafeAreaView style={styles(theme).container}>
       <Header title="My Profile" IconRight={IconRight} />
       {content}
+      {
+        myPost?.length && loading ? <ActivityIndicator /> : null
+      }
       <AboutBottomSheet ref={aboutBottomSheetRef} />
       <SettingsBottomSheet
         ref={settingsBottomSheetRef}
         onBlockListPress={onBlockListPress}
         onAboutPress={onAboutPress}
       />
+      <BlockListBottomSheet ref={blockListBottomSheetRef} onUnblock={() => null} />
     </SafeAreaView>
   );
 });

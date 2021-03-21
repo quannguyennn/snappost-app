@@ -1,22 +1,21 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
-import { responsiveWidth } from 'react-native-responsive-dimensions'; 
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import Checkbox from 'react-native-modest-checkbox';
-
 import { themeState, themeTypeState } from '../../../recoil/theme/atoms';
-import { useNavigation } from '@react-navigation/core';
-import type { ThemeColors, ThemeVariantType } from '../../../types/theme';
+import type { ThemeColors } from '../../../types/theme';
 import { saveThemeType, storage } from '../../../helpers/storage';
-import { AppRoutes } from '../../../navigator/app-routes';
-import { useApolloClient } from '@apollo/client';
 import Typography from '../../../theme/Typography';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import Option from '../../../components/shared/controls/Option';
 import { Theme, ThemeStatic, ThemeVariant } from '../../../theme';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { IconSizes } from '../../../theme/Icon';
+import { useLogoutMutation } from '../../../graphql/mutations/logout.generated';
+import { isLoginState } from '../../../recoil/auth/atoms';
+import { longPressLogoutNotification } from '../../../helpers/notifications';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -30,11 +29,17 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = React.forwardRef
   ({ onBlockListPress, onAboutPress }, ref) => {
     const [theme, setTheme] = useRecoilState(themeState);
     const [themeType, setThemeType] = useRecoilState(themeTypeState);
+    const setIsLogin = useSetRecoilState(isLoginState)
 
     const [isChecked, setIsChecked] = useState(false);
 
-    // const client = useApolloClient();
-    const { navigate } = useNavigation();
+    const [logout, { loading }] = useLogoutMutation({
+      onCompleted: async () => {
+        await storage.clearStorage();
+        setIsLogin(false)
+      }
+    })
+
 
     useEffect(() => {
       setIsChecked(themeType === ThemeVariant.dark);
@@ -55,13 +60,9 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = React.forwardRef
       await saveThemeType(type);
     };
 
-    // const handleLogout = async () => {
-    //   await storage.clearStorage();
-    //   client.resetStore().finally(() => {
-    //     //
-    //   });
-    //   navigate(AppRoutes.AUTH);
-    // };
+    const handleLogout = async () => {
+      longPressLogoutNotification(() => logout())
+    };
 
     return (
       <Modalize
@@ -84,7 +85,7 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = React.forwardRef
             />
           </Option>
           <Option label="About" iconName="ios-information-circle-outline" onPress={onAboutPress} />
-          <Option label="Logout" iconName="ios-log-out" />
+          <Option label="Logout" iconName="ios-log-out" onPress={handleLogout} />
         </View>
       </Modalize>
     );

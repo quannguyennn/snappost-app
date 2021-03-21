@@ -1,5 +1,4 @@
 import ImagePicker, { Options } from 'react-native-image-crop-picker';
-
 import { noPermissionNotification } from '../helpers/notifications';
 import { ThemeStatic } from '../theme';
 import type { PhotoIdentifier } from '@react-native-community/cameraroll';
@@ -14,10 +13,10 @@ export const getImageFromLibrary = async (height: number, width: number, circula
     cropperActiveWidgetColor: ThemeStatic.accent,
     cropperStatusBarColor: ThemeStatic.accent,
     cropperToolbarColor: ThemeStatic.accent,
-    compressImageQuality: 0.8,
+    compressImageQuality: 1,
     mediaType: 'photo',
     writeTempFile: true,
-    multiple: true,
+    multiple: false,
   };
 
   try {
@@ -118,3 +117,4 @@ export const parseGridImages = (images: ExplorePost[]): ExplorePost[][] => {
 
   return parsedImages;
 };
+

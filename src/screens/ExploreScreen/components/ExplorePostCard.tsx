@@ -6,8 +6,8 @@ import NativeImage from '../../../components/shared/NativeImage';
 import { AppRoutes } from '../../../navigator/app-routes';
 import { themeState } from '../../../recoil/theme/atoms';
 import { PostDimensions } from '../../../theme';
-import { ThemeColors } from '../../../types/theme';
-import { ExplorePost } from '../../../types/utils';
+import type { ThemeColors } from '../../../types/theme';
+import type { ExplorePost } from '../../../types/utils';
 
 interface ExplorePostCardProps {
   postId: string;

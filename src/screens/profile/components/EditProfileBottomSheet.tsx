@@ -12,133 +12,180 @@ import type { ThemeColors } from '../../../types/theme';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../../recoil/theme/atoms';
+import { useIsAvailableLazyQuery } from '../../../graphql/queries/isAvailable.generated';
+import { getImageFromLibrary } from '../../../utils/shared';
+import { inputLimitErrorNotification, showErrorNotification, somethingWentWrongErrorNotification, tryAgainLaterNotification, uploadErrorNotification } from '../../../helpers/notifications';
+import { useUpdateUserInfoMutation } from '../../../graphql/mutations/updateUserInfo.generated';
+import { useFileUpload } from '../../../hooks/useFileUpload';
+import type { Image } from 'react-native-image-crop-picker';
+import { MeDocument } from '../../../graphql/queries/me.generated';
 
 interface EditProfileBottomSheetProps {
   ref: React.Ref<any>;
   avatar: string;
   name: string;
-  handle: string;
+  nickname: string;
   about: string;
+  onUpdate: () => void;
 }
 
 const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forwardRef(
-  ({ avatar, name, handle, about }, ref) => {
-    const user = useCurrentUser();
+  ({ avatar, name, nickname, about, onUpdate }, ref,) => {
     const theme = useRecoilValue(themeState);
+    const user = useCurrentUser()
+    const [upload] = useFileUpload();
 
-    const [editableAvatar, setEditableAvatar] = useState('');
+    const [selectedImage, setSelectedImage] = useState<Image>({} as Image)
+    const [editAvatar, setEditAvatar] = useState('');
     const [editableName, setEditableName] = useState('');
-    const [editableHandle, setEditableHandle] = useState('');
+    const [editNickname, setEditNickname] = useState('');
+    const [avatarId, setAvatarId] = useState(0)
     const [handleError, setHandleError] = useState('');
-    const [editableAbout, setEditableAbout] = useState('');
+    const [intro, setIntro] = useState('');
     const [isUploading, setIsUploading] = useState(false);
 
-    // const [queryIsHandleAvailable, {
-    //   loading: isHandleAvailableLoading,
-    //   called: isHandleAvailableCalled,
-    //   data: isHandleAvailableData
-    // }] = useLazyQuery(QUERY_HANDLE_AVAILABLE);
+    const [queryIsHandleAvailable, {
+      loading: isHandleAvailableLoading,
+      called: isHandleAvailableCalled,
+      data: isHandleAvailableData
+    }] = useIsAvailableLazyQuery({
+      onError: (err) => {
+        console.log("isAvai", err)
+      }
+    });
 
-    // const [updateUser] = useMutation(MUTATION_UPDATE_USER);
+    const [updateUser] = useUpdateUserInfoMutation({
+      onError: (err) => {
+        console.log("update user", err)
+        tryAgainLaterNotification()
+      },
+      onCompleted: () => {
+        setIsUploading(false);
+        onUpdate();
+        //@ts-ignore
+        ref.current.close();
+      },
+      update: async (proxy, { data, errors }) => {
+        if (data?.updateUserInfo) {
+          const user = data?.updateUserInfo;
+          proxy.writeQuery({
+            query: MeDocument,
+            data: {
+              me: user,
+            },
+          });
+          if (errors) {
+            return;
+          }
+        }
+      }
+    })
 
     useEffect(() => {
-      setEditableAvatar(avatar);
+      setEditAvatar(avatar);
       setEditableName(name);
-      setEditableHandle(handle);
-      setEditableAbout(about);
-    }, [about, avatar, name, handle]);
+      setEditNickname(nickname);
+      setIntro(about);
+      setAvatarId(user?.avatar ?? 0)
+    }, [about, avatar, name, nickname]);
 
-    // useEffect(() => {
-    //   queryIsHandleAvailable({
-    //     variables: {
-    //       userId: user.id,
-    //       handle: editableHandle
-    //     }
-    //   });
-    // }, [editableHandle]);
-    //
-    // useEffect(() => {
-    //   if (!isHandleAvailableLoading && isHandleAvailableCalled) {
-    //     const { isHandleAvailable } = isHandleAvailableData;
-    //     if (!isHandleAvailable) {
-    //       setHandleError('username not available');
-    //     } else {
-    //       if (!editableHandle) setHandleError('username cannot be empty')
-    //       else setHandleError('');
-    //     }
-    //   }
-    // }, [editableHandle, isHandleAvailableLoading, isHandleAvailableCalled, isHandleAvailableData]);
+    useEffect(() => {
+      queryIsHandleAvailable({
+        variables: {
+          nickname: editNickname
+        }
+      });
+    }, [editNickname]);
+
+    useEffect(() => {
+      if (!isHandleAvailableLoading && isHandleAvailableCalled) {
+        const isHandleAvailable = isHandleAvailableData?.isAvailable
+        if (!isHandleAvailable && editNickname !== nickname) {
+          setHandleError('Nickname not available');
+        } else {
+          if (!editNickname) setHandleError('Nickname cannot be empty')
+          else setHandleError('');
+        }
+      }
+    }, [editNickname, isHandleAvailableLoading, isHandleAvailableCalled, isHandleAvailableData]);
 
     const onAvatarPick = async () => {
-      //@ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const { path } = await getImageFromLibrary(120, 120, true);
-      setEditableAvatar(path);
+      const image = await getImageFromLibrary(120, 120, true);
+      setSelectedImage(image ?? {} as Image)
+      setEditAvatar(image?.path ?? "");
     };
 
-    // const onDone = async () => {
-    //   const { isHandleAvailable } = isHandleAvailableData;
-    //
-    //   if (!editableName.trim().length) {
-    //     showErrorNotification('Name cannot be empty');
-    //     return;
-    //   }
-    //   if (editableAbout.trim().length > 200) {
-    //     inputLimitErrorNotification('About', 'less', 200);
-    //     return;
-    //   }
-    //   if (!isHandleAvailable) {
-    //     showErrorNotification('Username is not available');
-    //     return;
-    //   }
-    //   if (!editableHandle) {
-    //     showErrorNotification('Username cannot be empty');
-    //     return;
-    //   }
-    //   if (editableHandle.split(' ').length > 1) {
-    //     showErrorNotification('Username cannot contain blank spaces');
-    //     return;
-    //   }
+    const onDone = async () => {
+      const isHandleAvailable = isHandleAvailableData?.isAvailable
 
-    //   const avatarChanged = avatar !== editableAvatar;
-    //
-    //   try {
-    //     setIsUploading(true);
-    //
-    //     const updatedProfileData = {
-    //       userId: user.id,
-    //       avatar: editableAvatar,
-    //       name: editableName.trim(),
-    //       handle: editableHandle.trim(),
-    //       about: editableAbout.trim()
-    //     };
-    //
-    //     if (avatarChanged) {
-    //       const { downloadURL } = await uploadToStorage(Asset.avatar, editableAvatar, user.id);
-    //       //@ts-ignore
-    //       updatedProfileData.avatar = downloadURL;
-    //     }
-    //
-    //     const { data: { updateUser: { id, avatar: updatedAvatar, handle: updatedHandle } } } = await updateUser({ variables: updatedProfileData });
-    //     updateUserContext({ id, avatar: updatedAvatar, handle: updatedHandle });
-    //     setIsUploading(false);
-    //     //@ts-ignore
-    //     ref.current.close();
-    //   } catch ({ message }) {
-    //     if (avatarChanged) {
-    //       uploadErrorNotification('Avatar');
-    //     } else {
-    //       somethingWentWrongErrorNotification();
-    //     }
-    //     crashlytics.recordCustomError(Errors.ASSET_UPLOAD, message);
-    //   }
-    // };
-
-    const setHandle = (handle: string) => {
-      if (!handle) {
-        setHandleError('username cannot be empty');
+      if (!editableName.trim().length) {
+        showErrorNotification('Name cannot be empty');
+        return;
       }
-      setEditableHandle(handle);
+      if (intro.trim().length > 200) {
+        inputLimitErrorNotification('About', 'less', 200);
+        return;
+      }
+      if (!isHandleAvailable && editNickname !== nickname) {
+        showErrorNotification('Nickname is not available');
+        return;
+      }
+      if (!editNickname) {
+        showErrorNotification('Nickname cannot be empty');
+        return;
+      }
+      if (editNickname.split(' ').length > 1) {
+        showErrorNotification('Nickname cannot contain blank spaces');
+        return;
+      }
+
+      const avatarChanged = avatar !== editAvatar;
+
+      try {
+        setIsUploading(true);
+
+        const updatedProfileData = {
+          name: editableName.trim(),
+          nickname: editNickname.trim(),
+          intro: intro.trim(),
+          avatar: avatarId
+        };
+
+
+        if (avatarChanged) {
+          const uploadRes = await upload({
+            uri: selectedImage.path,
+            type: "image",
+            name: selectedImage.filename,
+            height: selectedImage.height,
+            width: selectedImage.width,
+          });
+          updatedProfileData.avatar = uploadRes.id
+        }
+
+        updateUser({
+          variables: {
+            input: {
+              ...updatedProfileData
+            }
+          }
+        });
+
+      } catch ({ message }) {
+        if (avatarChanged) {
+          uploadErrorNotification('Avatar');
+        } else {
+          somethingWentWrongErrorNotification();
+        }
+        setIsUploading(false)
+      }
+    };
+
+    const setNickname = (handle: string) => {
+      if (!handle) {
+        setHandleError('Nickname cannot be empty');
+      }
+      setEditNickname(handle);
     };
 
     let content = (
@@ -146,13 +193,11 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
         <LoadingIndicator size={IconSizes.x00} color={theme.accent} />
       </View>
     );
-    // isHandleAvailableLoading
-    //isHandleAvailableCalled
-    if (true) {
-      content = <MaterialIcons name={true ? 'done' : 'close'} color={HandleAvailableColor.true} size={IconSizes.x6} />;
+
+    if (!isHandleAvailableLoading && isHandleAvailableCalled) {
+      content = <MaterialIcons name={!isHandleAvailableData?.isAvailable && editNickname !== nickname || editNickname.trim() === "" ? 'close' : 'done'} color={!isHandleAvailableData?.isAvailable && editNickname !== nickname || editNickname.trim() === "" ? HandleAvailableColor.false : HandleAvailableColor.true} size={IconSizes.x6} />;
     }
 
-    const Icon = () => <MaterialIcons name="done" color={ThemeStatic.white} size={IconSizes.x5} />;
 
     return (
       <Modalize
@@ -164,7 +209,7 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
         <BottomSheetHeader heading="Edit profile" subHeading="Edit your personal information" />
         <View style={styles(theme).content}>
           <ImageBackground
-            source={{ uri: editableAvatar ? editableAvatar : '' }}
+            source={{ uri: editAvatar ? editAvatar : '' }}
             style={styles(theme).avatar}
             imageStyle={styles(theme).avatarImage}>
             <TouchableOpacity activeOpacity={0.9} onPress={onAvatarPick} style={styles(theme).avatarOverlay}>
@@ -181,27 +226,25 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
           />
           <FormInput
             ref={null}
-            label="Username"
+            label="Nickname"
             placeholder="example: doggo"
             error={handleError}
-            value={editableHandle}
-            onChangeText={setHandle}>
+            value={editNickname}
+            onChangeText={setNickname}>
             {content}
           </FormInput>
           <FormInput
             ref={null}
             label="About"
             placeholder="example: hey, I am a doggo"
-            value={editableAbout}
-            onChangeText={setEditableAbout}
+            value={intro}
+            onChangeText={setIntro}
             multiline
             characterRestriction={200}
           />
           <Button
-            Icon={Icon}
             label="Done"
-            // onDone
-            onPress={() => null}
+            onPress={() => onDone()}
             loading={isUploading}
             containerStyle={styles(theme).doneButton}
           />

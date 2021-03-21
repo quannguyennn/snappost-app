@@ -1,0 +1,3 @@
+mutation FollowUser($id: Float!) {
+  FollowUser(id: $id)
+}

@@ -19,46 +19,45 @@ export type GetUserInfoQueryResponse = { __typename?: 'Query' } & {
       | 'isNew'
       | 'createdAt'
       | 'updatedAt'
+      | 'isRequestFollowMe'
       | 'avatarFilePath'
       | 'followStatus'
     > & {
-        nFollowing?: Types.Maybe<
-          Array<
-            { __typename?: 'User' } & Pick<
-              Types.User,
-              | 'id'
-              | 'name'
-              | 'nickname'
-              | 'intro'
-              | 'zaloId'
-              | 'avatar'
-              | 'isNew'
-              | 'createdAt'
-              | 'updatedAt'
-              | 'avatarFilePath'
-              | 'followStatus'
-            >
+      nFollowing?: Types.Maybe<
+        Array<
+          { __typename?: 'User' } & Pick<
+            Types.User,
+            | 'id'
+            | 'name'
+            | 'nickname'
+            | 'intro'
+            | 'zaloId'
+            | 'avatar'
+            | 'isNew'
+            | 'createdAt'
+            | 'updatedAt'
+            | 'avatarFilePath'
           >
-        >;
-        nFollower?: Types.Maybe<
-          Array<
-            { __typename?: 'User' } & Pick<
-              Types.User,
-              | 'id'
-              | 'name'
-              | 'nickname'
-              | 'intro'
-              | 'zaloId'
-              | 'avatar'
-              | 'isNew'
-              | 'createdAt'
-              | 'updatedAt'
-              | 'avatarFilePath'
-              | 'followStatus'
-            >
+        >
+      >;
+      nFollower?: Types.Maybe<
+        Array<
+          { __typename?: 'User' } & Pick<
+            Types.User,
+            | 'id'
+            | 'name'
+            | 'nickname'
+            | 'intro'
+            | 'zaloId'
+            | 'avatar'
+            | 'isNew'
+            | 'createdAt'
+            | 'updatedAt'
+            | 'avatarFilePath'
           >
-        >;
-      }
+        >
+      >;
+    }
   >;
 };
 
@@ -74,6 +73,7 @@ export const GetUserInfoDocument = gql`
       isNew
       createdAt
       updatedAt
+      isRequestFollowMe
       avatarFilePath
       followStatus
       nFollowing {
@@ -87,7 +87,6 @@ export const GetUserInfoDocument = gql`
         createdAt
         updatedAt
         avatarFilePath
-        followStatus
       }
       nFollower {
         id
@@ -100,7 +99,6 @@ export const GetUserInfoDocument = gql`
         createdAt
         updatedAt
         avatarFilePath
-        followStatus
       }
     }
   }

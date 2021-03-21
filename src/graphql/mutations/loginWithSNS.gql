@@ -3,11 +3,7 @@ mutation loginWithSNS($input: NewUserInput!) {
     accessToken
     refreshToken
     user {
-  id
-  nickname
-  name
-  intro
-  zaloId
-  isNew    }
+     ...UserFragment
+    }
   }
 }

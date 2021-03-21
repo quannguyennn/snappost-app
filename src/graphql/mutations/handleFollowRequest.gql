@@ -1,0 +1,3 @@
+mutation handleFollowRequest($accept: Boolean!, $userId: Float!) {
+  handleFollowRequest(accept: $accept, userId: $userId)
+}

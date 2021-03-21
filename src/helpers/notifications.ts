@@ -77,6 +77,16 @@ export const longPressDeleteNotification = (onLongPress: any) =>
     onLongPress,
   });
 
+export const longPressLogoutNotification = (onLongPress: any) =>
+  showMessage({
+    message: 'Long press this notification to logout',
+    icon: 'danger',
+    type: 'danger',
+    duration: 4000,
+    backgroundColor: ThemeStatic.delete,
+    onLongPress,
+  });
+
 export const tryAgainLaterNotification = () =>
   showMessage({
     message: 'Please try again later',
