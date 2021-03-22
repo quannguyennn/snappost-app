@@ -7,22 +7,10 @@ export type OnCreateCommentSubscriptionVariables = Types.Exact<{
 }>;
 
 export type OnCreateCommentSubscriptionResponse = { __typename?: 'Subscription' } & {
-  onCreateComment: { __typename?: 'Comments' } & Pick<
-    Types.Comments,
-    'id' | 'creatorId' | 'postId' | 'parentId' | 'content' | 'createdAt' | 'updatedAt'
-  > & {
+  onCreateComment: { __typename?: 'Comments' } & Pick<Types.Comments, 'id' | 'content' | 'createdAt'> & {
       creatorInfo: { __typename?: 'User' } & Pick<
         Types.User,
-        | 'id'
-        | 'name'
-        | 'nickname'
-        | 'intro'
-        | 'zaloId'
-        | 'avatar'
-        | 'isNew'
-        | 'createdAt'
-        | 'updatedAt'
-        | 'avatarFilePath'
+        'id' | 'name' | 'nickname' | 'createdAt' | 'avatarFilePath'
       >;
     };
 };
@@ -31,22 +19,13 @@ export const OnCreateCommentDocument = gql`
   subscription onCreateComment($postId: Float!) {
     onCreateComment(postId: $postId) {
       id
-      creatorId
-      postId
-      parentId
       content
       createdAt
-      updatedAt
       creatorInfo {
         id
         name
         nickname
-        intro
-        zaloId
-        avatar
-        isNew
         createdAt
-        updatedAt
         avatarFilePath
       }
     }

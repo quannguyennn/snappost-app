@@ -8,7 +8,7 @@ export type OnUnLikePostSubscriptionVariables = Types.Exact<{
 
 export type OnUnLikePostSubscriptionResponse = { __typename?: 'Subscription' } & {
   onUnLikePost: { __typename?: 'Like' } & Pick<Types.Like, 'id' | 'postId' | 'userId' | 'createdAt'> & {
-      creatorInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'intro' | 'avatarFilePath'>;
+      creatorInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>;
     };
 };
 
@@ -23,7 +23,6 @@ export const OnUnLikePostDocument = gql`
         id
         name
         nickname
-        intro
         avatarFilePath
       }
     }

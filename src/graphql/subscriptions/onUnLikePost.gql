@@ -8,7 +8,6 @@ subscription onUnLikePost($postId: Float!) {
       id
       name
       nickname
-      intro
       avatarFilePath
     }
   }

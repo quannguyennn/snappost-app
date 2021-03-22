@@ -12,7 +12,7 @@ import { HandleAvailableColor, PostDimensions, ThemeStatic } from '../../theme';
 import { Connections, PollIntervals } from '../../utils/constants';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
-import { somethingWentWrongErrorNotification, userBlockedNotification } from '../../helpers/notifications';
+import { somethingWentWrongErrorNotification, tryAgainLaterNotification, userBlockedNotification } from '../../helpers/notifications';
 import { sortPostsAscendingTime } from '../../utils/shared';
 import ProfileCard from '../../components/shared/ProfileCard';
 import PostThumbnail from '../../components/shared/PostThumbnail';
@@ -29,6 +29,7 @@ import { GetUserPostQueryResponse, useGetUserPostLazyQuery } from '../../graphql
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useHandleFollowRequestMutation } from '../../graphql/mutations/handleFollowRequest.generated';
+import { useBlockUserMutation } from '../../graphql/mutations/blockUser.generated';
 
 const ProfileViewScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
@@ -51,6 +52,17 @@ const ProfileViewScreen: React.FC = () => {
     },
     fetchPolicy: "cache-and-network"
   });
+
+  const [blockUser] = useBlockUserMutation({
+    onError: (err) => {
+      console.log("block user", err)
+      tryAgainLaterNotification();
+    },
+    onCompleted: () => {
+      goBack();
+      userBlockedNotification(data?.getUserInfo?.name);
+    }
+  })
 
   useEffect(() => {
     if (update) {
@@ -200,7 +212,7 @@ const ProfileViewScreen: React.FC = () => {
           onEndReached={() => loadMore()}
           onRefresh={() => setRefresh(true)}
           refreshing={refresh}
-          ListEmptyComponent={() => data?.getUserInfo?.followStatus === "ACCEPT" ? <ListEmptyComponent listType="posts" spacing={30} /> : null}
+          ListEmptyComponent={() => data?.getUserInfo?.followStatus === "ACCEPT" ? <ListEmptyComponent listType="posts" spacing={30} /> : <ListEmptyComponent listType="posts" spacing={30} private />}
           style={styles().postGrid}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
@@ -229,13 +241,12 @@ const ProfileViewScreen: React.FC = () => {
     toggleBlockConfirmationModal();
   };
 
-  const processBlockUser = async () => {
+  const processBlockUser = () => {
     // const { user: { handle } } = data;
 
     toggleBlockConfirmationModal();
-    // await blockUser({ variables: { from: 'user.id', to: 'userId' } });
-    goBack();
-    userBlockedNotification('handle');
+    blockUser({ variables: { id: userId } })
+
   };
 
   const IconRight = () => (

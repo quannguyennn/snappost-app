@@ -109,6 +109,9 @@ const HomeScreen = React.memo(() => {
       spacing={20}
       renderItem={renderItem}
       onEndReachedThreshold={0.3}
+      ListFooterComponent={
+        loading && posts?.length ? <PostCardPlaceholder /> : null
+      }
       refreshing={refresh}
       onEndReached={() => loadMore()}
     />
@@ -132,9 +135,7 @@ const HomeScreen = React.memo(() => {
       <HomeHeader IconRight={IconRight} />
       {content}
       {loading && !posts?.length ? <PostCardPlaceholder /> : null}
-      {
-        loading && posts?.length ? <ActivityIndicator style={{ marginVertical: 5 }} /> : null
-      }
+
     </View>
   );
 });

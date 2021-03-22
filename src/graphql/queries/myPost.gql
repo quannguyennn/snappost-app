@@ -2,29 +2,8 @@ query myPost($page: Float!, $limit: Float!) {
   myPost(page: $page, limit: $limit) {
     items {
       id
-      creatorId
-      medias
-      caption
-      rawCaption
-      createdAt
-      updatedAt
-      totalLike
-      isLike
       mediasPath {
         filePath
-      }
-      creatorInfo {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
       }
     }
     meta {

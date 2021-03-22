@@ -1,15 +1,5 @@
 mutation unBlockUser($id: Float!) {
   unBlockUser(id: $id) {
     id
-    name
-    nickname
-    intro
-    zaloId
-    avatar
-    isNew
-    blocked
-    createdAt
-    updatedAt
-    avatarFilePath
   }
 }

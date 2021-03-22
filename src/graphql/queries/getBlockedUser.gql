@@ -3,13 +3,6 @@ query getBlockedUser {
     id
     name
     nickname
-    intro
-    zaloId
-    avatar
-    isNew
-    blocked
-    createdAt
-    updatedAt
     avatarFilePath
   }
 }

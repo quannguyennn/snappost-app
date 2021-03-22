@@ -1,22 +1,13 @@
 subscription onCreateComment($postId: Float!) {
   onCreateComment(postId: $postId) {
     id
-    creatorId
-    postId
-    parentId
     content
     createdAt
-    updatedAt
     creatorInfo {
       id
       name
       nickname
-      intro
-      zaloId
-      avatar
-      isNew
       createdAt
-      updatedAt
       avatarFilePath
     }
   }

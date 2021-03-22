@@ -3,8 +3,6 @@ query getUserLikePost($postId: Float!) {
     id
     name
     nickname
-    intro
-    avatar
     avatarFilePath
   }
 }

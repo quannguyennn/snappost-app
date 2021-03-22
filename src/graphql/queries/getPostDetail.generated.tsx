@@ -9,24 +9,11 @@ export type GetPostDetailQueryVariables = Types.Exact<{
 export type GetPostDetailQueryResponse = { __typename?: 'Query' } & {
   getPostDetail: { __typename?: 'Post' } & Pick<
     Types.Post,
-    'id' | 'creatorId' | 'medias' | 'caption' | 'rawCaption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike'
+    'id' | 'caption' | 'rawCaption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike'
   > & {
       mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
       creatorInfo?: Types.Maybe<
-        { __typename?: 'User' } & Pick<
-          Types.User,
-          | 'id'
-          | 'name'
-          | 'nickname'
-          | 'intro'
-          | 'zaloId'
-          | 'avatar'
-          | 'isNew'
-          | 'createdAt'
-          | 'updatedAt'
-          | 'avatarFilePath'
-          | 'followStatus'
-        >
+        { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>
       >;
     };
 };
@@ -35,8 +22,6 @@ export const GetPostDetailDocument = gql`
   query getPostDetail($id: Float!) {
     getPostDetail(id: $id) {
       id
-      creatorId
-      medias
       caption
       rawCaption
       createdAt
@@ -50,14 +35,7 @@ export const GetPostDetailDocument = gql`
         id
         name
         nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
         avatarFilePath
-        followStatus
       }
     }
   }

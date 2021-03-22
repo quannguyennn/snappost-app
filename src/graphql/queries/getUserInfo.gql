@@ -4,11 +4,9 @@ query getUserInfo($id: Float!) {
     name
     nickname
     intro
-    zaloId
     avatar
     isNew
     createdAt
-    updatedAt
     isRequestFollowMe
     avatarFilePath
     followStatus
@@ -16,24 +14,12 @@ query getUserInfo($id: Float!) {
       id
       name
       nickname
-      intro
-      zaloId
-      avatar
-      isNew
-      createdAt
-      updatedAt
       avatarFilePath
     }
     nFollower {
       id
       name
       nickname
-      intro
-      zaloId
-      avatar
-      isNew
-      createdAt
-      updatedAt
       avatarFilePath
     }
   }

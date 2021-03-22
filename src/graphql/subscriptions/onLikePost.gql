@@ -8,8 +8,6 @@ subscription onLikePost($postId: Float!) {
       id
       name
       nickname
-      intro
-      zaloId
       avatarFilePath
     }
   }

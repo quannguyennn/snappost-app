@@ -11,7 +11,7 @@ export type CreatePostMutationVariables = Types.Exact<{
 export type CreatePostMutationResponse = { __typename?: 'Mutation' } & {
   createPost: { __typename?: 'Post' } & Pick<
     Types.Post,
-    'id' | 'creatorId' | 'medias' | 'caption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike' | 'rawCaption'
+    'id' | 'caption' | 'createdAt' | 'totalLike' | 'isLike' | 'rawCaption'
   > & {
       mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
       creatorInfo?: Types.Maybe<{ __typename?: 'User' } & UserFragmentFragment>;
@@ -22,11 +22,8 @@ export const CreatePostDocument = gql`
   mutation createPost($input: CreatePostInput!) {
     createPost(input: $input) {
       id
-      creatorId
-      medias
       caption
       createdAt
-      updatedAt
       mediasPath {
         filePath
       }

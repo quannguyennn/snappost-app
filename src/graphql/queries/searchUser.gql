@@ -1,7 +1,10 @@
 query searchUser($page: Float!, $limit: Float!, $isRestricted: Boolean, $keyword: String!) {
   searchUser(page: $page, limit: $limit, isRestricted: $isRestricted, keyword: $keyword) {
     items {
-      ...UserFragment
+      id 
+      name
+      nickname
+      avatarFilePath
     }
     meta {
       itemCount

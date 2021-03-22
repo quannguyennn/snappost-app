@@ -1,8 +1,6 @@
 query getPostDetail($id: Float!) {
   getPostDetail(id: $id) {
     id
-    creatorId
-    medias
     caption
     rawCaption
     createdAt
@@ -16,14 +14,7 @@ query getPostDetail($id: Float!) {
       id
       name
       nickname
-      intro
-      zaloId
-      avatar
-      isNew
-      createdAt
-      updatedAt
       avatarFilePath
-      followStatus
     }
   }
 }

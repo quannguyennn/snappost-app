@@ -2,30 +2,8 @@ query getUserPost($page: Float!, $limit: Float!, $userId: Float!) {
   getUserPost(page: $page, limit: $limit, userId: $userId) {
     items {
       id
-      creatorId
-      medias
-      caption
-      rawCaption
-      createdAt
-      updatedAt
-      totalLike
-      isLike
       mediasPath {
         filePath
-      }
-      creatorInfo {
-        id
-        name
-        nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        blocked
-        createdAt
-        updatedAt
-        avatarFilePath
-        followStatus
       }
     }
     meta {

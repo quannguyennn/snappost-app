@@ -1,8 +1,6 @@
 import type * as Types from '../type.interface';
 
-import type { UserFragmentFragment } from '../fragments/UserFragment.generated';
 import { gql } from '@apollo/client';
-import { UserFragmentFragmentDoc } from '../fragments/UserFragment.generated';
 import * as Apollo from '@apollo/client';
 export type SearchUserQueryVariables = Types.Exact<{
   page: Types.Scalars['Float'];
@@ -13,7 +11,9 @@ export type SearchUserQueryVariables = Types.Exact<{
 
 export type SearchUserQueryResponse = { __typename?: 'Query' } & {
   searchUser: { __typename?: 'UserConnection' } & {
-    items?: Types.Maybe<Array<{ __typename?: 'User' } & UserFragmentFragment>>;
+    items?: Types.Maybe<
+      Array<{ __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>>
+    >;
     meta: { __typename?: 'BasePaginationMeta' } & Pick<
       Types.BasePaginationMeta,
       'itemCount' | 'totalItems' | 'itemsPerPage' | 'totalPages' | 'currentPage'
@@ -25,7 +25,10 @@ export const SearchUserDocument = gql`
   query searchUser($page: Float!, $limit: Float!, $isRestricted: Boolean, $keyword: String!) {
     searchUser(page: $page, limit: $limit, isRestricted: $isRestricted, keyword: $keyword) {
       items {
-        ...UserFragment
+        id
+        name
+        nickname
+        avatarFilePath
       }
       meta {
         itemCount
@@ -36,7 +39,6 @@ export const SearchUserDocument = gql`
       }
     }
   }
-  ${UserFragmentFragmentDoc}
 `;
 export function useSearchUserQuery(
   baseOptions: Apollo.QueryHookOptions<SearchUserQueryResponse, SearchUserQueryVariables>,

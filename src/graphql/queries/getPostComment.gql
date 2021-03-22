@@ -2,102 +2,13 @@ query getPostComment($page: Float!, $limit: Float!, $postId: Float!) {
   getPostComment(page: $page, limit: $limit, postId: $postId) {
     items {
       id
-      creatorId
-      postId
-      parentId
       content
       createdAt
-      updatedAt
       creatorInfo {
         id
         name
         nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
         avatarFilePath
-        followStatus
-        nFollowing {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
-        nFollower {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
-          nFollowing {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-          nFollower {
-            id
-            name
-            nickname
-            intro
-            zaloId
-            avatar
-            isNew
-            createdAt
-            updatedAt
-            avatarFilePath
-            followStatus
-          }
-        }
       }
     }
     meta {

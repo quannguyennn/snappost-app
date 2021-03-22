@@ -7,36 +7,13 @@ export type UnBlockUserMutationVariables = Types.Exact<{
 }>;
 
 export type UnBlockUserMutationResponse = { __typename?: 'Mutation' } & {
-  unBlockUser: { __typename?: 'User' } & Pick<
-    Types.User,
-    | 'id'
-    | 'name'
-    | 'nickname'
-    | 'intro'
-    | 'zaloId'
-    | 'avatar'
-    | 'isNew'
-    | 'blocked'
-    | 'createdAt'
-    | 'updatedAt'
-    | 'avatarFilePath'
-  >;
+  unBlockUser: { __typename?: 'User' } & Pick<Types.User, 'id'>;
 };
 
 export const UnBlockUserDocument = gql`
   mutation unBlockUser($id: Float!) {
     unBlockUser(id: $id) {
       id
-      name
-      nickname
-      intro
-      zaloId
-      avatar
-      isNew
-      blocked
-      createdAt
-      updatedAt
-      avatarFilePath
     }
   }
 `;

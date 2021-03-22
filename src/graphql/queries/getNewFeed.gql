@@ -2,12 +2,9 @@ query getNewFeed($limit: Int, $page: Int) {
   getNewFeed(limit: $limit, page: $page) {
     items {
       id
-      creatorId
-      medias
       caption
       rawCaption
       createdAt
-      updatedAt
       totalLike
       isLike
       mediasPath {
@@ -17,11 +14,7 @@ query getNewFeed($limit: Int, $page: Int) {
         id
         name
         nickname
-        intro
-        zaloId
-        avatar
         avatarFilePath
-        followStatus
       }
     }
     meta {

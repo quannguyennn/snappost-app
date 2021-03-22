@@ -1,11 +1,8 @@
 mutation createPost($input: CreatePostInput!) {
   createPost(input: $input) {
     id
-    creatorId
-    medias
     caption
     createdAt
-    updatedAt
     mediasPath {
       filePath
     }

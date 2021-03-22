@@ -14,50 +14,20 @@ export type GetUserInfoQueryResponse = { __typename?: 'Query' } & {
       | 'name'
       | 'nickname'
       | 'intro'
-      | 'zaloId'
       | 'avatar'
       | 'isNew'
       | 'createdAt'
-      | 'updatedAt'
       | 'isRequestFollowMe'
       | 'avatarFilePath'
       | 'followStatus'
     > & {
-      nFollowing?: Types.Maybe<
-        Array<
-          { __typename?: 'User' } & Pick<
-            Types.User,
-            | 'id'
-            | 'name'
-            | 'nickname'
-            | 'intro'
-            | 'zaloId'
-            | 'avatar'
-            | 'isNew'
-            | 'createdAt'
-            | 'updatedAt'
-            | 'avatarFilePath'
-          >
-        >
-      >;
-      nFollower?: Types.Maybe<
-        Array<
-          { __typename?: 'User' } & Pick<
-            Types.User,
-            | 'id'
-            | 'name'
-            | 'nickname'
-            | 'intro'
-            | 'zaloId'
-            | 'avatar'
-            | 'isNew'
-            | 'createdAt'
-            | 'updatedAt'
-            | 'avatarFilePath'
-          >
-        >
-      >;
-    }
+        nFollowing?: Types.Maybe<
+          Array<{ __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>>
+        >;
+        nFollower?: Types.Maybe<
+          Array<{ __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>>
+        >;
+      }
   >;
 };
 
@@ -68,11 +38,9 @@ export const GetUserInfoDocument = gql`
       name
       nickname
       intro
-      zaloId
       avatar
       isNew
       createdAt
-      updatedAt
       isRequestFollowMe
       avatarFilePath
       followStatus
@@ -80,24 +48,12 @@ export const GetUserInfoDocument = gql`
         id
         name
         nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
         avatarFilePath
       }
       nFollower {
         id
         name
         nickname
-        intro
-        zaloId
-        avatar
-        isNew
-        createdAt
-        updatedAt
         avatarFilePath
       }
     }

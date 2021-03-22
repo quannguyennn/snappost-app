@@ -7,20 +7,7 @@ export type BlockUserMutationVariables = Types.Exact<{
 }>;
 
 export type BlockUserMutationResponse = { __typename?: 'Mutation' } & {
-  blockUser: { __typename?: 'User' } & Pick<
-    Types.User,
-    | 'id'
-    | 'name'
-    | 'nickname'
-    | 'intro'
-    | 'zaloId'
-    | 'avatar'
-    | 'isNew'
-    | 'blocked'
-    | 'createdAt'
-    | 'updatedAt'
-    | 'avatarFilePath'
-  >;
+  blockUser: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'blocked' | 'avatarFilePath'>;
 };
 
 export const BlockUserDocument = gql`
@@ -29,13 +16,7 @@ export const BlockUserDocument = gql`
       id
       name
       nickname
-      intro
-      zaloId
-      avatar
-      isNew
       blocked
-      createdAt
-      updatedAt
       avatarFilePath
     }
   }

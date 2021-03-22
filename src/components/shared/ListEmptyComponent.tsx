@@ -14,6 +14,7 @@ interface ListEmptyComponentProps {
   style?: StyleProp<ViewStyle>;
   placeholder?: string;
   placeholderStyle?: StyleProp<TextStyle>;
+  private?: boolean
 }
 
 const ListEmptyComponent: React.FC<ListEmptyComponentProps> = ({
@@ -22,9 +23,10 @@ const ListEmptyComponent: React.FC<ListEmptyComponentProps> = ({
   style,
   placeholder,
   placeholderStyle,
+  private = false
 }) => {
   const theme = useRecoilValue(themeState);
-  let content = `No ${listType as string} yet`;
+  let content = private ? "This profile is private" : `No ${listType as string} yet`;
   if (placeholder) {
     content = placeholder;
   }

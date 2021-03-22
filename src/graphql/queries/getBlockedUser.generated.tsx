@@ -6,22 +6,7 @@ export type GetBlockedUserQueryVariables = Types.Exact<{ [key: string]: never }>
 
 export type GetBlockedUserQueryResponse = { __typename?: 'Query' } & {
   getBlockedUser?: Types.Maybe<
-    Array<
-      { __typename?: 'User' } & Pick<
-        Types.User,
-        | 'id'
-        | 'name'
-        | 'nickname'
-        | 'intro'
-        | 'zaloId'
-        | 'avatar'
-        | 'isNew'
-        | 'blocked'
-        | 'createdAt'
-        | 'updatedAt'
-        | 'avatarFilePath'
-      >
-    >
+    Array<{ __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>>
   >;
 };
 
@@ -31,13 +16,6 @@ export const GetBlockedUserDocument = gql`
       id
       name
       nickname
-      intro
-      zaloId
-      avatar
-      isNew
-      blocked
-      createdAt
-      updatedAt
       avatarFilePath
     }
   }

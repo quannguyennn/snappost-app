@@ -12,28 +12,8 @@ export type GetUserPostQueryResponse = { __typename?: 'Query' } & {
   getUserPost: { __typename?: 'PostConnection' } & {
     items?: Types.Maybe<
       Array<
-        { __typename?: 'Post' } & Pick<
-          Types.Post,
-          'id' | 'creatorId' | 'medias' | 'caption' | 'rawCaption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike'
-        > & {
+        { __typename?: 'Post' } & Pick<Types.Post, 'id'> & {
             mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
-            creatorInfo?: Types.Maybe<
-              { __typename?: 'User' } & Pick<
-                Types.User,
-                | 'id'
-                | 'name'
-                | 'nickname'
-                | 'intro'
-                | 'zaloId'
-                | 'avatar'
-                | 'isNew'
-                | 'blocked'
-                | 'createdAt'
-                | 'updatedAt'
-                | 'avatarFilePath'
-                | 'followStatus'
-              >
-            >;
           }
       >
     >;
@@ -49,30 +29,8 @@ export const GetUserPostDocument = gql`
     getUserPost(page: $page, limit: $limit, userId: $userId) {
       items {
         id
-        creatorId
-        medias
-        caption
-        rawCaption
-        createdAt
-        updatedAt
-        totalLike
-        isLike
         mediasPath {
           filePath
-        }
-        creatorInfo {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          blocked
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
         }
       }
       meta {

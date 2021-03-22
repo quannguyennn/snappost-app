@@ -11,27 +11,8 @@ export type MyPostQueryResponse = { __typename?: 'Query' } & {
   myPost: { __typename?: 'PostConnection' } & {
     items?: Types.Maybe<
       Array<
-        { __typename?: 'Post' } & Pick<
-          Types.Post,
-          'id' | 'creatorId' | 'medias' | 'caption' | 'rawCaption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike'
-        > & {
+        { __typename?: 'Post' } & Pick<Types.Post, 'id'> & {
             mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
-            creatorInfo?: Types.Maybe<
-              { __typename?: 'User' } & Pick<
-                Types.User,
-                | 'id'
-                | 'name'
-                | 'nickname'
-                | 'intro'
-                | 'zaloId'
-                | 'avatar'
-                | 'isNew'
-                | 'createdAt'
-                | 'updatedAt'
-                | 'avatarFilePath'
-                | 'followStatus'
-              >
-            >;
           }
       >
     >;
@@ -47,29 +28,8 @@ export const MyPostDocument = gql`
     myPost(page: $page, limit: $limit) {
       items {
         id
-        creatorId
-        medias
-        caption
-        rawCaption
-        createdAt
-        updatedAt
-        totalLike
-        isLike
         mediasPath {
           filePath
-        }
-        creatorInfo {
-          id
-          name
-          nickname
-          intro
-          zaloId
-          avatar
-          isNew
-          createdAt
-          updatedAt
-          avatarFilePath
-          followStatus
         }
       }
       meta {

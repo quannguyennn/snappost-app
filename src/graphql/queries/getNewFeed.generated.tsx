@@ -13,14 +13,11 @@ export type GetNewFeedQueryResponse = { __typename?: 'Query' } & {
       Array<
         { __typename?: 'Post' } & Pick<
           Types.Post,
-          'id' | 'creatorId' | 'medias' | 'caption' | 'rawCaption' | 'createdAt' | 'updatedAt' | 'totalLike' | 'isLike'
+          'id' | 'caption' | 'rawCaption' | 'createdAt' | 'totalLike' | 'isLike'
         > & {
             mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
             creatorInfo?: Types.Maybe<
-              { __typename?: 'User' } & Pick<
-                Types.User,
-                'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'avatarFilePath' | 'followStatus'
-              >
+              { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>
             >;
           }
       >
@@ -37,12 +34,9 @@ export const GetNewFeedDocument = gql`
     getNewFeed(limit: $limit, page: $page) {
       items {
         id
-        creatorId
-        medias
         caption
         rawCaption
         createdAt
-        updatedAt
         totalLike
         isLike
         mediasPath {
@@ -52,11 +46,7 @@ export const GetNewFeedDocument = gql`
           id
           name
           nickname
-          intro
-          zaloId
-          avatar
           avatarFilePath
-          followStatus
         }
       }
       meta {
