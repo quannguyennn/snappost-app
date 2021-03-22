@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import PostCard from './components/PostCard';
 import { useState } from 'react';
@@ -44,7 +44,6 @@ const HomeScreen = React.memo(() => {
     Number(fetchNewFeed?.getNewFeed?.meta.totalPages) >= 0 ? Number(fetchNewFeed?.getNewFeed?.meta.totalPages) : 2;
 
   const data = posts;
-
 
   useEffect(() => {
     if (refresh || init) {
@@ -135,7 +134,6 @@ const HomeScreen = React.memo(() => {
       <HomeHeader IconRight={IconRight} />
       {content}
       {loading && !posts?.length ? <PostCardPlaceholder /> : null}
-
     </View>
   );
 });
