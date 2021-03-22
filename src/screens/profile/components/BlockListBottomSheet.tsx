@@ -29,10 +29,10 @@ const BlockListBottomSheet: React.FC<BlockListBottomSheetProps> = React.forwardR
 
     const { data, loading, error } = useGetBlockedUserQuery({
         pollInterval: PollIntervals.blockList,
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'cache-and-network'
     });
 
-    const [unblockUser, { loading: unblockUserLoading, called: unblockUserCalled }] = useUnBlockUserMutation();
+    const [unblockUser, { loading: unblockUserLoading }] = useUnBlockUserMutation();
 
     const swipeableRef = useRef();
 
@@ -47,7 +47,7 @@ const BlockListBottomSheet: React.FC<BlockListBottomSheetProps> = React.forwardR
     );
 
     const onDelete = (blockedId: number, handle: string) => {
-        if (!unblockUserLoading && !unblockUserCalled) {
+        if (!unblockUserLoading) {
             longPressUnblockNotification(() => {
                 // @ts-ignore
                 swipeableRef.current.close();
@@ -73,7 +73,7 @@ const BlockListBottomSheet: React.FC<BlockListBottomSheetProps> = React.forwardR
                 ref={swipeableRef}
                 useNativeAnimations
                 rightThreshold={-300}
-                renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, id, handle)}>
+                renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, id, name)}>
                 <UserCard
                     userId={id}
                     avatar={avatarFilePath}

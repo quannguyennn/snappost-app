@@ -32,7 +32,10 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const isFocused = useIsFocused()
   const me = useCurrentUser();
   const [getMe] = useMeLazyQuery({
-    onCompleted: () => { setUpdate(false) }
+    fetchPolicy: "cache-and-network",
+    onCompleted: () => {
+      setUpdate(false); setRefresh(false)
+    }
   })
 
   const [refresh, setRefresh] = useState(false);
@@ -41,10 +44,10 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const [update, setUpdate] = useState(false)
 
   useEffect(() => {
-    if (update || isFocused) {
+    if (update || isFocused || refresh) {
       getMe()
     }
-  }, [update, isFocused])
+  }, [update, isFocused, refresh])
 
   const [getMyPost, { data: fetchData, loading, fetchMore }] = useMyPostLazyQuery({
     fetchPolicy: 'cache-and-network',
