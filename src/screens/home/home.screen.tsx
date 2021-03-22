@@ -45,7 +45,6 @@ const HomeScreen = React.memo(() => {
 
   const data = posts;
 
-
   useEffect(() => {
     if (refresh || init) {
       getNewFeed({
@@ -121,7 +120,7 @@ const HomeScreen = React.memo(() => {
       <IconButton
         hasBadge={hasBadge}
         badgeCount={unreadMessages}
-        onPress={() => { }}
+        onPress={() => {}}
         Icon={() => <FontAwesome name="send" size={IconSizes.x5} color={theme.text01} />}
       />
     );
@@ -132,9 +131,7 @@ const HomeScreen = React.memo(() => {
       <HomeHeader IconRight={IconRight} />
       {content}
       {loading && !posts?.length ? <PostCardPlaceholder /> : null}
-      {
-        loading && posts?.length ? <ActivityIndicator style={{ marginVertical: 5 }} /> : null
-      }
+      {loading && posts?.length ? <ActivityIndicator style={{ marginVertical: 5 }} /> : null}
     </View>
   );
 });
