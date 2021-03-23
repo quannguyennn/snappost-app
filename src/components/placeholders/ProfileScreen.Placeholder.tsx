@@ -56,16 +56,23 @@ const ProfileScreenPlaceholder: React.FC<ProfileScreenPlaceholderProps> = ({ vie
             <PlaceholderLine
               noMargin
               color={theme.placeholder}
-              style={[styles.postPlaceholder, { marginRight: 10 }]}
-              width={48}
-              height={responsiveWidth(43)}
+              style={[styles.postPlaceholder, { marginRight: 15 }]}
+              width={30}
+              height={responsiveWidth(30)}
+            />
+            <PlaceholderLine
+              noMargin
+              color={theme.placeholder}
+              style={[styles.postPlaceholder, { marginRight: 15 }]}
+              width={30}
+              height={responsiveWidth(30)}
             />
             <PlaceholderLine
               noMargin
               color={theme.placeholder}
               style={styles.postPlaceholder}
-              width={48}
-              height={responsiveWidth(43)}
+              width={30}
+              height={responsiveWidth(30)}
             />
           </View>
         ))}

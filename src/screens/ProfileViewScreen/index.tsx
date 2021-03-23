@@ -12,7 +12,11 @@ import { HandleAvailableColor, PostDimensions, ThemeStatic } from '../../theme';
 import { Connections, PollIntervals } from '../../utils/constants';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
-import { somethingWentWrongErrorNotification, tryAgainLaterNotification, userBlockedNotification } from '../../helpers/notifications';
+import {
+  somethingWentWrongErrorNotification,
+  tryAgainLaterNotification,
+  userBlockedNotification,
+} from '../../helpers/notifications';
 import { sortPostsAscendingTime } from '../../utils/shared';
 import ProfileCard from '../../components/shared/ProfileCard';
 import PostThumbnail from '../../components/shared/PostThumbnail';
@@ -40,35 +44,35 @@ const ProfileViewScreen: React.FC = () => {
 
   const [blockConfirmationModal, setBlockConfirmationModal] = useState(false);
   const [init, setInit] = useState(true);
-  const [update, setUpdate] = useState(false)
-  const [refresh, setRefresh] = useState(false)
+  const [update, setUpdate] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const [getUser, { data, loading, error, called }] = useGetUserInfoLazyQuery({
     variables: { id: userId },
     pollInterval: PollIntervals.profileView,
     onCompleted: (res) => {
-      setUpdate(false)
-      setRefresh(false)
+      setUpdate(false);
+      setRefresh(false);
     },
-    fetchPolicy: "cache-and-network"
+    fetchPolicy: 'cache-and-network',
   });
 
   const [blockUser] = useBlockUserMutation({
     onError: (err) => {
-      console.log("block user", err)
+      console.log('block user', err);
       tryAgainLaterNotification();
     },
     onCompleted: () => {
       goBack();
       userBlockedNotification(data?.getUserInfo?.name);
-    }
-  })
+    },
+  });
 
   useEffect(() => {
     if (update) {
-      getUser({ variables: { id: userId } })
+      getUser({ variables: { id: userId } });
     }
-  }, [update])
+  }, [update, getUser, userId]);
 
   const [getUserPost, { data: fetchData, loading: loadingPost, fetchMore }] = useGetUserPostLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -83,7 +87,8 @@ const ProfileViewScreen: React.FC = () => {
 
   const currentPage =
     Number(fetchData?.getUserPost?.meta.currentPage) >= 0 ? Number(fetchData?.getUserPost?.meta.currentPage) : 1;
-  const totalPages = Number(fetchData?.getUserPost?.meta.totalPages) >= 0 ? Number(fetchData?.getUserPost?.meta.totalPages) : 2;
+  const totalPages =
+    Number(fetchData?.getUserPost?.meta.totalPages) >= 0 ? Number(fetchData?.getUserPost?.meta.totalPages) : 2;
 
   const posts = fetchData?.getUserPost.items;
 
@@ -92,16 +97,16 @@ const ProfileViewScreen: React.FC = () => {
       getUser({ variables: { id: userId } });
     }
     setInit(false);
-  }, [refresh, init]);
+  }, [refresh, init, getUser, userId]);
 
   useEffect(() => {
-    if (init && called && data?.getUserInfo?.followStatus === "ACCEPT") {
+    if (init && called && data?.getUserInfo?.followStatus === 'ACCEPT') {
       getUserPost({
         variables: { userId, limit: 15, page: 1 },
-      })
+      });
     }
-    setInit(false)
-  }, [called, getUserPost, data, init])
+    setInit(false);
+  }, [called, getUserPost, data, init, userId]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -128,13 +133,13 @@ const ProfileViewScreen: React.FC = () => {
 
   const [updateRequest] = useHandleFollowRequestMutation({
     onCompleted: () => {
-      setUpdate(true)
-    }
+      setUpdate(true);
+    },
   });
 
   const onHandleRequest = (accept: boolean) => {
-    updateRequest({ variables: { userId: data?.getUserInfo?.id ?? 0, accept } })
-  }
+    updateRequest({ variables: { userId: data?.getUserInfo?.id ?? 0, accept } });
+  };
 
   const followingBottomSheetRef = useRef();
   const followersBottomSheetRef = useRef();
@@ -156,13 +161,15 @@ const ProfileViewScreen: React.FC = () => {
   const toggleBlockConfirmationModal = () => setBlockConfirmationModal(!blockConfirmationModal);
 
   const ListHeaderComponent = () => {
-    const { id, intro, name, nickname, avatarFilePath, followStatus, nFollower, nFollowing } = data?.getUserInfo ?? {}
+    const { id, intro, name, nickname, avatarFilePath, followStatus, nFollower, nFollowing } = data?.getUserInfo ?? {};
     return (
       <>
-        {
-          data?.getUserInfo?.isRequestFollowMe ? <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <Text style={{ flex: 1, flexWrap: "wrap", fontSize: 16, color: theme.text01 }}>{name} has requested to follow you</Text>
-            <View style={{ flexDirection: "row" }}>
+        {data?.getUserInfo?.isRequestFollowMe ? (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ flex: 1, flexWrap: 'wrap', fontSize: 16, color: theme.text01 }}>
+              {name} has requested to follow you
+            </Text>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity onPress={() => onHandleRequest(true)}>
                 <MaterialIcons name={'done'} color={ThemeStatic.accent} size={IconSizes.x7} />
               </TouchableOpacity>
@@ -170,8 +177,8 @@ const ProfileViewScreen: React.FC = () => {
                 <MaterialIcons name={'close'} color={HandleAvailableColor.false} size={IconSizes.x7} />
               </TouchableOpacity>
             </View>
-          </View> : null
-        }
+          </View>
+        ) : null}
 
         <ProfileCard
           avatar={avatarFilePath}
@@ -192,27 +199,36 @@ const ProfileViewScreen: React.FC = () => {
 
   const renderItem = ({ item }: any) => {
     const { id, mediasPath } = item;
-    return <PostThumbnail
-      nPost={mediasPath?.length ?? 0}
-      id={id}
-      uri={mediasPath ? mediasPath[0].filePath : ""}
-      dimensions={PostDimensions.Small}
-    />;
+    return (
+      <PostThumbnail
+        nPost={mediasPath?.length ?? 0}
+        id={id}
+        uri={mediasPath ? mediasPath[0].filePath : ''}
+        dimensions={PostDimensions.Small}
+      />
+    );
   };
 
   let content = <ProfileScreenPlaceholder viewMode />;
   if (!loading && !error) {
-    const { name, nFollower, nFollowing } = data?.getUserInfo ?? {}
+    const { name, nFollower, nFollowing } = data?.getUserInfo ?? {};
     content = (
       <>
         <FlatGrid
+          itemDimension={responsiveWidth(22)}
           ListHeaderComponent={ListHeaderComponent}
           data={posts}
           onEndReachedThreshold={0.3}
           onEndReached={() => loadMore()}
           onRefresh={() => setRefresh(true)}
           refreshing={refresh}
-          ListEmptyComponent={() => data?.getUserInfo?.followStatus === "ACCEPT" ? <ListEmptyComponent listType="posts" spacing={30} /> : <ListEmptyComponent listType="posts" spacing={30} private />}
+          ListEmptyComponent={() =>
+            data?.getUserInfo?.followStatus === 'ACCEPT' ? (
+              <ListEmptyComponent listType="posts" spacing={30} />
+            ) : (
+              <ListEmptyComponent listType="posts" spacing={30} private />
+            )
+          }
           style={styles().postGrid}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
@@ -245,8 +261,7 @@ const ProfileViewScreen: React.FC = () => {
     // const { user: { handle } } = data;
 
     toggleBlockConfirmationModal();
-    blockUser({ variables: { id: userId } })
-
+    blockUser({ variables: { id: userId } });
   };
 
   const IconRight = () => (
@@ -271,9 +286,7 @@ const ProfileViewScreen: React.FC = () => {
         toggle={toggleBlockConfirmationModal}
         onConfirm={processBlockUser}
       />
-      {
-        !init && loadingPost ? <ActivityIndicator /> : null
-      }
+      {!init && loadingPost ? <ActivityIndicator /> : null}
     </View>
   );
 };

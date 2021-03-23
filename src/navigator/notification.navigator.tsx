@@ -6,7 +6,6 @@ import NotificationScreen from '../screens/notificationScreen';
 export type ProfileStackParamList = {
   [AppRoutes.NOTIFICATION_TAB]: undefined;
   [AppRoutes.NOTIFICATION_VIEW_SCREEN]: undefined;
-
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -18,6 +17,5 @@ export const NotificationNavigator = () => (
       headerShown: false,
     }}>
     <Stack.Screen name={AppRoutes.NOTIFICATION_VIEW_SCREEN} component={NotificationScreen} />
-
   </Stack.Navigator>
 );

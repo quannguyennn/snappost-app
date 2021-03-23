@@ -1,8 +1,6 @@
 import type * as Types from '../type.interface';
 
-import type { UserFragmentFragment } from '../fragments/UserFragment.generated';
 import { gql } from '@apollo/client';
-import { UserFragmentFragmentDoc } from '../fragments/UserFragment.generated';
 import * as Apollo from '@apollo/client';
 export type LoginWithSnsMutationVariables = Types.Exact<{
   input: Types.NewUserInput;
@@ -10,7 +8,10 @@ export type LoginWithSnsMutationVariables = Types.Exact<{
 
 export type LoginWithSnsMutationResponse = { __typename?: 'Mutation' } & {
   loginWithSNS: { __typename?: 'AuthConnection' } & Pick<Types.AuthConnection, 'accessToken' | 'refreshToken'> & {
-      user: { __typename?: 'User' } & UserFragmentFragment;
+      user: { __typename?: 'User' } & Pick<
+        Types.User,
+        'id' | 'name' | 'nickname' | 'intro' | 'zaloId' | 'avatar' | 'isNew' | 'avatarFilePath'
+      >;
     };
 };
 
@@ -20,11 +21,17 @@ export const LoginWithSnsDocument = gql`
       accessToken
       refreshToken
       user {
-        ...UserFragment
+        id
+        name
+        nickname
+        intro
+        zaloId
+        avatar
+        isNew
+        avatarFilePath
       }
     }
   }
-  ${UserFragmentFragmentDoc}
 `;
 export function useLoginWithSnsMutation(
   baseOptions?: Apollo.MutationHookOptions<LoginWithSnsMutationResponse, LoginWithSnsMutationVariables>,

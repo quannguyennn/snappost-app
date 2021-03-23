@@ -70,6 +70,12 @@ type Follow implements Node {
   status: FollowStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
+  requestInfo: User!
+}
+
+type FollowConnection {
+  items: [Follow!]
+  meta: BasePaginationMeta!
 }
 
 type Media implements Node {
@@ -162,6 +168,8 @@ type Query {
   media(id: Float!): Media
   getNotification(page: Float!, limit: Float!): NotificationConnection!
   countUnSeenNotification: Float!
+  getFollowRequest(page: Float!, limit: Float!): FollowConnection!
+  countFollowRequest: Float!
   getUserLikePost(postId: Float!): [User!]!
   getPostComment(page: Float!, limit: Float!, postId: Float!): CommentConnection!
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!

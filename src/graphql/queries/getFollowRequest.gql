@@ -1,0 +1,25 @@
+query getFollowRequest($page: Float!, $limit: Float!) {
+  getFollowRequest(page: $page, limit: $limit) {
+    items {
+      id
+      creatorId
+      followUser
+      status
+      createdAt
+      updatedAt
+      requestInfo {
+        id
+        name
+        nickname
+        avatarFilePath
+      }
+    }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
+    }
+  }
+}

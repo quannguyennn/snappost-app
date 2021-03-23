@@ -15,6 +15,7 @@ export enum AppRoutes {
   CAPTION_SCREEN = 'CaptionScreen',
   EDIT_CATION_SCREEN = 'EditCaptionScreen',
   NOTIFICATION_TAB = 'NotificationTab',
+  REQUEST_FOLLOW = 'RequestFollow',
   PROFILE_TAB = 'ProfileTab',
 
   MESSAGE_SCREEN = 'MessageScreen',

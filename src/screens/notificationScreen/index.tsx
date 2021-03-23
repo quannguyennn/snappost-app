@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
 import EmptyNotifications from '../..//assets/svg/empty-notifications.svg';
@@ -14,17 +14,24 @@ import {
   GetNotificationQueryResponse,
   useGetNotificationLazyQuery,
 } from '../../graphql/queries/getNotification.generated';
-import { useIsFocused } from '@react-navigation/core';
+import { useIsFocused, useNavigation } from '@react-navigation/core';
 import { tryAgainLaterNotification } from '../../helpers/notifications';
 import { useSetSeenNotificationMutation } from '../../graphql/mutations/setSeenNotification.generated';
 import { countNotificationState } from '../../recoil/app/atoms';
+import { useCountFollowRequestLazyQuery } from '../../graphql/queries/countFollowRequest.generated';
+import { AppRoutes } from '../../navigator/app-routes';
 
 const NotificationScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
+  const { navigate } = useNavigation();
   const isFocus = useIsFocused();
 
   const [refresh, setRefresh] = useState(false);
   const setCountNoti = useSetRecoilState(countNotificationState);
+
+  const [countRequest, { data: fetchCount }] = useCountFollowRequestLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [getNoti, { data: fetchData, loading, error, fetchMore }] = useGetNotificationLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -61,8 +68,9 @@ const NotificationScreen: React.FC = () => {
           page: 1,
         },
       });
+      countRequest();
     }
-  }, [getNoti, isFocus]);
+  }, [getNoti, isFocus, countRequest]);
 
   useEffect(() => {
     if (refresh) {
@@ -72,14 +80,15 @@ const NotificationScreen: React.FC = () => {
           page: 1,
         },
       });
+      countRequest();
     }
-  }, [getNoti, refresh]);
+  }, [getNoti, refresh, countRequest]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
       fetchMore &&
         fetchMore({
-          variables: { limit: 12, page: currentPage + 1 },
+          variables: { limit: 20, page: currentPage + 1 },
           updateQuery: (prev: GetNotificationQueryResponse, { fetchMoreResult }) => {
             if (!fetchMoreResult) {
               return prev;
@@ -105,6 +114,7 @@ const NotificationScreen: React.FC = () => {
       triggerInfo: { avatarFilePath, name },
       link,
       content,
+      isSeen,
     } = item;
 
     return (
@@ -115,6 +125,7 @@ const NotificationScreen: React.FC = () => {
         content={content}
         resourceId={link}
         time={createdAt}
+        isSeen={isSeen}
       />
     );
   };
@@ -146,6 +157,30 @@ const NotificationScreen: React.FC = () => {
   return (
     <View style={styles(theme).container}>
       <Header title="Notifications" />
+      <TouchableOpacity
+        onPress={() => navigate(AppRoutes.REQUEST_FOLLOW)}
+        style={{
+          paddingHorizontal: 20,
+          paddingVertical: 20,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginVertical: 5,
+          borderBottomColor: theme.text01,
+          borderTopColor: theme.text01,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+        }}>
+        <Text style={{ color: theme.text01 }}>Request following</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {Number(fetchCount?.countFollowRequest) > 0 ? (
+            <View style={{ backgroundColor: theme.accent, width: 8, height: 8, borderRadius: 8 }} />
+          ) : null}
+          <Text style={{ color: theme.text02, marginLeft: 10, fontSize: 14 }}>
+            {Number(fetchCount?.countFollowRequest ?? 0)}
+          </Text>
+        </View>
+      </TouchableOpacity>
+
       {content}
     </View>
   );

@@ -7,6 +7,7 @@ import NativeImage from './NativeImage';
 import { AppContext } from '../../context';
 import Foundation from 'react-native-vector-icons/Foundation';
 import { ThemeStatic } from '../../theme/Colors';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 interface PostThumbnailProps {
   id: string;
@@ -27,13 +28,18 @@ const PostThumbnail: React.FC<PostThumbnailProps> = ({ id, uri, dimensions, nPos
       activeOpacity={0.95}
       style={[styles(theme).container, { ...dimensions }]}>
       <NativeImage uri={uri} style={styles().thumbnailImage} />
-      {nPost > 1 ? <Foundation name="page-multiple" color={ThemeStatic.white} style={{
-        fontSize: 18,
-        position: 'absolute',
-        top: 5,
-        right: 5,
-      }} />
-        : null}
+      {nPost > 1 ? (
+        <Foundation
+          name="page-multiple"
+          color={ThemeStatic.white}
+          style={{
+            fontSize: 18,
+            position: 'absolute',
+            top: 5,
+            right: 5,
+          }}
+        />
+      ) : null}
     </TouchableOpacity>
   );
 };
@@ -44,7 +50,6 @@ const styles = (theme = {} as ThemeColors) =>
       backgroundColor: theme.placeholder,
       overflow: 'hidden',
       borderRadius: 5,
-      marginTop: 10,
     },
     thumbnailImage: {
       flex: 1,

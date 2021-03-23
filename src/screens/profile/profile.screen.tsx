@@ -26,28 +26,30 @@ import EditProfileBottomSheet from './components/EditProfileBottomSheet';
 import { myPostState } from '../../recoil/app/atoms';
 import { useMeLazyQuery } from '../../graphql/queries/me.generated';
 import BlockListBottomSheet from './components/BlockListBottomSheet';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 const ProfileScreen: React.FunctionComponent = React.memo(() => {
   const theme = useRecoilValue(themeState);
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   const me = useCurrentUser();
   const [getMe] = useMeLazyQuery({
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     onCompleted: () => {
-      setUpdate(false); setRefresh(false)
-    }
-  })
+      setUpdate(false);
+      setRefresh(false);
+    },
+  });
 
   const [refresh, setRefresh] = useState(false);
   const [myPost, setMyPost] = useRecoilState(myPostState);
   const [init, setInit] = useState(true);
-  const [update, setUpdate] = useState(false)
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     if (update || isFocused || refresh) {
-      getMe()
+      getMe();
     }
-  }, [update, isFocused, refresh])
+  }, [update, isFocused, refresh, getMe]);
 
   const [getMyPost, { data: fetchData, loading, fetchMore }] = useMyPostLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -73,7 +75,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
       });
     }
     setInit(false);
-  }, [getMyPost, refresh, init]);
+  }, [getMyPost, refresh, init, getMe]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -150,7 +152,14 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
   // @ts-ignore
   const renderItem = ({ item }) => {
     const { id, mediasPath } = item;
-    return <PostThumbnail nPost={mediasPath?.length} id={id} uri={mediasPath[0].filePath} dimensions={PostDimensions.Small} />;
+    return (
+      <PostThumbnail
+        nPost={mediasPath?.length}
+        id={id}
+        uri={mediasPath[0].filePath}
+        dimensions={PostDimensions.Small}
+      />
+    );
   };
 
   const IconRight = () => (
@@ -166,6 +175,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
     content = (
       <View style={{ flex: 1 }}>
         <FlatGrid
+          itemDimension={responsiveWidth(22)}
           onRefresh={() => setRefresh(true)}
           refreshing={refresh}
           ListHeaderComponent={ListHeaderComponent}
@@ -176,6 +186,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
           onEndReached={() => loadMore()}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
+          spacing={12}
         />
         <ConnectionsBottomSheet ref={followingBottomSheetRef} data={me?.nFollowing} type={Connections.FOLLOWING} />
         <ConnectionsBottomSheet ref={followersBottomSheetRef} data={me?.nFollower} type={Connections.FOLLOWERS} />
@@ -195,9 +206,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
     <SafeAreaView style={styles(theme).container}>
       <Header title="My Profile" IconRight={IconRight} />
       {content}
-      {
-        myPost?.length && loading ? <ActivityIndicator /> : null
-      }
+      {myPost?.length && loading ? <ActivityIndicator /> : null}
       <AboutBottomSheet ref={aboutBottomSheetRef} />
       <SettingsBottomSheet
         ref={settingsBottomSheetRef}

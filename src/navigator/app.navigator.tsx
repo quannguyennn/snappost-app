@@ -11,6 +11,7 @@ import ExploreScreen from '../screens/ExploreScreen';
 import { NotificationNavigator } from './notification.navigator';
 import ProfileViewScreen from '../screens/ProfileViewScreen';
 import EditCaptionScreen from '../screens/upload/EditCaptionScreen';
+import RequestFollowScreen from '../screens/notificationScreen/request-follow.screen';
 
 export type MainTabParamList = {
   [AppRoutes.HOME_TAB]: undefined;
@@ -27,6 +28,7 @@ export type AppStackParamList = {
   [AppRoutes.POST_VIEW_SCREEN]: { postId: number };
   [AppRoutes.UPLOAD_STACK]: undefined;
   [AppRoutes.EDIT_CATION_SCREEN]: { postId: number };
+  [AppRoutes.REQUEST_FOLLOW]: { postId: number };
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -52,6 +54,7 @@ export const AppNavigator = () => {
       <Stack.Screen name={AppRoutes.UPLOAD_STACK} component={UploadStackNavigator} />
       <Stack.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
       <Stack.Screen name={AppRoutes.EDIT_CATION_SCREEN} component={EditCaptionScreen} />
+      <Stack.Screen name={AppRoutes.REQUEST_FOLLOW} component={RequestFollowScreen} />
     </Stack.Navigator>
   );
 };

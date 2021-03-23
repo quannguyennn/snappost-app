@@ -82,6 +82,13 @@ export type Follow = Node & {
   status: FollowStatus;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  requestInfo: User;
+};
+
+export type FollowConnection = {
+  __typename?: 'FollowConnection';
+  items?: Maybe<Array<Follow>>;
+  meta: BasePaginationMeta;
 };
 
 export type Media = Node & {
@@ -179,6 +186,8 @@ export type Query = {
   media?: Maybe<Media>;
   getNotification: NotificationConnection;
   countUnSeenNotification: Scalars['Float'];
+  getFollowRequest: FollowConnection;
+  countFollowRequest: Scalars['Float'];
   getUserLikePost: Array<User>;
   getPostComment: CommentConnection;
   getNewFeed: PostConnection;
@@ -214,6 +223,11 @@ export type QueryMediaArgs = {
 };
 
 export type QueryGetNotificationArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
+};
+
+export type QueryGetFollowRequestArgs = {
   page: Scalars['Float'];
   limit: Scalars['Float'];
 };
