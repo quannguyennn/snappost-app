@@ -53,6 +53,9 @@ const ProfileViewScreen: React.FC = () => {
     onCompleted: (res) => {
       setUpdate(false);
       setRefresh(false);
+      getUserPost({
+        variables: { userId, limit: 15, page: 1 },
+      });
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -80,7 +83,7 @@ const ProfileViewScreen: React.FC = () => {
       console.log('user post', err);
       somethingWentWrongErrorNotification();
     },
-    onCompleted: () => {
+    onCompleted: (res) => {
       setRefresh(false);
     },
   });
@@ -100,13 +103,20 @@ const ProfileViewScreen: React.FC = () => {
   }, [refresh, init, getUser, userId]);
 
   useEffect(() => {
-    if (init && called && data?.getUserInfo?.followStatus === 'ACCEPT') {
-      getUserPost({
-        variables: { userId, limit: 15, page: 1 },
-      });
+    if (called) {
+      if (init || refresh) {
+        if (data && data?.getUserInfo && data?.getUserInfo?.followStatus) {
+          if (data?.getUserInfo?.followStatus === 'ACCEPT') {
+            getUserPost({
+              variables: { userId, limit: 15, page: 1 },
+            });
+          }
+        }
+      }
     }
+
     setInit(false);
-  }, [called, getUserPost, data, init, userId]);
+  }, [called, getUserPost, data, init, userId, refresh]);
 
   const loadMore = () => {
     if (Number(currentPage) < Number(totalPages)) {
@@ -248,6 +258,7 @@ const ProfileViewScreen: React.FC = () => {
           handle={name}
           type={Connections.FOLLOWERS}
         />
+        {!init && loadingPost ? <ActivityIndicator /> : null}
       </>
     );
   }
@@ -286,7 +297,6 @@ const ProfileViewScreen: React.FC = () => {
         toggle={toggleBlockConfirmationModal}
         onConfirm={processBlockUser}
       />
-      {!init && loadingPost ? <ActivityIndicator /> : null}
     </View>
   );
 };

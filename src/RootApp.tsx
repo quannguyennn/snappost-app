@@ -43,11 +43,9 @@ const App = React.memo(() => {
   useOnNewNotificationSubscription({
     variables: { userId: data?.me.id ?? 0 },
     onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData);
       if (subscriptionData.error) {
         console.log('delete comment sub', subscriptionData.error);
       } else {
-        console.log(111);
         setCountNotification(countNoti + 1);
       }
     },

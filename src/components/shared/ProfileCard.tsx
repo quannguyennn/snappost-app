@@ -49,8 +49,8 @@ interface ProfileCardProps {
   onEdit?: any;
   onFollowingOpen: any;
   onFollowersOpen: any;
-  following: number | undefined ;
-  followers: number | undefined ;
+  following: number | undefined;
+  followers: number | undefined;
   nickname: string | undefined;
   name: string | undefined;
   renderInteractions?: any;

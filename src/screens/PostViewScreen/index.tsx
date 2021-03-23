@@ -9,7 +9,7 @@ import LikeBounceAnimation from './components/LikeBounceAnimation';
 import LikesBottomSheet from './components/LikesBottomSheet';
 import PostOptionsBottomSheet from './components/PostOptionsBottomSheet';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, StackActions, useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
 import PostViewScreenPlaceholder from '../../components/placeholders/PostViewScreen.Placeholder';
 import BounceView from '../../components/shared/BounceView';
@@ -45,7 +45,7 @@ const { FontWeights, FontSizes } = Typography;
 
 const PostViewScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
-  const { navigate, goBack } = useNavigation();
+  const { goBack, dispatch } = useNavigation();
   const user = useCurrentUser();
   const {
     params: { postId },
@@ -60,7 +60,10 @@ const PostViewScreen: React.FC = () => {
   const [myPost, setMyPost] = useRecoilState(myPostState);
 
   const [reactToPost] = useReactToPostMutation({
-    onError: () => somethingWentWrongErrorNotification(),
+    onError: (err) => {
+      console.log('like', err);
+      somethingWentWrongErrorNotification();
+    },
     onCompleted: (res) => {
       setIsLike(res.reactToPost);
     },
@@ -140,7 +143,7 @@ const PostViewScreen: React.FC = () => {
     if (userId === user?.id ?? 0) {
       return;
     }
-    navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId });
+    dispatch(StackActions.push(AppRoutes.PROFILE_VIEW_SCREEN, { userId }));
   };
 
   const openOptions = () => {
@@ -183,7 +186,7 @@ const PostViewScreen: React.FC = () => {
 
   const onPostEdit = () => {
     closeOptions();
-    navigate(AppRoutes.EDIT_CATION_SCREEN, { postId });
+    // navigate(AppRoutes.EDIT_CATION_SCREEN, { postId });
     // @ts-ignore
     // editPostBottomSheetRef.current.open();
   };

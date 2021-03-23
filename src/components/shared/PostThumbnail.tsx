@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import type { Dimensions, ThemeColors } from '../../types/theme';
 import { AppRoutes } from '../../navigator/app-routes';
 import NativeImage from './NativeImage';
 import { AppContext } from '../../context';
 import Foundation from 'react-native-vector-icons/Foundation';
 import { ThemeStatic } from '../../theme/Colors';
-import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 interface PostThumbnailProps {
   id: string;
@@ -18,9 +17,11 @@ interface PostThumbnailProps {
 
 const PostThumbnail: React.FC<PostThumbnailProps> = ({ id, uri, dimensions, nPost }) => {
   const { theme } = useContext(AppContext);
-  const { navigate } = useNavigation();
+  const { dispatch } = useNavigation();
 
-  const navigateToPost = () => navigate(AppRoutes.POST_VIEW_SCREEN, { postId: id });
+  const navigateToPost = () => {
+    dispatch(StackActions.push(AppRoutes.POST_VIEW_SCREEN, { postId: id }));
+  };
 
   return (
     <TouchableOpacity

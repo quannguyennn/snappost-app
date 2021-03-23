@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Typography } from '../../../theme';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';
@@ -6,9 +6,6 @@ import { useRecoilValue } from 'recoil';
 import { themeState } from '../../../recoil/theme/atoms';
 import type { ThemeColors } from '../../../types/theme';
 import { useNavigation } from '@react-navigation/native';
-import { tryAgainLaterNotification } from '../../../helpers/notifications';
-import { PollIntervals } from '../../../utils/constants';
-import { FollowInteraction } from '../../../types/constants';
 import { AppRoutes } from '../../../navigator/app-routes';
 import { IconSizes } from '../../../theme/Icon';
 import type { FollowStatus, Maybe } from '../../../graphql/type.interface';
@@ -18,10 +15,10 @@ import { useUnFollowUserMutation } from '../../../graphql/mutations/UnFollowUser
 const { FontWeights, FontSizes } = Typography;
 
 interface UserInteractionsProps {
-  targetId: number,
-  isFollow: Maybe<FollowStatus> | undefined,
+  targetId: number;
+  isFollow: Maybe<FollowStatus> | undefined;
   onInteract: () => void;
-};
+}
 
 const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow, onInteract }) => {
   const { navigate } = useNavigation();
@@ -29,31 +26,34 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow,
 
   const [follow, { loading: followLoading }] = useFollowUserMutation({
     onCompleted: () => {
-      onInteract()
-    }
+      onInteract();
+    },
   });
   const [unFollow, { loading: unFollowLoading }] = useUnFollowUserMutation({
     onCompleted: () => {
-      onInteract()
-    }
+      onInteract();
+    },
   });
-
 
   let content = <LoadingIndicator size={IconSizes.x0} color={theme.white} />;
 
   if (!followLoading && !unFollowLoading) {
-    content = (
-      <Text style={styles(theme).followInteractionText}>
-        {`${isFollow === "WAITING" ? 'REQUEST SENT' : 'FOLLOW'}`}
-      </Text>
-    );
+    if (isFollow !== 'ACCEPT') {
+      content = (
+        <Text style={styles(theme).followInteractionText}>{`${
+          isFollow === 'WAITING' ? 'REQUEST SENT' : 'FOLLOW'
+        }`}</Text>
+      );
+    } else {
+      content = <Text style={styles(theme).followInteractionText}>FOLLOWING</Text>;
+    }
   }
 
   const followInteraction = () => {
-    if (isFollow === "ACCEPT" || isFollow === "WAITING") {
-      unFollow({ variables: { id: targetId } })
+    if (isFollow === 'ACCEPT' || isFollow === 'WAITING') {
+      unFollow({ variables: { id: targetId } });
     } else {
-      follow({ variables: { id: targetId } })
+      follow({ variables: { id: targetId } });
     }
   };
 
@@ -79,10 +79,11 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow,
 
   return (
     <View style={styles().container}>
-      <TouchableOpacity activeOpacity={0.90} onPress={followInteraction} style={styles(theme).followInteraction}>
+      <TouchableOpacity activeOpacity={0.9} onPress={followInteraction} style={styles(theme).followInteraction}>
         {content}
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={0.90}
+      <TouchableOpacity
+        activeOpacity={0.9}
         // onPress={messageInteraction}
         style={styles(theme).messageInteraction}>
         <Text style={styles(theme).messageInteractionText}>MESSAGE</Text>
@@ -91,42 +92,43 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow,
   );
 };
 
-const styles = (theme = {} as ThemeColors) => StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 20
-  },
-  followInteraction: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 5,
-    paddingVertical: 7,
-    borderRadius: 40,
-    backgroundColor: theme.accent
-  },
-  messageInteraction: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 5,
-    paddingVertical: 7,
-    borderRadius: 40,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.accent
-  },
-  followInteractionText: {
-    ...FontWeights.Light,
-    ...FontSizes.Caption,
-    color: theme.white
-  },
-  messageInteractionText: {
-    ...FontWeights.Light,
-    ...FontSizes.Caption,
-    color: theme.accent
-  }
-});
+const styles = (theme = {} as ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: 20,
+    },
+    followInteraction: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 5,
+      paddingVertical: 7,
+      borderRadius: 40,
+      backgroundColor: theme.accent,
+    },
+    messageInteraction: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: 5,
+      paddingVertical: 7,
+      borderRadius: 40,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: theme.accent,
+    },
+    followInteractionText: {
+      ...FontWeights.Light,
+      ...FontSizes.Caption,
+      color: theme.white,
+    },
+    messageInteractionText: {
+      ...FontWeights.Light,
+      ...FontSizes.Caption,
+      color: theme.accent,
+    },
+  });
 
 export default UserInteractions;
