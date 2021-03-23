@@ -53,12 +53,16 @@ const ProfileViewScreen: React.FC = () => {
     onCompleted: (res) => {
       setUpdate(false);
       setRefresh(false);
-      getUserPost({
-        variables: { userId, limit: 15, page: 1 },
-      });
+      if (res.getUserInfo?.followStatus === "ACCEPT") {
+        getUserPost({
+          variables: { userId, limit: 15, page: 1 },
+        });
+      }
+
     },
     fetchPolicy: 'cache-and-network',
   });
+
 
   const [blockUser] = useBlockUserMutation({
     onError: (err) => {
@@ -236,8 +240,8 @@ const ProfileViewScreen: React.FC = () => {
             data?.getUserInfo?.followStatus === 'ACCEPT' ? (
               <ListEmptyComponent listType="posts" spacing={30} />
             ) : (
-              <ListEmptyComponent listType="posts" spacing={30} private />
-            )
+                <ListEmptyComponent listType="posts" spacing={30} private />
+              )
           }
           style={styles().postGrid}
           showsVerticalScrollIndicator={false}

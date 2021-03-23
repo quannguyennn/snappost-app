@@ -4,6 +4,7 @@ query getPostComment($page: Float!, $limit: Float!, $postId: Float!) {
       id
       content
       createdAt
+      creatorId
       creatorInfo {
         id
         name

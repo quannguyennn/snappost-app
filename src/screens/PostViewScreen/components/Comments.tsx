@@ -99,7 +99,7 @@ const CommentList: React.FC<CommentsProps> = ({ postId }) => {
 
   const renderItem = ({ item }: { item: any }) => {
     const { id, creatorId, creatorInfo, content, createdAt } = item;
-
+    console.log(creatorId)
     return (
       <CommentCard
         postId={postId}

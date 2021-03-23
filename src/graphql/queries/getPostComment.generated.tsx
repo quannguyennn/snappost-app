@@ -12,7 +12,7 @@ export type GetPostCommentQueryResponse = { __typename?: 'Query' } & {
   getPostComment: { __typename?: 'CommentConnection' } & {
     items?: Types.Maybe<
       Array<
-        { __typename?: 'Comments' } & Pick<Types.Comments, 'id' | 'content' | 'createdAt'> & {
+        { __typename?: 'Comments' } & Pick<Types.Comments, 'id' | 'content' | 'createdAt' | 'creatorId'> & {
             creatorInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>;
           }
       >
@@ -31,6 +31,7 @@ export const GetPostCommentDocument = gql`
         id
         content
         createdAt
+        creatorId
         creatorInfo {
           id
           name

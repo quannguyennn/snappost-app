@@ -51,7 +51,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ commentId, authorId, avatar, 
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         swipeableRef.current.close();
-        deleteComment({ variables: { id: commentId, postId } });
+        deleteComment({ variables: { id: commentId } });
       });
     }
   };

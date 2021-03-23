@@ -7,7 +7,7 @@ export type OnCreateCommentSubscriptionVariables = Types.Exact<{
 }>;
 
 export type OnCreateCommentSubscriptionResponse = { __typename?: 'Subscription' } & {
-  onCreateComment: { __typename?: 'Comments' } & Pick<Types.Comments, 'id' | 'content' | 'createdAt'> & {
+  onCreateComment: { __typename?: 'Comments' } & Pick<Types.Comments, 'id' | 'content' | 'createdAt' | 'creatorId'> & {
       creatorInfo: { __typename?: 'User' } & Pick<
         Types.User,
         'id' | 'name' | 'nickname' | 'createdAt' | 'avatarFilePath'
@@ -21,6 +21,7 @@ export const OnCreateCommentDocument = gql`
       id
       content
       createdAt
+      creatorId
       creatorInfo {
         id
         name

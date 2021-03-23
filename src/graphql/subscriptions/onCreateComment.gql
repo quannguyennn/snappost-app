@@ -3,6 +3,7 @@ subscription onCreateComment($postId: Float!) {
     id
     content
     createdAt
+    creatorId
     creatorInfo {
       id
       name
