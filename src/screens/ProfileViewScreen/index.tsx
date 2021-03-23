@@ -220,7 +220,7 @@ const ProfileViewScreen: React.FC = () => {
   };
 
   let content = <ProfileScreenPlaceholder viewMode />;
-  if (!loading && !error) {
+  if (!loading && !error && !loadingPost) {
     const { name, nFollower, nFollowing } = data?.getUserInfo ?? {};
     content = (
       <>

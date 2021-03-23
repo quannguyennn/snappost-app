@@ -99,6 +99,7 @@ const styles = (theme = {} as ThemeColors) =>
       alignItems: 'center',
       justifyContent: 'space-between',
       marginTop: 20,
+      marginBottom: 20,
     },
     followInteraction: {
       flex: 1,
