@@ -163,7 +163,7 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
         if (avatarChanged) {
           const uploadRes = await upload({
             uri: selectedImage.path,
-            type: 'image',
+            type: selectedImage.mime,
             name: selectedImage.filename ?? 'name',
             height: selectedImage.height ?? 0,
             width: selectedImage.width ?? 0,
