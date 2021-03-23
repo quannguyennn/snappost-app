@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, Touchable
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import CommentInput from './components/CommentInput';
-import EditPostBottomSheet from './components/EditPostBottomSheet';
+// import EditPostBottomSheet from './components/EditPostBottomSheet';
 import LikeBounceAnimation from './components/LikeBounceAnimation';
 import LikesBottomSheet from './components/LikesBottomSheet';
 import PostOptionsBottomSheet from './components/PostOptionsBottomSheet';
@@ -85,7 +85,8 @@ const PostViewScreen: React.FC = () => {
     onCompleted: () => {
       handleUpdatePostState();
     },
-    onError: () => {
+    onError: (err) => {
+      console.log('post detail', err);
       tryAgainLaterNotification();
     },
   });
@@ -127,7 +128,7 @@ const PostViewScreen: React.FC = () => {
 
   const scrollViewRef = useRef();
   const postOptionsBottomSheetRef = useRef();
-  const editPostBottomSheetRef = useRef();
+  // const editPostBottomSheetRef = useRef();
   const likesBottomSheetRef = useRef();
   const likeBounceAnimationRef = createRef();
 

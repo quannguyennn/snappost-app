@@ -11,21 +11,45 @@ import { themeState, themeTypeState } from './recoil/theme/atoms';
 import { useMeLazyQuery } from './graphql/queries/me.generated';
 import LoadingIndicator from './components/shared/LoadingIndicator';
 import { isLoginState } from './recoil/auth/atoms';
+import { countNotificationState } from './recoil/app/atoms';
+import { useCountUnSeenNotificationQuery } from './graphql/queries/countUnSeenNotification.generated';
+import { useOnNewNotificationSubscription } from './graphql/subscriptions/onNewNotification.generated';
 
 const App = React.memo(() => {
   const [theme, setTheme] = useRecoilState(themeState);
   const [themeType, setThemeType] = useRecoilState(themeTypeState);
+  const [countNoti, setCountNotification] = useRecoilState(countNotificationState);
   const { barStyle, backgroundColor } = DynamicStatusBar[themeType];
 
   const setIsLogin = useSetRecoilState(isLoginState);
 
-  const [getMe, { loading }] = useMeLazyQuery({
+  const [getMe, { data, loading }] = useMeLazyQuery({
     onError: (err) => {
       console.log(err);
       setIsLogin(false);
     },
     onCompleted: () => {
       setIsLogin(true);
+    },
+  });
+
+  useCountUnSeenNotificationQuery({
+    pollInterval: 5000,
+    onCompleted: (res) => {
+      setCountNotification(res.countUnSeenNotification);
+    },
+  });
+
+  useOnNewNotificationSubscription({
+    variables: { userId: data?.me.id ?? 0 },
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData);
+      if (subscriptionData.error) {
+        console.log('delete comment sub', subscriptionData.error);
+      } else {
+        console.log(111);
+        setCountNotification(countNoti + 1);
+      }
     },
   });
 

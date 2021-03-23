@@ -4,4 +4,5 @@ export enum AppAtoms {
   IsLogin = 'IsLogin',
   NEW_FEED = 'NewFeed',
   My_POST = 'MyPost',
+  CountNotification = 'CountNotification',
 }

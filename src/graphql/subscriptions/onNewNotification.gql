@@ -1,0 +1,11 @@
+subscription onNewNotification($userId: Float!) {
+  onNewNotification(userId: $userId) {
+    id
+    triggerId
+    userId
+    content
+    link
+    isSeen
+    createdAt
+  }
+}

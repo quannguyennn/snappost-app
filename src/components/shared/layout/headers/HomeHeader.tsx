@@ -4,7 +4,7 @@ import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../../../recoil/theme/atoms';
 import { Typography } from '../../../../theme';
-import { ThemeColors } from '../../../../types/theme';
+import type { ThemeColors } from '../../../../types/theme';
 
 const { FontWeights, FontSizes } = Typography;
 

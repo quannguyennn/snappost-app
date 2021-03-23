@@ -1,0 +1,26 @@
+query getNotification($page: Float!, $limit: Float!) {
+  getNotification(page: $page, limit: $limit) {
+    items {
+      id
+      triggerId
+      userId
+      content
+      link
+      isSeen
+      createdAt
+      triggerInfo {
+        id
+        name
+        nickname
+        avatarFilePath
+      }
+    }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
+    }
+  }
+}

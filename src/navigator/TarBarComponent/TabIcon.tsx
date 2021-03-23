@@ -9,9 +9,14 @@ import { StyleSheet } from 'react-native';
 import { themeState } from '../../recoil/theme/atoms';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
+import IconButton from '../../components/shared/Iconbutton';
+import { countNotificationState } from '../../recoil/app/atoms';
+import { useNavigation } from '@react-navigation/core';
 
 const TabIcon = ({ route, isActive }: any) => {
   const theme = useRecoilValue(themeState);
+  const unSeenNoti = useRecoilValue(countNotificationState);
+  const { navigate } = useNavigation();
 
   switch (route) {
     case AppRoutes.HOME_TAB:
@@ -28,7 +33,16 @@ const TabIcon = ({ route, isActive }: any) => {
       );
 
     case AppRoutes.NOTIFICATION_TAB:
-      return <Feather name="bell" color={isActive ? theme.accent : theme.text02} size={IconSizes.x5} />;
+      return (
+        <IconButton
+          hasBadge={unSeenNoti !== 0}
+          badgeCount={unSeenNoti}
+          onPress={() => {
+            navigate(AppRoutes.NOTIFICATION_TAB);
+          }}
+          Icon={() => <Feather name="bell" color={isActive ? theme.accent : theme.text02} size={IconSizes.x5} />}
+        />
+      );
 
     case AppRoutes.PROFILE_TAB:
       return <AntDesign name="user" color={isActive ? theme.accent : theme.text02} size={IconSizes.x5} />;

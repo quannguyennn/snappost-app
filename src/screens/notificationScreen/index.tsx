@@ -1,38 +1,119 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
 import EmptyNotifications from '../..//assets/svg/empty-notifications.svg';
-
 import NotificationCard from './components/NotificationCard';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
-import { useQuery } from '@apollo/client';
 import type { ThemeColors } from '../../types/theme';
 import Header from '../../components/shared/layout/headers/Header';
 import SvgBanner from '../../components/shared/SvgBanner';
 import NotificationScreenPlaceholder from '../../components/placeholders/NotificationScreen.Placeholder';
+import {
+  GetNotificationQueryResponse,
+  useGetNotificationLazyQuery,
+} from '../../graphql/queries/getNotification.generated';
+import { useIsFocused } from '@react-navigation/core';
+import { tryAgainLaterNotification } from '../../helpers/notifications';
+import { useSetSeenNotificationMutation } from '../../graphql/mutations/setSeenNotification.generated';
+import { countNotificationState } from '../../recoil/app/atoms';
 
 const NotificationScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
+  const isFocus = useIsFocused();
 
-  // const { data, loading, error } = useQuery(QUERY_NOTIFICATION, {
-  //   variables: { userId: user.id },
-  //   pollInterval: PollIntervals.notification
-  // });
+  const [refresh, setRefresh] = useState(false);
+  const setCountNoti = useSetRecoilState(countNotificationState);
+
+  const [getNoti, { data: fetchData, loading, error, fetchMore }] = useGetNotificationLazyQuery({
+    fetchPolicy: 'cache-and-network',
+    onCompleted: () => {
+      setRefresh(false);
+      setSeen();
+    },
+    onError: (err) => {
+      console.log('noti', err);
+      tryAgainLaterNotification();
+    },
+  });
+
+  const currentPage =
+    Number(fetchData?.getNotification?.meta.currentPage) >= 0
+      ? Number(fetchData?.getNotification?.meta.currentPage)
+      : 1;
+  const totalPages =
+    Number(fetchData?.getNotification?.meta.totalPages) >= 0 ? Number(fetchData?.getNotification?.meta.totalPages) : 2;
+
+  const data = fetchData?.getNotification.items;
+
+  const [setSeen] = useSetSeenNotificationMutation({
+    onCompleted: () => {
+      setCountNoti(0);
+    },
+  });
+
+  useEffect(() => {
+    if (isFocus) {
+      getNoti({
+        variables: {
+          limit: 20,
+          page: 1,
+        },
+      });
+    }
+  }, [getNoti, isFocus]);
+
+  useEffect(() => {
+    if (refresh) {
+      getNoti({
+        variables: {
+          limit: 20,
+          page: 1,
+        },
+      });
+    }
+  }, [getNoti, refresh]);
+
+  const loadMore = () => {
+    if (Number(currentPage) < Number(totalPages)) {
+      fetchMore &&
+        fetchMore({
+          variables: { limit: 12, page: currentPage + 1 },
+          updateQuery: (prev: GetNotificationQueryResponse, { fetchMoreResult }) => {
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            const prevItem = prev?.getNotification?.items ? prev?.getNotification?.items : [];
+            const nextItem = fetchMoreResult.getNotification?.items ? fetchMoreResult.getNotification?.items : [];
+            return Object.assign({}, prev, {
+              getNotification: {
+                items: [...prevItem, ...nextItem],
+                meta: fetchMoreResult.getNotification?.meta,
+                __typename: 'NotificationConnection',
+              },
+            });
+          },
+        });
+    }
+  };
 
   const renderItem = ({ item }: any) => {
-    const { id: notificationId, actionUser, type, resourceId, createdAt } = item;
+    const {
+      id,
+      createdAt,
+      triggerInfo: { avatarFilePath, name },
+      link,
+      content,
+    } = item;
 
     return (
       <NotificationCard
-        notificationId={notificationId}
-        avatar={
-          'https://images.pexels.com/photos/5706559/pexels-photo-5706559.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
-        }
-        handle={'hihi'}
-        type={type}
-        resourceId={resourceId}
+        notificationId={id}
+        avatar={avatarFilePath}
+        handle={name}
+        content={content}
+        resourceId={link}
         time={createdAt}
       />
     );
@@ -40,12 +121,18 @@ const NotificationScreen: React.FC = () => {
 
   let content = <NotificationScreenPlaceholder />;
 
-  if (true) {
+  if (!loading && !error) {
     content = (
       <FlatGrid
+        onRefresh={() => {
+          setRefresh(true);
+        }}
+        refreshing={refresh}
+        onEndReached={() => loadMore()}
+        onEndReachedThreshold={0.3}
         itemDimension={responsiveWidth(85)}
         showsVerticalScrollIndicator={false}
-        data={[0, 1, 2, 3]}
+        data={data}
         ListEmptyComponent={() => (
           <SvgBanner Svg={EmptyNotifications} spacing={20} placeholder="No notifications yet" />
         )}

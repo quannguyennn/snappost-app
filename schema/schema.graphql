@@ -47,6 +47,22 @@ type UserConnection {
   meta: BasePaginationMeta!
 }
 
+type Notification implements Node {
+  id: Float!
+  triggerId: Float!
+  userId: Float!
+  content: String!
+  link: String!
+  isSeen: Boolean!
+  createdAt: DateTime!
+  triggerInfo: User!
+}
+
+type NotificationConnection {
+  items: [Notification!]
+  meta: BasePaginationMeta!
+}
+
 type Follow implements Node {
   id: Float!
   creatorId: Float!
@@ -144,6 +160,8 @@ type Query {
   getBlockedUser: [User!]
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
+  getNotification(page: Float!, limit: Float!): NotificationConnection!
+  countUnSeenNotification: Float!
   getUserLikePost(postId: Float!): [User!]!
   getPostComment(page: Float!, limit: Float!, postId: Float!): CommentConnection!
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!
@@ -162,6 +180,7 @@ type Mutation {
   removeMedia(id: ID): Media!
   updateMedia(input: UpdateMediaInput!): Media!
   createDir(parentId: ID, dirName: String!): Media!
+  setSeenNotification: Boolean!
   FollowUser(id: Float!): Boolean!
   UnFollowUser(id: Float!): Boolean!
   handleFollowRequest(accept: Boolean!, userId: Float!): Boolean!
@@ -234,6 +253,7 @@ input UpdatePostInput {
 }
 
 type Subscription {
+  onNewNotification(userId: Float!): Notification!
   onLikePost(postId: Float!): Like!
   onUnLikePost(postId: Float!): Like!
   onCreateComment(postId: Float!): Comments!

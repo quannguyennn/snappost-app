@@ -56,6 +56,24 @@ export type UserConnection = {
   meta: BasePaginationMeta;
 };
 
+export type Notification = Node & {
+  __typename?: 'Notification';
+  id: Scalars['Float'];
+  triggerId: Scalars['Float'];
+  userId: Scalars['Float'];
+  content: Scalars['String'];
+  link: Scalars['String'];
+  isSeen: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  triggerInfo: User;
+};
+
+export type NotificationConnection = {
+  __typename?: 'NotificationConnection';
+  items?: Maybe<Array<Notification>>;
+  meta: BasePaginationMeta;
+};
+
 export type Follow = Node & {
   __typename?: 'Follow';
   id: Scalars['Float'];
@@ -159,6 +177,8 @@ export type Query = {
   getBlockedUser?: Maybe<Array<User>>;
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
+  getNotification: NotificationConnection;
+  countUnSeenNotification: Scalars['Float'];
   getUserLikePost: Array<User>;
   getPostComment: CommentConnection;
   getNewFeed: PostConnection;
@@ -191,6 +211,11 @@ export type QueryMediasArgs = {
 
 export type QueryMediaArgs = {
   id: Scalars['Float'];
+};
+
+export type QueryGetNotificationArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
 };
 
 export type QueryGetUserLikePostArgs = {
@@ -238,6 +263,7 @@ export type Mutation = {
   removeMedia: Media;
   updateMedia: Media;
   createDir: Media;
+  setSeenNotification: Scalars['Boolean'];
   FollowUser: Scalars['Boolean'];
   UnFollowUser: Scalars['Boolean'];
   handleFollowRequest: Scalars['Boolean'];
@@ -392,10 +418,15 @@ export type UpdatePostInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  onNewNotification: Notification;
   onLikePost: Like;
   onUnLikePost: Like;
   onCreateComment: Comments;
   onDeleteComment: CommentDeletePayload;
+};
+
+export type SubscriptionOnNewNotificationArgs = {
+  userId: Scalars['Float'];
 };
 
 export type SubscriptionOnLikePostArgs = {

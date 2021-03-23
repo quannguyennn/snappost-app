@@ -108,9 +108,7 @@ const HomeScreen = React.memo(() => {
       spacing={20}
       renderItem={renderItem}
       onEndReachedThreshold={0.3}
-      ListFooterComponent={
-        loading && posts?.length ? <PostCardPlaceholder /> : null
-      }
+      ListFooterComponent={loading && posts?.length ? <PostCardPlaceholder /> : null}
       refreshing={refresh}
       onEndReached={() => loadMore()}
     />
@@ -123,7 +121,7 @@ const HomeScreen = React.memo(() => {
       <IconButton
         hasBadge={hasBadge}
         badgeCount={unreadMessages}
-        onPress={() => { }}
+        onPress={() => {}}
         Icon={() => <FontAwesome name="send" size={IconSizes.x5} color={theme.text01} />}
       />
     );

@@ -12,3 +12,8 @@ export const myPostState = atom<MyPostQueryResponse['myPost']['items']>({
   key: AppAtoms.My_POST,
   default: [],
 });
+
+export const countNotificationState = atom<number>({
+  key: AppAtoms.CountNotification,
+  default: 0,
+});
