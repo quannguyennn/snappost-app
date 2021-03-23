@@ -7,18 +7,24 @@ import { IconSizes } from '../../../theme/Icon';
 import { HandleAvailableColor, ThemeStatic } from '../../../theme';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import FormInput from '../../../components/shared/controls/FormInput';
-import Button from '../../../components/shared/controls/Button';
 import type { ThemeColors } from '../../../types/theme';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../../recoil/theme/atoms';
 import { useIsAvailableLazyQuery } from '../../../graphql/queries/isAvailable.generated';
 import { getImageFromLibrary } from '../../../utils/shared';
-import { inputLimitErrorNotification, showErrorNotification, somethingWentWrongErrorNotification, tryAgainLaterNotification, uploadErrorNotification } from '../../../helpers/notifications';
+import {
+  inputLimitErrorNotification,
+  showErrorNotification,
+  somethingWentWrongErrorNotification,
+  tryAgainLaterNotification,
+  uploadErrorNotification,
+} from '../../../helpers/notifications';
 import { useUpdateUserInfoMutation } from '../../../graphql/mutations/updateUserInfo.generated';
 import { useFileUpload } from '../../../hooks/useFileUpload';
 import type { Image } from 'react-native-image-crop-picker';
 import { MeDocument } from '../../../graphql/queries/me.generated';
+import Button from '../../../components/shared/controls/Button';
 
 interface EditProfileBottomSheetProps {
   ref: React.Ref<any>;
@@ -30,39 +36,39 @@ interface EditProfileBottomSheetProps {
 }
 
 const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forwardRef(
-  ({ avatar, name, nickname, about, onUpdate }, ref,) => {
+  ({ avatar, name, nickname, about, onUpdate }, ref) => {
     const theme = useRecoilValue(themeState);
-    const user = useCurrentUser()
+    const user = useCurrentUser();
     const [upload] = useFileUpload();
 
-    const [selectedImage, setSelectedImage] = useState<Image>({} as Image)
+    const [selectedImage, setSelectedImage] = useState<Image>({} as Image);
     const [editAvatar, setEditAvatar] = useState('');
     const [editableName, setEditableName] = useState('');
     const [editNickname, setEditNickname] = useState('');
-    const [avatarId, setAvatarId] = useState(0)
+    const [avatarId, setAvatarId] = useState(0);
     const [handleError, setHandleError] = useState('');
     const [intro, setIntro] = useState('');
     const [isUploading, setIsUploading] = useState(false);
 
-    const [queryIsHandleAvailable, {
-      loading: isHandleAvailableLoading,
-      called: isHandleAvailableCalled,
-      data: isHandleAvailableData
-    }] = useIsAvailableLazyQuery({
+    const [
+      queryIsHandleAvailable,
+      { loading: isHandleAvailableLoading, called: isHandleAvailableCalled, data: isHandleAvailableData },
+    ] = useIsAvailableLazyQuery({
       onError: (err) => {
-        console.log("isAvai", err)
-      }
+        console.log('isAvai', err);
+      },
     });
 
     const [updateUser] = useUpdateUserInfoMutation({
       onError: (err) => {
-        console.log("update user", err)
-        tryAgainLaterNotification()
+        console.log('update user', err);
+        tryAgainLaterNotification();
       },
       onCompleted: () => {
         setIsUploading(false);
         onUpdate();
-        //@ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        setSelectedImage({} as Image);
         ref.current.close();
       },
       update: async (proxy, { data, errors }) => {
@@ -78,45 +84,48 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
             return;
           }
         }
-      }
-    })
+      },
+    });
 
     useEffect(() => {
       setEditAvatar(avatar);
       setEditableName(name);
       setEditNickname(nickname);
       setIntro(about);
-      setAvatarId(user?.avatar ?? 0)
-    }, [about, avatar, name, nickname]);
+      setAvatarId(user?.avatar ?? 0);
+    }, [about, avatar, name, nickname, user]);
 
     useEffect(() => {
       queryIsHandleAvailable({
         variables: {
-          nickname: editNickname
-        }
+          nickname: editNickname,
+        },
       });
-    }, [editNickname]);
+    }, [editNickname, queryIsHandleAvailable]);
 
     useEffect(() => {
       if (!isHandleAvailableLoading && isHandleAvailableCalled) {
-        const isHandleAvailable = isHandleAvailableData?.isAvailable
+        const isHandleAvailable = isHandleAvailableData?.isAvailable;
         if (!isHandleAvailable && editNickname !== nickname) {
           setHandleError('Nickname not available');
         } else {
-          if (!editNickname) setHandleError('Nickname cannot be empty')
-          else setHandleError('');
+          if (!editNickname) {
+            setHandleError('Nickname cannot be empty');
+          } else {
+            setHandleError('');
+          }
         }
       }
-    }, [editNickname, isHandleAvailableLoading, isHandleAvailableCalled, isHandleAvailableData]);
+    }, [editNickname, isHandleAvailableLoading, isHandleAvailableCalled, isHandleAvailableData, nickname]);
 
     const onAvatarPick = async () => {
       const image = await getImageFromLibrary(120, 120, true);
-      setSelectedImage(image ?? {} as Image)
-      setEditAvatar(image?.path ?? "");
+      setSelectedImage(image ?? ({} as Image));
+      setEditAvatar(image?.path ?? '');
     };
 
     const onDone = async () => {
-      const isHandleAvailable = isHandleAvailableData?.isAvailable
+      const isHandleAvailable = isHandleAvailableData?.isAvailable;
 
       if (!editableName.trim().length) {
         showErrorNotification('Name cannot be empty');
@@ -148,36 +157,34 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
           name: editableName.trim(),
           nickname: editNickname.trim(),
           intro: intro.trim(),
-          avatar: avatarId
+          avatar: avatarId,
         };
-
 
         if (avatarChanged) {
           const uploadRes = await upload({
             uri: selectedImage.path,
-            type: "image",
-            name: selectedImage.filename,
-            height: selectedImage.height,
-            width: selectedImage.width,
+            type: 'image',
+            name: selectedImage.filename ?? 'name',
+            height: selectedImage.height ?? 0,
+            width: selectedImage.width ?? 0,
           });
-          updatedProfileData.avatar = uploadRes.id
+          updatedProfileData.avatar = uploadRes.id;
         }
 
         updateUser({
           variables: {
             input: {
-              ...updatedProfileData
-            }
-          }
+              ...updatedProfileData,
+            },
+          },
         });
-
       } catch ({ message }) {
         if (avatarChanged) {
           uploadErrorNotification('Avatar');
         } else {
           somethingWentWrongErrorNotification();
         }
-        setIsUploading(false)
+        setIsUploading(false);
       }
     };
 
@@ -195,9 +202,22 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
     );
 
     if (!isHandleAvailableLoading && isHandleAvailableCalled) {
-      content = <MaterialIcons name={!isHandleAvailableData?.isAvailable && editNickname !== nickname || editNickname.trim() === "" ? 'close' : 'done'} color={!isHandleAvailableData?.isAvailable && editNickname !== nickname || editNickname.trim() === "" ? HandleAvailableColor.false : HandleAvailableColor.true} size={IconSizes.x6} />;
+      content = (
+        <MaterialIcons
+          name={
+            (!isHandleAvailableData?.isAvailable && editNickname !== nickname) || editNickname.trim() === ''
+              ? 'close'
+              : 'done'
+          }
+          color={
+            (!isHandleAvailableData?.isAvailable && editNickname !== nickname) || editNickname.trim() === ''
+              ? HandleAvailableColor.false
+              : HandleAvailableColor.true
+          }
+          size={IconSizes.x6}
+        />
+      );
     }
-
 
     return (
       <Modalize
