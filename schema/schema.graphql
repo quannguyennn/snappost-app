@@ -15,6 +15,7 @@ type User implements Node {
   avatar: Float
   isNew: Boolean!
   blocked: [Float!]!
+  lastSeen: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
   avatarFilePath: String
@@ -170,6 +171,39 @@ type Like implements Node {
   postInfo: Post!
 }
 
+type Chat implements Node {
+  id: Float!
+  participants: [Float!]!
+  isTemp: Boolean!
+  lastMessage: Float
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  participantInfo: [User!]!
+  lastMessageData: Message
+}
+
+type ChatConnection {
+  items: [Chat!]
+  meta: BasePaginationMeta!
+}
+
+type Message implements Node {
+  id: Float!
+  sender: Float!
+  chatId: Float!
+  content: String!
+  media: String!
+  mediaType: MediaType!
+  isRead: Boolean!
+  createdAt: DateTime!
+  senderInfo: User!
+}
+
+enum MediaType {
+  VIDEO
+  IMAGE
+}
+
 type Query {
   me: User!
   getUserInfo(id: Float!): User
@@ -189,6 +223,8 @@ type Query {
   getPostDetail(id: Float!): Post!
   myPost(page: Float!, limit: Float!): PostConnection!
   getUserPost(page: Float!, limit: Float!, userId: Float!): PostConnection!
+  getChats(page: Float!, limit: Float!): ChatConnection!
+  getExistChat(participants: [Float!]!): Chat
 }
 
 type Mutation {
@@ -214,6 +250,8 @@ type Mutation {
   removePost(id: Float!): Boolean!
   reactToPost(postId: Float!): Boolean!
   reportPost(postId: Float!): Boolean!
+  createChat(participants: [Float!]!): Chat!
+  deleteChat(id: Float!): Float!
 }
 
 input UpdateUserInput {

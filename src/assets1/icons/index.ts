@@ -7,5 +7,6 @@ export const Images = {
   emptyConnection: require('./empty-connections.png'),
   searchUser: require('./search-users.png'),
   zalo: require('./zalo.png'),
-  emptyBlocklist: require("./empty-blocklist.png")
+  emptyBlocklist: require('./empty-blocklist.png'),
+  emptyMessage: require('./empty-messages.png'),
 };

@@ -12,6 +12,8 @@ import { NotificationNavigator } from './notification.navigator';
 import ProfileViewScreen from '../screens/ProfileViewScreen';
 import EditCaptionScreen from '../screens/upload/EditCaptionScreen';
 import RequestFollowScreen from '../screens/notificationScreen/request-follow.screen';
+import MessageScreen from '../screens/MessageScreen';
+import ConversationScreen from '../screens/ConversationScreen';
 
 export type MainTabParamList = {
   [AppRoutes.HOME_TAB]: undefined;
@@ -48,13 +50,14 @@ export const AppNavigator = () => {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MAIN_TAB} component={MainNavigator} />
-      <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MESSAGE_SCREEN} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.CONVERSATION_SCREEN} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.POST_VIEW_SCREEN} component={PostViewScreen} />
       <Stack.Screen name={AppRoutes.UPLOAD_STACK} component={UploadStackNavigator} />
       <Stack.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
       <Stack.Screen name={AppRoutes.EDIT_CATION_SCREEN} component={EditCaptionScreen} />
       <Stack.Screen name={AppRoutes.REQUEST_FOLLOW} component={RequestFollowScreen} />
+      <Stack.Screen name={AppRoutes.MESSAGE_SCREEN} component={MessageScreen} />
+      {/* <Stack.Screen name={AppRoutes.CONVERSATION_SCREEN} component={ConversationScreen} /> */}
     </Stack.Navigator>
   );
 };

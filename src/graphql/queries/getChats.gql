@@ -1,0 +1,39 @@
+query getChats($page: Float!, $limit: Float!) {
+  getChats(page: $page, limit: $limit) {
+    items {
+      id
+      participants
+      isTemp
+      lastMessage
+      createdAt
+      participantInfo {
+        id
+        name
+        nickname
+        lastSeen
+        avatarFilePath
+        isBlockMe
+      }
+      lastMessageData {
+        id
+        content
+        media
+        mediaType
+        isRead
+        createdAt
+        senderInfo {
+          id
+          name
+          nickname
+        }
+      }
+    }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
+    }
+  }
+}

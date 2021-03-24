@@ -19,9 +19,12 @@ import { GetNewFeedQueryResponse, useGetNewFeedLazyQuery } from '../../graphql/q
 import type { Post } from '../../graphql/type.interface';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import { newFeedState } from '../../recoil/app/atoms';
+import { useNavigation } from '@react-navigation/core';
+import { AppRoutes } from '../../navigator/app-routes';
 
 const HomeScreen = React.memo(() => {
   const theme = useRecoilValue(themeState);
+  const { navigate } = useNavigation();
   const [refresh, setRefresh] = useState(false);
   const [init, setInit] = useState(true);
   const [posts, setPosts] = useRecoilState(newFeedState);
@@ -121,7 +124,9 @@ const HomeScreen = React.memo(() => {
       <IconButton
         hasBadge={hasBadge}
         badgeCount={unreadMessages}
-        onPress={() => {}}
+        onPress={() => {
+          navigate(AppRoutes.MESSAGE_SCREEN);
+        }}
         Icon={() => <FontAwesome name="send" size={IconSizes.x5} color={theme.text01} />}
       />
     );

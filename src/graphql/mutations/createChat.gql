@@ -1,0 +1,27 @@
+mutation createChat($participants: [Float!]!) {
+  createChat(participants: $participants) {
+    id
+    participants
+    isTemp
+    lastMessage
+    createdAt
+    participantInfo {
+      id
+      name
+      nickname
+      lastSeen
+      avatarFilePath
+      isBlockMe
+    }
+    lastMessageData {
+      id
+      sender
+      chatId
+      content
+      media
+      mediaType
+      isRead
+      createdAt
+    }
+  }
+}

@@ -1,0 +1,9 @@
+query getExistChat($participants: [Float!]!) {
+  getExistChat(participants: $participants) {
+    id
+    participants
+    isTemp
+    lastMessage
+    createdAt
+  }
+}

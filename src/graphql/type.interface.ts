@@ -34,6 +34,7 @@ export type User = Node & {
   avatar?: Maybe<Scalars['Float']>;
   isNew: Scalars['Boolean'];
   blocked: Array<Scalars['Float']>;
+  lastSeen?: Maybe<Scalars['DateTime']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   avatarFilePath?: Maybe<Scalars['String']>;
@@ -181,6 +182,39 @@ export type Like = Node & {
   postInfo: Post;
 };
 
+export type Chat = Node & {
+  __typename?: 'Chat';
+  id: Scalars['Float'];
+  participants: Array<Scalars['Float']>;
+  isTemp: Scalars['Boolean'];
+  lastMessage?: Maybe<Scalars['Float']>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  participantInfo: Array<User>;
+  lastMessageData?: Maybe<Message>;
+};
+
+export type ChatConnection = {
+  __typename?: 'ChatConnection';
+  items?: Maybe<Array<Chat>>;
+  meta: BasePaginationMeta;
+};
+
+export type Message = Node & {
+  __typename?: 'Message';
+  id: Scalars['Float'];
+  sender: Scalars['Float'];
+  chatId: Scalars['Float'];
+  content: Scalars['String'];
+  media: Scalars['String'];
+  mediaType: MediaType;
+  isRead: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  senderInfo: User;
+};
+
+export type MediaType = 'VIDEO' | 'IMAGE';
+
 export type Query = {
   __typename?: 'Query';
   me: User;
@@ -201,6 +235,8 @@ export type Query = {
   getPostDetail: Post;
   myPost: PostConnection;
   getUserPost: PostConnection;
+  getChats: ChatConnection;
+  getExistChat?: Maybe<Chat>;
 };
 
 export type QueryGetUserInfoArgs = {
@@ -273,6 +309,15 @@ export type QueryGetUserPostArgs = {
   userId: Scalars['Float'];
 };
 
+export type QueryGetChatsArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
+};
+
+export type QueryGetExistChatArgs = {
+  participants: Array<Scalars['Float']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   updateUserInfo: User;
@@ -297,6 +342,8 @@ export type Mutation = {
   removePost: Scalars['Boolean'];
   reactToPost: Scalars['Boolean'];
   reportPost: Scalars['Boolean'];
+  createChat: Chat;
+  deleteChat: Scalars['Float'];
 };
 
 export type MutationUpdateUserInfoArgs = {
@@ -383,6 +430,14 @@ export type MutationReactToPostArgs = {
 
 export type MutationReportPostArgs = {
   postId: Scalars['Float'];
+};
+
+export type MutationCreateChatArgs = {
+  participants: Array<Scalars['Float']>;
+};
+
+export type MutationDeleteChatArgs = {
+  id: Scalars['Float'];
 };
 
 export type UpdateUserInput = {

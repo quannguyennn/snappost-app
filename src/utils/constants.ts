@@ -27,3 +27,7 @@ export const PollIntervals: PollIntervalsType = {
   lastSeen: 10 * 1000,
   blockList: 1000,
 };
+
+export const Timeouts = {
+  online: 30,
+};

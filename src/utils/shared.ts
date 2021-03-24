@@ -3,6 +3,8 @@ import { noPermissionNotification } from '../helpers/notifications';
 import { ThemeStatic } from '../theme';
 import type { PhotoIdentifier } from '@react-native-community/cameraroll';
 import type { ExplorePost } from '../types/utils';
+import { Timeouts } from './constants';
+import type { User } from '../graphql/type.interface';
 
 export const getImageFromLibrary = async (height: number, width: number, circular: boolean = false) => {
   const options: Options = {
@@ -28,7 +30,7 @@ export const getImageFromLibrary = async (height: number, width: number, circula
       noPermissionNotification();
     }
   }
-}
+};
 
 export const parseConnectionsCount = (connectionCount: number) => {
   // parse larger numbers here
@@ -84,10 +86,11 @@ export const parseTimeElapsed = (utcTime: string) => {
     } else {
       parsedTime = `${elapsedMinutes} mins`;
     }
-  } else if (elapsedMinutes < 1) parsedTime = 'just now';
+  } else if (elapsedMinutes < 1) {
+    parsedTime = 'just now';
+  }
 
-  const readableTime =
-    parsedTime === 'just now' ? `${parsedTime}` : `${parsedTime} ago`;
+  const readableTime = parsedTime === 'just now' ? `${parsedTime}` : `${parsedTime} ago`;
 
   return {
     parsedTime,
@@ -100,6 +103,15 @@ export const convertToNormalVideoUri = (media: PhotoIdentifier): string => {
   const ext = (media.node.image.filename ?? '').substring(fileNameLength - 3);
   return `assets-library://asset/asset.${ext}?id=${appleId}&ext=${ext}`;
 };
+
+export const isUserOnline = (lastSeen: number) => {
+  const now = Date.now() / 1000;
+  return now - lastSeen < Timeouts.online;
+};
+
+export const filterChatParticipants = (userId: number, participants: User[]) =>
+  participants.filter((participant) => userId !== participant.id);
+
 export const sortPostsAscendingTime = (array: any) =>
   // @ts-ignore
   [...array].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -118,3 +130,24 @@ export const parseGridImages = (images: ExplorePost[]): ExplorePost[][] => {
   return parsedImages;
 };
 
+export const transformMessages = (messages: any) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  messages.map((message: any) => {
+    const {
+      id,
+      body,
+      createdAt,
+      author: { id: authorId, name, avatar },
+    } = message;
+
+    return {
+      _id: id,
+      text: body,
+      createdAt: new Date(createdAt),
+      user: {
+        _id: authorId,
+        name,
+        avatar,
+      },
+    };
+  });

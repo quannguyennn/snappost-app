@@ -3,7 +3,7 @@
  * This contains all the color config for the application
  */
 
-import {
+import type {
   DynamicStatusBarType,
   HandleAvailableColorType,
   OnlineDotColorType,
