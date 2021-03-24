@@ -20,6 +20,7 @@ export type GetUserInfoQueryResponse = { __typename?: 'Query' } & {
       | 'isRequestFollowMe'
       | 'avatarFilePath'
       | 'followStatus'
+      | 'isBlockMe'
     > & {
         nFollowing?: Types.Maybe<
           Array<{ __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>>
@@ -44,6 +45,7 @@ export const GetUserInfoDocument = gql`
       isRequestFollowMe
       avatarFilePath
       followStatus
+      isBlockMe
       nFollowing {
         id
         name

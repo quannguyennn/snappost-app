@@ -19,6 +19,7 @@ type User implements Node {
   updatedAt: DateTime!
   avatarFilePath: String
   isRequestFollowMe: Boolean!
+  isBlockMe: Boolean!
   followStatus: FollowStatus
   nFollowing: [User!]
   nFollower: [User!]
@@ -53,9 +54,20 @@ type Notification implements Node {
   userId: Float!
   content: String!
   link: String!
+  type: EvenEnum!
+  resourceId: String!
   isSeen: Boolean!
   createdAt: DateTime!
+  updatedAt: DateTime!
   triggerInfo: User!
+}
+
+enum EvenEnum {
+  like
+  follow
+  acceptFollow
+  comment
+  tag
 }
 
 type NotificationConnection {

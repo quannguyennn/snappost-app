@@ -9,7 +9,7 @@ export type OnNewNotificationSubscriptionVariables = Types.Exact<{
 export type OnNewNotificationSubscriptionResponse = { __typename?: 'Subscription' } & {
   onNewNotification: { __typename?: 'Notification' } & Pick<
     Types.Notification,
-    'id' | 'triggerId' | 'userId' | 'content' | 'link' | 'isSeen' | 'createdAt'
+    'id' | 'triggerId' | 'userId' | 'content' | 'link' | 'isSeen' | 'createdAt' | 'updatedAt'
   >;
 };
 
@@ -23,6 +23,7 @@ export const OnNewNotificationDocument = gql`
       link
       isSeen
       createdAt
+      updatedAt
     }
   }
 `;

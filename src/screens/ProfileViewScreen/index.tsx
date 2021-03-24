@@ -13,6 +13,7 @@ import { Connections, PollIntervals } from '../../utils/constants';
 import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
 import {
+  showErrorNotification,
   somethingWentWrongErrorNotification,
   tryAgainLaterNotification,
   userBlockedNotification,
@@ -51,18 +52,20 @@ const ProfileViewScreen: React.FC = () => {
     variables: { id: userId },
     pollInterval: PollIntervals.profileView,
     onCompleted: (res) => {
-      setUpdate(false);
-      setRefresh(false);
-      if (res.getUserInfo?.followStatus === "ACCEPT") {
-        getUserPost({
-          variables: { userId, limit: 15, page: 1 },
-        });
+      if (res.getUserInfo?.isBlockMe) {
+        showErrorNotification('This user is not exist');
+      } else {
+        setUpdate(false);
+        setRefresh(false);
+        if (res.getUserInfo?.followStatus === 'ACCEPT') {
+          getUserPost({
+            variables: { userId, limit: 15, page: 1 },
+          });
+        }
       }
-
     },
     fetchPolicy: 'cache-and-network',
   });
-
 
   const [blockUser] = useBlockUserMutation({
     onError: (err) => {
@@ -223,48 +226,55 @@ const ProfileViewScreen: React.FC = () => {
     );
   };
 
+  console.log(data?.getUserInfo?.isBlockMe);
+
   let content = <ProfileScreenPlaceholder viewMode />;
+
   if (!loading && !error && !loadingPost) {
-    const { name, nFollower, nFollowing } = data?.getUserInfo ?? {};
-    content = (
-      <>
-        <FlatGrid
-          itemDimension={responsiveWidth(22)}
-          ListHeaderComponent={ListHeaderComponent}
-          data={posts}
-          onEndReachedThreshold={0.3}
-          onEndReached={() => loadMore()}
-          onRefresh={() => setRefresh(true)}
-          refreshing={refresh}
-          ListEmptyComponent={() =>
-            data?.getUserInfo?.followStatus === 'ACCEPT' ? (
-              <ListEmptyComponent listType="posts" spacing={30} />
-            ) : (
+    if (data?.getUserInfo?.isBlockMe) {
+      content = <ProfileScreenPlaceholder viewMode />;
+    } else {
+      const { name, nFollower, nFollowing } = data?.getUserInfo ?? {};
+      content = (
+        <>
+          <FlatGrid
+            itemDimension={responsiveWidth(22)}
+            ListHeaderComponent={ListHeaderComponent}
+            data={posts}
+            onEndReachedThreshold={0.3}
+            onEndReached={() => loadMore()}
+            onRefresh={() => setRefresh(true)}
+            refreshing={refresh}
+            ListEmptyComponent={() =>
+              data?.getUserInfo?.followStatus === 'ACCEPT' ? (
+                <ListEmptyComponent listType="posts" spacing={30} />
+              ) : (
                 <ListEmptyComponent listType="posts" spacing={30} private />
               )
-          }
-          style={styles().postGrid}
-          showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
-        />
-        <ConnectionsBottomSheet
-          viewMode
-          ref={followingBottomSheetRef}
-          //following
-          data={nFollowing}
-          handle={name}
-          type={Connections.FOLLOWING}
-        />
-        <ConnectionsBottomSheet
-          viewMode
-          ref={followersBottomSheetRef}
-          data={nFollower}
-          handle={name}
-          type={Connections.FOLLOWERS}
-        />
-        {!init && loadingPost ? <ActivityIndicator /> : null}
-      </>
-    );
+            }
+            style={styles().postGrid}
+            showsVerticalScrollIndicator={false}
+            renderItem={renderItem}
+          />
+          <ConnectionsBottomSheet
+            viewMode
+            ref={followingBottomSheetRef}
+            //following
+            data={nFollowing}
+            handle={name}
+            type={Connections.FOLLOWING}
+          />
+          <ConnectionsBottomSheet
+            viewMode
+            ref={followersBottomSheetRef}
+            data={nFollower}
+            handle={name}
+            type={Connections.FOLLOWERS}
+          />
+          {!init && loadingPost ? <ActivityIndicator /> : null}
+        </>
+      );
+    }
   }
 
   const onBlockUser = () => {

@@ -4,5 +4,6 @@ query getUserLikePost($postId: Float!) {
     name
     nickname
     avatarFilePath
+    isBlockMe
   }
 }

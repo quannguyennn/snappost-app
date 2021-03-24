@@ -38,6 +38,7 @@ export type User = Node & {
   updatedAt: Scalars['DateTime'];
   avatarFilePath?: Maybe<Scalars['String']>;
   isRequestFollowMe: Scalars['Boolean'];
+  isBlockMe: Scalars['Boolean'];
   followStatus?: Maybe<FollowStatus>;
   nFollowing?: Maybe<Array<User>>;
   nFollower?: Maybe<Array<User>>;
@@ -63,10 +64,15 @@ export type Notification = Node & {
   userId: Scalars['Float'];
   content: Scalars['String'];
   link: Scalars['String'];
+  type: EvenEnum;
+  resourceId: Scalars['String'];
   isSeen: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
   triggerInfo: User;
 };
+
+export type EvenEnum = 'like' | 'follow' | 'acceptFollow' | 'comment' | 'tag';
 
 export type NotificationConnection = {
   __typename?: 'NotificationConnection';

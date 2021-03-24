@@ -15,6 +15,7 @@ query getPostDetail($id: Float!) {
       name
       nickname
       avatarFilePath
+      isBlockMe
     }
   }
 }

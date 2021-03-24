@@ -16,6 +16,7 @@ import {
 } from '../../../graphql/queries/getUserLikePost.generated';
 import { useOnLikePostSubscription } from '../../../graphql/subscriptions/onLikePost.generated';
 import { useOnUnLikePostSubscription } from '../../../graphql/subscriptions/onUnLikePost.generated';
+import { tryAgainLaterNotification } from '../../../helpers/notifications';
 import { themeState } from '../../../recoil/theme/atoms';
 import type { ThemeColors } from '../../../types/theme';
 
@@ -33,6 +34,10 @@ const LikesBottomSheet: React.FC<LikesBottomSheetProps> = React.forwardRef(({ po
   const { loading, error } = useGetUserLikePostQuery({
     variables: { postId },
     fetchPolicy: 'network-only',
+    onError: (err) => {
+      console.log('get like user', err);
+      tryAgainLaterNotification();
+    },
     onCompleted: (res) => setUsers(res.getUserLikePost),
   });
 
@@ -41,9 +46,16 @@ const LikesBottomSheet: React.FC<LikesBottomSheetProps> = React.forwardRef(({ po
   const ListEmptyComponent = () => <ImageBanner img={Images.emptyLike} placeholder="No likes yet" spacing={16} />;
 
   const renderItem = ({ item }: any) => {
-    const { id, avatarFilePath, nickname, name } = item;
+    const { id, avatarFilePath, nickname, name, isBlockMe } = item;
     return (
-      <UserCard userId={id} avatar={avatarFilePath} nickname={nickname} name={name} onPress={() => onUserPress(id)} />
+      <UserCard
+        isBlock={isBlockMe}
+        userId={id}
+        avatar={avatarFilePath}
+        nickname={nickname}
+        name={name}
+        onPress={() => onUserPress(id)}
+      />
     );
   };
 

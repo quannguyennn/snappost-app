@@ -27,17 +27,19 @@ const NotificationScreen: React.FC = () => {
   const isFocus = useIsFocused();
 
   const [refresh, setRefresh] = useState(false);
+  const [init, setInit] = useState(true);
   const setCountNoti = useSetRecoilState(countNotificationState);
 
   const [countRequest, { data: fetchCount }] = useCountFollowRequestLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getNoti, { data: fetchData, loading, error, fetchMore }] = useGetNotificationLazyQuery({
+  const [getNoti, { data: fetchData, loading, fetchMore }] = useGetNotificationLazyQuery({
     fetchPolicy: 'cache-and-network',
     onCompleted: () => {
       setRefresh(false);
       setSeen();
+      setInit(false);
     },
     onError: (err) => {
       console.log('noti', err);
@@ -110,7 +112,7 @@ const NotificationScreen: React.FC = () => {
   const renderItem = ({ item }: any) => {
     const {
       id,
-      createdAt,
+      updatedAt,
       triggerInfo: { avatarFilePath, name },
       link,
       content,
@@ -124,35 +126,11 @@ const NotificationScreen: React.FC = () => {
         handle={name}
         content={content}
         resourceId={link}
-        time={createdAt}
+        time={updatedAt}
         isSeen={isSeen}
       />
     );
   };
-
-  let content = <NotificationScreenPlaceholder />;
-
-  if (!loading && !error) {
-    content = (
-      <FlatGrid
-        onRefresh={() => {
-          setRefresh(true);
-        }}
-        refreshing={refresh}
-        onEndReached={() => loadMore()}
-        onEndReachedThreshold={0.3}
-        itemDimension={responsiveWidth(85)}
-        showsVerticalScrollIndicator={false}
-        data={data}
-        ListEmptyComponent={() => (
-          <SvgBanner Svg={EmptyNotifications} spacing={20} placeholder="No notifications yet" />
-        )}
-        style={styles().notificationList}
-        spacing={20}
-        renderItem={renderItem}
-      />
-    );
-  }
 
   return (
     <View style={styles(theme).container}>
@@ -180,8 +158,27 @@ const NotificationScreen: React.FC = () => {
           </Text>
         </View>
       </TouchableOpacity>
-
-      {content}
+      {loading && init ? (
+        <NotificationScreenPlaceholder />
+      ) : (
+        <FlatGrid
+          onRefresh={() => {
+            setRefresh(true);
+          }}
+          refreshing={refresh}
+          onEndReached={() => loadMore()}
+          onEndReachedThreshold={0.3}
+          itemDimension={responsiveWidth(85)}
+          showsVerticalScrollIndicator={false}
+          data={data}
+          ListEmptyComponent={() => (
+            <SvgBanner Svg={EmptyNotifications} spacing={20} placeholder="No notifications yet" />
+          )}
+          style={styles().notificationList}
+          spacing={20}
+          renderItem={renderItem}
+        />
+      )}
     </View>
   );
 };

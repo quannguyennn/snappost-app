@@ -13,7 +13,7 @@ export type GetNotificationQueryResponse = { __typename?: 'Query' } & {
       Array<
         { __typename?: 'Notification' } & Pick<
           Types.Notification,
-          'id' | 'triggerId' | 'userId' | 'content' | 'link' | 'isSeen' | 'createdAt'
+          'id' | 'triggerId' | 'userId' | 'content' | 'link' | 'isSeen' | 'createdAt' | 'updatedAt'
         > & { triggerInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'> }
       >
     >;
@@ -35,6 +35,7 @@ export const GetNotificationDocument = gql`
         link
         isSeen
         createdAt
+        updatedAt
         triggerInfo {
           id
           name

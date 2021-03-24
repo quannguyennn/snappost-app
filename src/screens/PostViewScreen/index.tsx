@@ -26,6 +26,7 @@ import type { ThemeColors } from '../../types/theme';
 import { useGetPostDetailQuery } from '../../graphql/queries/getPostDetail.generated';
 import {
   postDeletedNotification,
+  showErrorNotification,
   somethingWentWrongErrorNotification,
   tryAgainLaterNotification,
 } from '../../helpers/notifications';
@@ -77,8 +78,12 @@ const PostViewScreen: React.FC = () => {
       somethingWentWrongErrorNotification();
     },
     onCompleted: (res) => {
-      setTotalLike(res.getPostDetail.totalLike);
-      setIsLike(res.getPostDetail.isLike);
+      if (res.getPostDetail.creatorInfo?.isBlockMe) {
+        showErrorNotification('This post is not exist');
+      } else {
+        setTotalLike(res.getPostDetail.totalLike);
+        setIsLike(res.getPostDetail.isLike);
+      }
     },
   });
 
@@ -201,7 +206,9 @@ const PostViewScreen: React.FC = () => {
   };
 
   let content = <PostViewScreenPlaceholder />;
-
+  if (data?.creatorInfo?.isBlockMe) {
+    return <PostViewScreenPlaceholder />;
+  }
   if (!loading && data) {
     const { mediasPath, rawCaption, createdAt, creatorInfo } = data;
 

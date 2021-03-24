@@ -8,6 +8,7 @@ query getNotification($page: Float!, $limit: Float!) {
       link
       isSeen
       createdAt
+      updatedAt
       triggerInfo {
         id
         name

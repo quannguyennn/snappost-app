@@ -23,7 +23,6 @@ import { MeDocument } from '../../graphql/queries/me.generated';
 import { saveToken } from '../../helpers/storage';
 
 const { FontWeights, FontSizes } = Typography;
-
 type Props = {
   navigation: AuthLoginScreenProp;
   route: any;

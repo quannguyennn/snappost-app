@@ -10,6 +10,7 @@ query getUserInfo($id: Float!) {
     isRequestFollowMe
     avatarFilePath
     followStatus
+    isBlockMe
     nFollowing {
       id
       name

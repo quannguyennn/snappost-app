@@ -7,7 +7,9 @@ export type GetUserLikePostQueryVariables = Types.Exact<{
 }>;
 
 export type GetUserLikePostQueryResponse = { __typename?: 'Query' } & {
-  getUserLikePost: Array<{ __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>>;
+  getUserLikePost: Array<
+    { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath' | 'isBlockMe'>
+  >;
 };
 
 export const GetUserLikePostDocument = gql`
@@ -17,6 +19,7 @@ export const GetUserLikePostDocument = gql`
       name
       nickname
       avatarFilePath
+      isBlockMe
     }
   }
 `;

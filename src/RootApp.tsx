@@ -34,7 +34,7 @@ const App = React.memo(() => {
   });
 
   useCountUnSeenNotificationQuery({
-    pollInterval: 5000,
+    // pollInterval: 5000,
     onCompleted: (res) => {
       setCountNotification(res.countUnSeenNotification);
     },

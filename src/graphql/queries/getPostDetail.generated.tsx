@@ -13,7 +13,7 @@ export type GetPostDetailQueryResponse = { __typename?: 'Query' } & {
   > & {
       mediasPath?: Types.Maybe<Array<{ __typename?: 'Media' } & Pick<Types.Media, 'filePath'>>>;
       creatorInfo?: Types.Maybe<
-        { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>
+        { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath' | 'isBlockMe'>
       >;
     };
 };
@@ -36,6 +36,7 @@ export const GetPostDetailDocument = gql`
         name
         nickname
         avatarFilePath
+        isBlockMe
       }
     }
   }

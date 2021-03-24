@@ -18,9 +18,11 @@ interface UserCardProps {
   name: string;
   style?: StyleProp<ViewStyle>;
   onPress?: any;
+
+  isBlock?: boolean;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ userId, avatar, nickname, name, onPress, style }) => {
+const UserCard: React.FC<UserCardProps> = ({ userId, avatar, nickname, name, onPress, style, isBlock }) => {
   const theme = useRecoilValue(themeState);
   const { navigate } = useNavigation();
   const user = useUserInfo(userId);
@@ -34,11 +36,11 @@ const UserCard: React.FC<UserCardProps> = ({ userId, avatar, nickname, name, onP
 
   return (
     <TouchableOpacity activeOpacity={0.95} onPress={onPress || navigateToProfile} style={[styles().container, style]}>
-      <NativeImage uri={avatar} style={styles(theme).avatarImage} />
+      <NativeImage uri={isBlock ? '' : avatar} style={styles(theme).avatarImage} />
       <View style={styles().info}>
-        <Text style={styles(theme).handleText}>{name} </Text>
+        <Text style={styles(theme).handleText}>{isBlock ? 'Anonymous' : name} </Text>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles(theme).nameText}>
-          {nickname}
+          {isBlock ? 'Anonymous' : nickname}
         </Text>
       </View>
     </TouchableOpacity>
