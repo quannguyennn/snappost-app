@@ -113,7 +113,7 @@ const NotificationScreen: React.FC = () => {
     const {
       id,
       updatedAt,
-      triggerInfo: { avatarFilePath, name },
+      triggerInfo: { avatarFilePath, name, isBlockMe },
       link,
       content,
       isSeen,
@@ -128,6 +128,7 @@ const NotificationScreen: React.FC = () => {
         resourceId={link}
         time={updatedAt}
         isSeen={isSeen}
+        isBlock={isBlockMe}
       />
     );
   };
