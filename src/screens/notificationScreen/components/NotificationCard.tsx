@@ -21,9 +21,19 @@ interface NotificationCardPros {
   content: string;
   time: string;
   isSeen: boolean;
+
+  isBlock?: boolean;
 }
 
-const NotificationCard: React.FC<NotificationCardPros> = ({ avatar, resourceId, handle, time, content, isSeen }) => {
+const NotificationCard: React.FC<NotificationCardPros> = ({
+  avatar,
+  resourceId,
+  handle,
+  time,
+  content,
+  isSeen,
+  isBlock = false,
+}) => {
   const theme = useRecoilValue(themeState);
 
   const { navigate } = useNavigation();
@@ -59,11 +69,11 @@ const NotificationCard: React.FC<NotificationCardPros> = ({ avatar, resourceId, 
     // @ts-ignore
     // <Swipeable ref={swipeableRef} useNativeAnimations rightThreshold={-80} renderRightActions={renderRightActions}>
     <TouchableOpacity activeOpacity={0.95} onPress={navigateAction} style={styles().container}>
-      <NativeImage uri={avatar} style={styles(theme).avatarImage} />
+      <NativeImage uri={isBlock ? '' : avatar} style={styles(theme).avatarImage} />
       {!isSeen ? <View style={{ backgroundColor: theme.accent, width: 8, height: 8, borderRadius: 8 }} /> : null}
       <View style={styles().info}>
         <Text style={styles(theme).notificationText}>
-          <Text style={styles(theme).handleText}>{handle} </Text>
+          <Text style={styles(theme).handleText}>{isBlock ? 'Anonymous' : handle} </Text>
           {content}
         </Text>
         <Text style={styles(theme).timeText}>{readableTime}</Text>

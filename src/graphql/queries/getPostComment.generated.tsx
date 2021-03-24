@@ -13,7 +13,10 @@ export type GetPostCommentQueryResponse = { __typename?: 'Query' } & {
     items?: Types.Maybe<
       Array<
         { __typename?: 'Comments' } & Pick<Types.Comments, 'id' | 'content' | 'createdAt' | 'creatorId'> & {
-            creatorInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>;
+            creatorInfo: { __typename?: 'User' } & Pick<
+              Types.User,
+              'id' | 'name' | 'nickname' | 'avatarFilePath' | 'isBlockMe'
+            >;
           }
       >
     >;
@@ -37,6 +40,7 @@ export const GetPostCommentDocument = gql`
           name
           nickname
           avatarFilePath
+          isBlockMe
         }
       }
       meta {

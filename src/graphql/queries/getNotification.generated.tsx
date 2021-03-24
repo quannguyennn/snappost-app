@@ -14,7 +14,12 @@ export type GetNotificationQueryResponse = { __typename?: 'Query' } & {
         { __typename?: 'Notification' } & Pick<
           Types.Notification,
           'id' | 'triggerId' | 'userId' | 'content' | 'link' | 'isSeen' | 'createdAt' | 'updatedAt'
-        > & { triggerInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'> }
+        > & {
+            triggerInfo: { __typename?: 'User' } & Pick<
+              Types.User,
+              'id' | 'name' | 'nickname' | 'avatarFilePath' | 'isBlockMe'
+            >;
+          }
       >
     >;
     meta: { __typename?: 'BasePaginationMeta' } & Pick<
@@ -41,6 +46,7 @@ export const GetNotificationDocument = gql`
           name
           nickname
           avatarFilePath
+          isBlockMe
         }
       }
       meta {

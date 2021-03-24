@@ -14,6 +14,7 @@ query getNotification($page: Float!, $limit: Float!) {
         name
         nickname
         avatarFilePath
+        isBlockMe
       }
     }
     meta {

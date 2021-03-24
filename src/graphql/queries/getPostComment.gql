@@ -10,6 +10,7 @@ query getPostComment($page: Float!, $limit: Float!, $postId: Float!) {
         name
         nickname
         avatarFilePath
+        isBlockMe
       }
     }
     meta {

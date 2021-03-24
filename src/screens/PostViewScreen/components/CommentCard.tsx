@@ -24,9 +24,20 @@ interface CommentCardProps {
   handle: string;
   body: string;
   time: string;
+
+  isBlock?: boolean;
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ commentId, authorId, avatar, handle, body, time, postId }) => {
+const CommentCard: React.FC<CommentCardProps> = ({
+  commentId,
+  authorId,
+  avatar,
+  handle,
+  body,
+  time,
+  postId,
+  isBlock = false,
+}) => {
   const theme = useRecoilValue(themeState);
   const { navigate } = useNavigation();
 
@@ -51,7 +62,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ commentId, authorId, avatar, 
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         swipeableRef.current.close();
-        deleteComment({ variables: { id: commentId } });
+        deleteComment({ variables: { id: commentId, postId } });
       });
     }
   };
@@ -72,10 +83,10 @@ const CommentCard: React.FC<CommentCardProps> = ({ commentId, authorId, avatar, 
       rightThreshold={-80}
       renderRightActions={renderRightActions}>
       <TouchableOpacity activeOpacity={0.95} onPress={navigateToProfile} style={styles().container}>
-        <NativeImage uri={avatar} style={styles(theme).avatarImage} />
+        <NativeImage uri={isBlock ? '' : avatar} style={styles(theme).avatarImage} />
         <View style={styles().info}>
           <Text style={styles(theme).commentText}>
-            <Text style={styles(theme).handleText}>{handle} </Text>
+            <Text style={styles(theme).handleText}>{isBlock ? 'Anonymous' : handle} </Text>
             {body}
           </Text>
           <Text style={styles(theme).timeText}>{parsedTime}</Text>
