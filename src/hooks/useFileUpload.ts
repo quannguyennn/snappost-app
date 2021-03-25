@@ -16,7 +16,9 @@ export const useFileUpload = (config?: AxiosRequestConfig) => {
         const formData = new FormData();
 
         const getFileName = file.uri.split('/');
-        const imgName = getFileName[getFileName.length - 1] ?? 'name';
+        const imgName = getFileName[getFileName.length - 1];
+
+        console.log(imgName);
 
         const imageInfo = {
           uri: Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),

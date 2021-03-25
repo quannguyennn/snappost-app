@@ -1,0 +1,9 @@
+query getFollowingUser {
+  getFollowingUser {
+    id
+    name
+    nickname
+    lastSeen
+    avatarFilePath
+  }
+}

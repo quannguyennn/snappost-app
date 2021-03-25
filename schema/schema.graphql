@@ -210,6 +210,7 @@ type Query {
   searchUser(page: Float!, limit: Float!, isRestricted: Boolean = false, keyword: String!): UserConnection!
   isAvailable(nickname: String!): Boolean!
   getBlockedUser: [User!]
+  getFollowingUser: [User!]!
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
   getNotification(page: Float!, limit: Float!): NotificationConnection!
