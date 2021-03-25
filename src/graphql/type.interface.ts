@@ -222,6 +222,7 @@ export type Query = {
   searchUser: UserConnection;
   isAvailable: Scalars['Boolean'];
   getBlockedUser?: Maybe<Array<User>>;
+  getFollowingUser: Array<User>;
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
   getNotification: NotificationConnection;

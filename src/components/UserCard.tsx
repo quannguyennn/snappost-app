@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { useUserInfo } from '../hooks/useUserInfo';
 import { AppRoutes } from '../navigator/app-routes';
 import { themeState } from '../recoil/theme/atoms';
-import { Typography } from '../theme';
+import { OnlineDotColor, Typography } from '../theme';
 import type { ThemeColors } from '../types/theme';
 import NativeImage from './shared/NativeImage';
 
@@ -18,11 +18,22 @@ interface UserCardProps {
   name: string;
   style?: StyleProp<ViewStyle>;
   onPress?: any;
-
   isBlock?: boolean;
+  isOnline?: boolean;
+  isChat?: boolean;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ userId, avatar, nickname, name, onPress, style, isBlock }) => {
+const UserCard: React.FC<UserCardProps> = ({
+  userId,
+  avatar,
+  nickname,
+  name,
+  onPress,
+  style,
+  isBlock = false,
+  isOnline = false,
+  isChat = false,
+}) => {
   const theme = useRecoilValue(themeState);
   const { navigate } = useNavigation();
   const user = useUserInfo(userId);
@@ -34,9 +45,18 @@ const UserCard: React.FC<UserCardProps> = ({ userId, avatar, nickname, name, onP
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId });
   };
 
+  const onlineDotColor = OnlineDotColor[isOnline as any];
+
   return (
     <TouchableOpacity activeOpacity={0.95} onPress={onPress || navigateToProfile} style={[styles().container, style]}>
-      <NativeImage uri={isBlock ? '' : avatar} style={styles(theme).avatarImage} />
+      {isChat ? (
+        <View style={styles().avatar}>
+          <NativeImage uri={avatar} style={styles(theme).avatarImage} />
+          <View style={[styles().onlineDot, { backgroundColor: onlineDotColor }]} />
+        </View>
+      ) : (
+        <NativeImage uri={isBlock ? '' : avatar} style={styles(theme).avatarImage} />
+      )}
       <View style={styles().info}>
         <Text style={styles(theme).handleText}>{isBlock ? 'Anonymous' : name} </Text>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles(theme).nameText}>
@@ -75,6 +95,18 @@ const styles = (theme = {} as ThemeColors) =>
       ...FontSizes.Caption,
       color: theme.text02,
       marginTop: 5,
+    },
+    avatar: {
+      height: 50,
+      width: 50,
+    },
+    onlineDot: {
+      position: 'absolute',
+      width: 10,
+      height: 10,
+      bottom: 2.5,
+      right: 2.5,
+      borderRadius: 10,
     },
   });
 

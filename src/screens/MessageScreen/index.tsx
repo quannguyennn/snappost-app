@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { FlatList, Image, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
 import MessageCard from './components/MessageCard';
 import NewMessageBottomSheet from './components/NewMessageBottomSheet';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import { filterChatParticipants, isUserOnline } from '../../utils/shared';
@@ -13,25 +13,35 @@ import MessageScreenPlaceholder from '../../components/placeholders/MessageScree
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import SvgBanner from '../../components/shared/SvgBanner';
 import { Images } from '../../assets1/icons';
-import { somethingWentWrongErrorNotification, tryAgainLaterNotification } from '../../helpers/notifications';
+import {
+  postDeletedNotification,
+  somethingWentWrongErrorNotification,
+  tryAgainLaterNotification,
+} from '../../helpers/notifications';
 import IconButton from '../../components/shared/Iconbutton';
 import { IconSizes } from '../../theme/Icon';
 import Header from '../../components/shared/layout/headers/Header';
 import SearchBar from '../../components/shared/layout/headers/SearchBar';
 import type { ThemeColors } from '../../types/theme';
-import { useGetChatsLazyQuery } from '../../graphql/queries/getChats.generated';
+import { GetChatsQueryResponse, useGetChatsLazyQuery } from '../../graphql/queries/getChats.generated';
 import { useCreateChatMutation } from '../../graphql/mutations/createChat.generated';
 
 const MessageScreen: React.FC = () => {
   const { navigate } = useNavigation();
+  const isFocus = useIsFocused();
   const theme = useRecoilValue(themeState);
   const user = useCurrentUser();
 
-  const [queryChats, { called, data: fetchData, loading, error }] = useGetChatsLazyQuery({
+  const [refresh, setRefresh] = useState(false);
+
+  const [queryChats, { called, data: fetchData, loading, error, fetchMore }] = useGetChatsLazyQuery({
     fetchPolicy: 'cache-and-network',
     onError: (err) => {
       console.log('chat list', err);
       somethingWentWrongErrorNotification();
+    },
+    onCompleted: () => {
+      setRefresh(false);
     },
   });
 
@@ -42,14 +52,39 @@ const MessageScreen: React.FC = () => {
 
   const data = fetchData?.getChats.items;
 
+  const loadMore = () => {
+    if (Number(currentPage) < Number(totalPages)) {
+      fetchMore &&
+        fetchMore({
+          variables: { limit: 12, page: currentPage + 1 },
+          updateQuery: (prev: GetChatsQueryResponse, { fetchMoreResult }) => {
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            const prevItem = prev?.getChats?.items ? prev?.getChats?.items : [];
+            const nextItem = fetchMoreResult.getChats?.items ? fetchMoreResult.getChats?.items : [];
+            return Object.assign({}, prev, {
+              getChats: {
+                items: [...prevItem, ...nextItem],
+                meta: fetchMoreResult.getChats?.meta,
+                __typename: 'ChatConnection',
+              },
+            });
+          },
+        });
+    }
+  };
+
   const [createTemporaryChat] = useCreateChatMutation();
 
   const [chatSearch, setChatSearch] = useState('');
   const newMessageBottomSheetRef = useRef();
 
   useEffect(() => {
-    queryChats({ variables: { limit: 20, page: 1 } });
-  }, [queryChats]);
+    if (isFocus || refresh) {
+      queryChats({ variables: { limit: 20, page: 1 } });
+    }
+  }, [queryChats, isFocus, refresh]);
 
   const renderItem = ({ item }) => {
     const { id: chatId, participantInfo, lastMessageData } = item;
@@ -57,7 +92,6 @@ const MessageScreen: React.FC = () => {
     const { id, avatarFilePath, name, lastSeen } = participant;
 
     const isOnline = isUserOnline(lastSeen);
-    console.log(isOnline);
     return (
       <MessageCard
         chatId={chatId}
@@ -87,6 +121,13 @@ const MessageScreen: React.FC = () => {
         )}
         style={styles().messagesList}
         renderItem={renderItem}
+        onRefresh={() => {
+          setRefresh(true);
+        }}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={loading && data?.length ? <ActivityIndicator /> : null}
+        refreshing={refresh}
+        onEndReached={() => loadMore()}
       />
     );
   }
@@ -126,7 +167,7 @@ const MessageScreen: React.FC = () => {
       <Header title="Messages" IconRight={IconRight} />
       <SearchBar value={chatSearch} onChangeText={setChatSearch} placeholder="Search for chats..." />
       {content}
-      {/* <NewMessageBottomSheet ref={newMessageBottomSheetRef} onConnectionSelect={onConnectionSelect} /> */}
+      <NewMessageBottomSheet ref={newMessageBottomSheetRef} onConnectionSelect={onConnectionSelect} />
     </View>
   );
 };
