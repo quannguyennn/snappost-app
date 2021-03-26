@@ -1,0 +1,27 @@
+query getMessage($page: Float!, $limit: Float!, $chatId: Float!) {
+  getMessage(page: $page, limit: $limit, chatId: $chatId) {
+    items {
+      id
+      sender
+      chatId
+      content
+      media
+      mediaType
+      isRead
+      createdAt
+      senderInfo {
+        id
+        name
+        nickname
+        avatarFilePath
+      }
+    }
+    meta {
+      itemCount
+      totalItems
+      itemsPerPage
+      totalPages
+      currentPage
+    }
+  }
+}

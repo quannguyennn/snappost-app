@@ -25,7 +25,7 @@ export type MainTabParamList = {
 export type AppStackParamList = {
   [AppRoutes.MAIN_TAB]: undefined;
   [AppRoutes.MESSAGE_SCREEN]: undefined;
-  [AppRoutes.CONVERSATION_SCREEN]: undefined;
+  [AppRoutes.CONVERSATION_SCREEN]: { chatId: number; handle: string; avatar: string; targetId: number };
   [AppRoutes.PROFILE_VIEW_SCREEN]: { userId: number };
   [AppRoutes.POST_VIEW_SCREEN]: { postId: number };
   [AppRoutes.UPLOAD_STACK]: undefined;
@@ -50,14 +50,13 @@ export const AppNavigator = () => {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MAIN_TAB} component={MainNavigator} />
-      <Stack.Screen options={{ headerShown: false }} name={AppRoutes.CONVERSATION_SCREEN} component={MainNavigator} />
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.POST_VIEW_SCREEN} component={PostViewScreen} />
       <Stack.Screen name={AppRoutes.UPLOAD_STACK} component={UploadStackNavigator} />
       <Stack.Screen name={AppRoutes.PROFILE_VIEW_SCREEN} component={ProfileViewScreen} />
       <Stack.Screen name={AppRoutes.EDIT_CATION_SCREEN} component={EditCaptionScreen} />
       <Stack.Screen name={AppRoutes.REQUEST_FOLLOW} component={RequestFollowScreen} />
       <Stack.Screen name={AppRoutes.MESSAGE_SCREEN} component={MessageScreen} />
-      {/* <Stack.Screen name={AppRoutes.CONVERSATION_SCREEN} component={ConversationScreen} /> */}
+      <Stack.Screen name={AppRoutes.CONVERSATION_SCREEN} component={ConversationScreen} />
     </Stack.Navigator>
   );
 };

@@ -50,7 +50,11 @@ export type Node = {
   id: Scalars['Float'];
 };
 
-export type FollowStatus = 'IS_ME' | 'WAITING' | 'ACCEPT';
+export enum FollowStatus {
+  IS_ME = 'IS_ME',
+  WAITING = 'WAITING',
+  ACCEPT = 'ACCEPT',
+}
 
 export type UserConnection = {
   __typename?: 'UserConnection';
@@ -73,7 +77,13 @@ export type Notification = Node & {
   triggerInfo: User;
 };
 
-export type EvenEnum = 'like' | 'follow' | 'acceptFollow' | 'comment' | 'tag';
+export enum EvenEnum {
+  LIKE = 'like',
+  FOLLOW = 'follow',
+  ACCEPTFOLLOW = 'acceptFollow',
+  COMMENT = 'comment',
+  TAG = 'tag',
+}
 
 export type NotificationConnection = {
   __typename?: 'NotificationConnection';
@@ -111,7 +121,10 @@ export type Media = Node & {
   updatedAt: Scalars['DateTime'];
 };
 
-export type FileType = 'FILE' | 'DIR';
+export enum FileType {
+  FILE = 'FILE',
+  DIR = 'DIR',
+}
 
 export type MediaConnection = {
   __typename?: 'MediaConnection';
@@ -206,14 +219,23 @@ export type Message = Node & {
   sender: Scalars['Float'];
   chatId: Scalars['Float'];
   content: Scalars['String'];
-  media: Scalars['String'];
-  mediaType: MediaType;
+  media?: Maybe<Scalars['String']>;
+  mediaType?: Maybe<MediaType>;
   isRead: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   senderInfo: User;
 };
 
-export type MediaType = 'VIDEO' | 'IMAGE';
+export enum MediaType {
+  VIDEO = 'VIDEO',
+  IMAGE = 'IMAGE',
+}
+
+export type MessageConnection = {
+  __typename?: 'MessageConnection';
+  items?: Maybe<Array<Message>>;
+  meta: BasePaginationMeta;
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -238,6 +260,7 @@ export type Query = {
   getUserPost: PostConnection;
   getChats: ChatConnection;
   getExistChat?: Maybe<Chat>;
+  getMessage: MessageConnection;
 };
 
 export type QueryGetUserInfoArgs = {
@@ -319,6 +342,12 @@ export type QueryGetExistChatArgs = {
   participants: Array<Scalars['Float']>;
 };
 
+export type QueryGetMessageArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
+  chatId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   updateUserInfo: User;
@@ -345,6 +374,7 @@ export type Mutation = {
   reportPost: Scalars['Boolean'];
   createChat: Chat;
   deleteChat: Scalars['Float'];
+  sendMessage: Message;
 };
 
 export type MutationUpdateUserInfoArgs = {
@@ -441,6 +471,10 @@ export type MutationDeleteChatArgs = {
   id: Scalars['Float'];
 };
 
+export type MutationSendMessageArgs = {
+  input: NewMessageInput;
+};
+
 export type UpdateUserInput = {
   zaloId?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -492,6 +526,13 @@ export type UpdatePostInput = {
   id: Scalars['Float'];
 };
 
+export type NewMessageInput = {
+  content: Scalars['String'];
+  chatId: Scalars['Float'];
+  media?: Maybe<Scalars['String']>;
+  mediaType?: Maybe<MediaType>;
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   onNewNotification: Notification;
@@ -499,6 +540,7 @@ export type Subscription = {
   onUnLikePost: Like;
   onCreateComment: Comments;
   onDeleteComment: CommentDeletePayload;
+  onNewMessage: Message;
 };
 
 export type SubscriptionOnNewNotificationArgs = {
@@ -519,4 +561,8 @@ export type SubscriptionOnCreateCommentArgs = {
 
 export type SubscriptionOnDeleteCommentArgs = {
   postId: Scalars['Float'];
+};
+
+export type SubscriptionOnNewMessageArgs = {
+  chatId: Scalars['Float'];
 };

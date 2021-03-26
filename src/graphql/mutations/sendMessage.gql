@@ -1,0 +1,18 @@
+mutation sendMessage($input: NewMessageInput!) {
+  sendMessage(input: $input) {
+    id
+    sender
+    chatId
+    content
+    media
+    mediaType
+    isRead
+    createdAt
+    senderInfo {
+      id
+      name
+      nickname
+      avatarFilePath
+    }
+  }
+}

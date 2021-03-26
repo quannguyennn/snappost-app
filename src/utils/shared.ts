@@ -4,7 +4,8 @@ import { ThemeStatic } from '../theme';
 import type { PhotoIdentifier } from '@react-native-community/cameraroll';
 import type { ExplorePost } from '../types/utils';
 import { Timeouts } from './constants';
-import type { User } from '../graphql/type.interface';
+import { MediaType, Message } from '../graphql/type.interface';
+import type { IMessage } from 'react-native-gifted-chat';
 
 export const getImageFromLibrary = async (height: number, width: number, circular: boolean = false) => {
   const options: Options = {
@@ -130,24 +131,34 @@ export const parseGridImages = (images: ExplorePost[]): ExplorePost[][] => {
   return parsedImages;
 };
 
-export const transformMessages = (messages: any) =>
+export const transformMessages = (messages: Message[] | any) =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  messages.map((message: any) => {
+  messages.map((message: Message) => {
     const {
       id,
-      body,
+      content,
       createdAt,
-      author: { id: authorId, name, avatar },
+      senderInfo: { id: authorId, name, avatarFilePath },
+      media,
+      mediaType,
     } = message;
 
-    return {
+    const convertMessage: IMessage = {
       _id: id,
-      text: body,
-      createdAt: new Date(createdAt),
+      text: content,
+      createdAt,
       user: {
         _id: authorId,
         name,
-        avatar,
+        avatar: avatarFilePath ?? '',
       },
     };
+    if (media) {
+      if (mediaType === MediaType.IMAGE) {
+        convertMessage.image = media;
+      } else {
+        convertMessage.video = media;
+      }
+    }
+    return convertMessage;
   });

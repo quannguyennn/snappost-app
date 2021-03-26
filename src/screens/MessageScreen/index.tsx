@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, View } from 'react-native';
 import MessageCard from './components/MessageCard';
-import NewMessageBottomSheet from './components/NewMessageBottomSheet';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
@@ -11,16 +10,14 @@ import MessageScreenPlaceholder from '../../components/placeholders/MessageScree
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import SvgBanner from '../../components/shared/SvgBanner';
 import { Images } from '../../assets1/icons';
-import { somethingWentWrongErrorNotification, tryAgainLaterNotification } from '../../helpers/notifications';
+import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
 import IconButton from '../../components/shared/Iconbutton';
 import { IconSizes } from '../../theme/Icon';
 import Header from '../../components/shared/layout/headers/Header';
 import SearchBar from '../../components/shared/layout/headers/SearchBar';
 import type { ThemeColors } from '../../types/theme';
 import { GetChatsQueryResponse, useGetChatsLazyQuery } from '../../graphql/queries/getChats.generated';
-import { useCreateChatMutation } from '../../graphql/mutations/createChat.generated';
-import { useGetExistChatLazyQuery } from '../../graphql/queries/getExistChat.generated';
-import { AppRoutes } from '../../navigator/app-routes';
+import ListPeopleToChat from './components/ListPeopleToChat';
 
 const MessageScreen: React.FC = () => {
   const { navigate } = useNavigation();
@@ -29,106 +26,57 @@ const MessageScreen: React.FC = () => {
   const isFocus = useIsFocused();
 
   const [refresh, setRefresh] = useState(false);
-  const [target, setTarget] = useState(0);
+  const [init, setInit] = useState(true);
 
-  const [createTemporaryChat] = useCreateChatMutation({
-    onCompleted: (res) => {
-      const [participant] = filterChatParticipants(user?.id ?? 0, res?.createChat?.participantInfo);
-
-      navigate(AppRoutes.CONVERSATION_SCREEN, {
-        chatId: res.createChat.id,
-        avatar: participant.avatarFilePath,
-        handle: participant.name,
-        targetId: participant.id,
-      });
-    },
-  });
-
-  const [getExist] = useGetExistChatLazyQuery({
-    fetchPolicy: 'network-only',
-    onCompleted: (res) => {
-      console.log(res);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      newMessageBottomSheetRef?.current?.close();
-      if (res.getExistChat) {
-        const [participant] = filterChatParticipants(user?.id ?? 0, res.getExistChat.participantInfo);
-
-        navigate(AppRoutes.CONVERSATION_SCREEN, {
-          chatId: res.getExistChat.id,
-          avatar: participant.avatarFilePath,
-          handle: participant.name,
-          targetId: participant.id,
-        });
-      } else {
-        createTemporaryChat({ variables: { participants: [target, user?.id ?? 0] } });
-      }
-    },
-    onError: (err) => {
-      console.log('exist chat', err);
-      tryAgainLaterNotification();
-    },
-  });
-
-  const [queryChats, { called, data: fetchData, loading, error, fetchMore }] = useGetChatsLazyQuery({
+  const [queryChats, { data: fetchData, loading, fetchMore }] = useGetChatsLazyQuery({
     fetchPolicy: 'cache-and-network',
     onError: (err) => {
       console.log('chat list', err);
       somethingWentWrongErrorNotification();
     },
     onCompleted: () => {
-      console.log(111);
-      // if (refresh) {
-      //   setRefresh(false);
-      // }
+      if (refresh) {
+        setRefresh(false);
+      }
     },
   });
 
-  // const currentPage =
-  //   Number(fetchData?.getChats?.meta.currentPage) >= 0 ? Number(fetchData?.getChats?.meta.currentPage) : 1;
-  // const totalPages =
-  //   Number(fetchData?.getChats?.meta.totalPages) >= 0 ? Number(fetchData?.getChats?.meta.totalPages) : 2;
+  const currentPage =
+    Number(fetchData?.getChats?.meta.currentPage) >= 0 ? Number(fetchData?.getChats?.meta.currentPage) : 1;
+  const totalPages =
+    Number(fetchData?.getChats?.meta.totalPages) >= 0 ? Number(fetchData?.getChats?.meta.totalPages) : 2;
 
   const data = fetchData?.getChats.items;
 
-  // const loadMore = () => {
-  //   console.log(33);
-  //   if (Number(currentPage) < Number(totalPages)) {
-  //     console.log(22);
-  //     fetchMore &&
-  //       fetchMore({
-  //         variables: { limit: 20, page: currentPage + 1 },
-  //         updateQuery: (prev: GetChatsQueryResponse, { fetchMoreResult }) => {
-  //           if (!fetchMoreResult) {
-  //             return prev;
-  //           }
-  //           const prevItem = prev?.getChats?.items ? prev?.getChats?.items : [];
-  //           const nextItem = fetchMoreResult.getChats?.items ? fetchMoreResult.getChats?.items : [];
-  //           return Object.assign({}, prev, {
-  //             getChats: {
-  //               items: [...prevItem, ...nextItem],
-  //               meta: fetchMoreResult.getChats?.meta,
-  //               __typename: 'ChatConnection',
-  //             },
-  //           });
-  //         },
-  //       });
-  //   }
-  // };
-
-  const [chatSearch, setChatSearch] = useState('');
-  const newMessageBottomSheetRef = useRef();
-
-  // useEffect(() => {
-  //   if (refresh) {
-  //     console.log('refresh');
-  //     queryChats({ variables: { limit: 20, page: 1 } });
-  //   }
-  // }, [refresh, queryChats]);
+  const loadMore = () => {
+    if (Number(currentPage) < Number(totalPages)) {
+      fetchMore &&
+        fetchMore({
+          variables: { limit: 20, page: currentPage + 1 },
+          updateQuery: (prev: GetChatsQueryResponse, { fetchMoreResult }) => {
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            const prevItem = prev?.getChats?.items ? prev?.getChats?.items : [];
+            const nextItem = fetchMoreResult.getChats?.items ? fetchMoreResult.getChats?.items : [];
+            return Object.assign({}, prev, {
+              getChats: {
+                items: [...prevItem, ...nextItem],
+                meta: fetchMoreResult.getChats?.meta,
+                __typename: 'ChatConnection',
+              },
+            });
+          },
+        });
+    }
+  };
 
   useEffect(() => {
-    console.log('load');
-    queryChats({ variables: { limit: 20, page: 1 } });
-  }, [queryChats]);
+    if (refresh || init) {
+      queryChats({ variables: { limit: 20, page: 1 } });
+    }
+    setInit(false);
+  }, [queryChats, refresh, init]);
 
   const renderItem = ({ item }) => {
     const { id: chatId, participantInfo, lastMessageData } = item;
@@ -151,57 +99,35 @@ const MessageScreen: React.FC = () => {
       />
     );
   };
-  let content = <MessageScreenPlaceholder />;
-
-  console.log(data);
-
-  if (called && !loading && !error) {
-    content = (
-      <FlatList
-        // onRefresh={() => {
-        //   setRefresh(true);
-        // }}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ padding: 20 }}
-        showsVerticalScrollIndicator={false}
-        data={data}
-        ListEmptyComponent={() => (
-          <SvgBanner Svg={<Image source={Images.emptyMessage} />} spacing={16} placeholder="No messages" />
-        )}
-        style={styles().messagesList}
-        renderItem={renderItem}
-        // refreshing={refresh}
-        // onEndReached={() => {}}
-        // onEndReachedThreshold={0.1}
-      />
-    );
-  }
-
-  const onConnectionSelect = async (targetId: number) => {
-    // setTarget(targetId);
-    try {
-      // getExist({ variables: { participants: [targetId, user?.id ?? 0] } });
-      // @ts-ignore
-    } catch ({ message }) {
-      console.log(message);
-      tryAgainLaterNotification();
-    }
-  };
-
-  const IconRight = () => (
-    <IconButton
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      onPress={() => newMessageBottomSheetRef?.current?.open()}
-      Icon={() => <Entypo name="add-to-list" size={IconSizes.x6} color={theme.text01} />}
-    />
-  );
 
   return (
     <View style={styles(theme).container}>
-      <Header title="Messages" IconRight={IconRight} />
-      <SearchBar value={chatSearch} onChangeText={setChatSearch} placeholder="Search for chats..." />
-      {content}
-      <NewMessageBottomSheet ref={null} onConnectionSelect={onConnectionSelect} />
+      <Header title="Messages" />
+      {/* <SearchBar value={chatSearch} onChangeText={setChatSearch} placeholder="Search for chats..." /> */}
+      {loading ? (
+        <MessageScreenPlaceholder />
+      ) : (
+        <FlatList
+          onRefresh={() => {
+            setRefresh(true);
+          }}
+          ListHeaderComponent={<ListPeopleToChat />}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          showsVerticalScrollIndicator={false}
+          data={data}
+          ListEmptyComponent={() => (
+            <SvgBanner Svg={<Image source={Images.emptyMessage} />} spacing={16} placeholder="No messages" />
+          )}
+          style={styles().messagesList}
+          renderItem={renderItem}
+          refreshing={refresh}
+          onEndReached={() => {
+            loadMore();
+          }}
+          onEndReachedThreshold={0.1}
+        />
+      )}
     </View>
   );
 };

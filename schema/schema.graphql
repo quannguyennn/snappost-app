@@ -192,8 +192,8 @@ type Message implements Node {
   sender: Float!
   chatId: Float!
   content: String!
-  media: String!
-  mediaType: MediaType!
+  media: String
+  mediaType: MediaType
   isRead: Boolean!
   createdAt: DateTime!
   senderInfo: User!
@@ -202,6 +202,11 @@ type Message implements Node {
 enum MediaType {
   VIDEO
   IMAGE
+}
+
+type MessageConnection {
+  items: [Message!]
+  meta: BasePaginationMeta!
 }
 
 type Query {
@@ -226,6 +231,7 @@ type Query {
   getUserPost(page: Float!, limit: Float!, userId: Float!): PostConnection!
   getChats(page: Float!, limit: Float!): ChatConnection!
   getExistChat(participants: [Float!]!): Chat
+  getMessage(page: Float!, limit: Float!, chatId: Float!): MessageConnection!
 }
 
 type Mutation {
@@ -253,6 +259,7 @@ type Mutation {
   reportPost(postId: Float!): Boolean!
   createChat(participants: [Float!]!): Chat!
   deleteChat(id: Float!): Float!
+  sendMessage(input: NewMessageInput!): Message!
 }
 
 input UpdateUserInput {
@@ -311,10 +318,18 @@ input UpdatePostInput {
   id: Float!
 }
 
+input NewMessageInput {
+  content: String!
+  chatId: Float!
+  media: String
+  mediaType: MediaType
+}
+
 type Subscription {
   onNewNotification(userId: Float!): Notification!
   onLikePost(postId: Float!): Like!
   onUnLikePost(postId: Float!): Like!
   onCreateComment(postId: Float!): Comments!
   onDeleteComment(postId: Float!): CommentDeletePayload!
+  onNewMessage(chatId: Float!): Message!
 }

@@ -102,12 +102,9 @@ const UploadScreen: React.FC = () => {
       return <View />;
     }
     const mediaToshow = selectedMedias.length ? selectedMedias[selectedMedias.length - 1].metadata : medias[lastIndex];
-      return (
-        <Image
-          style={[styles(theme).bigMedia, { resizeMode: 'contain' }]}
-          source={{ uri: mediaToshow.node.image.uri }}
-        />
-      );
+    return (
+      <Image style={[styles(theme).bigMedia, { resizeMode: 'contain' }]} source={{ uri: mediaToshow.node.image.uri }} />
+    );
   };
 
   // const openCamera = (type: 'photo' | 'video') => {

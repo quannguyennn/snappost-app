@@ -9,11 +9,11 @@ generates:
     plugins:
       - typescript
     config:
-      constEnums: true
-      enumsAsTypes: true
+      constEnums: false
+      enumsAsTypes: false
       numericEnums: false
       futureProofEnums: false
-      enumsAsConst: true
+      enumsAsConst: false
   src/:
     preset: near-operation-file
     presetConfig:

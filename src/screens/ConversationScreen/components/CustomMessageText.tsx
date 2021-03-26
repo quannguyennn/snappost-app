@@ -5,15 +5,19 @@ import { ThemeStatic, Typography } from '../../../theme';
 
 const { FontWeights, FontSizes } = Typography;
 
-const CustomMessageText: React.FC = (messageTextProps) => (
-  <MessageText
-    {...messageTextProps}
-    textStyle={{
-      left: styles.left,
-      right: styles.right,
-    }}
-  />
-);
+const CustomMessageText: React.FC = (messageTextProps) => {
+  console.log(messageTextProps);
+
+  return (
+    <MessageText
+      {...messageTextProps}
+      textStyle={{
+        left: styles.left,
+        right: styles.right,
+      }}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   left: {
