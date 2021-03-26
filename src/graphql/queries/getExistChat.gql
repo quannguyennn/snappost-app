@@ -5,5 +5,12 @@ query getExistChat($participants: [Float!]!) {
     isTemp
     lastMessage
     createdAt
+    updatedAt
+    participantInfo {
+      id
+      name
+      nickname
+      avatarFilePath
+    }
   }
 }

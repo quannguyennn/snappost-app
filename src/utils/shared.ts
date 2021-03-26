@@ -109,7 +109,7 @@ export const isUserOnline = (lastSeen: number) => {
   return now - lastSeen < Timeouts.online;
 };
 
-export const filterChatParticipants = (userId: number, participants: User[]) =>
+export const filterChatParticipants = (userId: number, participants: any[]) =>
   participants.filter((participant) => userId !== participant.id);
 
 export const sortPostsAscendingTime = (array: any) =>

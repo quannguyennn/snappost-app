@@ -8,7 +8,14 @@ export type GetExistChatQueryVariables = Types.Exact<{
 
 export type GetExistChatQueryResponse = { __typename?: 'Query' } & {
   getExistChat?: Types.Maybe<
-    { __typename?: 'Chat' } & Pick<Types.Chat, 'id' | 'participants' | 'isTemp' | 'lastMessage' | 'createdAt'>
+    { __typename?: 'Chat' } & Pick<
+      Types.Chat,
+      'id' | 'participants' | 'isTemp' | 'lastMessage' | 'createdAt' | 'updatedAt'
+    > & {
+        participantInfo: Array<
+          { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'>
+        >;
+      }
   >;
 };
 
@@ -20,6 +27,13 @@ export const GetExistChatDocument = gql`
       isTemp
       lastMessage
       createdAt
+      updatedAt
+      participantInfo {
+        id
+        name
+        nickname
+        avatarFilePath
+      }
     }
   }
 `;

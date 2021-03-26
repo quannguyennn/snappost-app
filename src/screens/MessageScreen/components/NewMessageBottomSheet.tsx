@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -12,6 +12,9 @@ import { Images } from '../../../assets1/icons';
 import UserCard from '../../../components/UserCard';
 import BottomSheetHeader from '../../../components/shared/layout/headers/BottomSheetHeader';
 import type { ThemeColors } from '../../../types/theme';
+import { useGetFollowingUserLazyQuery } from '../../../graphql/queries/getFollowingUser.generated';
+import { useIsFocused } from '@react-navigation/core';
+import { isUserOnline } from '../../../utils/shared';
 
 interface NewMessageBottomSheetProps {
   ref: React.Ref<any>;
@@ -21,10 +24,17 @@ interface NewMessageBottomSheetProps {
 const NewMessageBottomSheet: React.FC<NewMessageBottomSheetProps> = React.forwardRef(({ onConnectionSelect }, ref) => {
   const user = useCurrentUser();
   const theme = useRecoilValue(themeState);
-  // const { data, loading, error } = useQuery(QUERY_USER_CONNECTIONS, {
-  //   variables: { userId: user.id, type: Connections.FOLLOWING },
-  //   fetchPolicy: 'network-only'
-  // });
+  const isFocus = useIsFocused();
+
+  const [getFollowing, { data, loading, error }] = useGetFollowingUserLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
+  useEffect(() => {
+    // if (isFocus) {
+    getFollowing();
+    // }
+  }, [getFollowing]);
 
   let content = <ConnectionsPlaceholder />;
 
@@ -33,27 +43,29 @@ const NewMessageBottomSheet: React.FC<NewMessageBottomSheetProps> = React.forwar
   );
 
   const renderItem = ({ item }) => {
-    const { id, avatar, nickname, name } = item;
+    const { id, avatarFilePath, nickname, name, lastSeen } = item;
+    const isOnline = isUserOnline(lastSeen);
+
     return (
       <UserCard
         userId={id}
-        avatar={avatar}
+        avatar={avatarFilePath}
         nickname={nickname}
         name={name}
-        onPress={() => onConnectionSelect(id, avatar, nickname)}
+        onPress={() => onConnectionSelect(id, avatarFilePath, nickname)}
+        isChat
+        isOnline={isOnline}
       />
     );
   };
 
-  //!loading && !error
-  if (true) {
-    const { userConnections } = data;
+  if (!loading && !error) {
     content = (
       <FlatGrid
         bounces={false}
         itemDimension={responsiveWidth(85)}
         showsVerticalScrollIndicator={false}
-        items={userConnections}
+        data={data?.getFollowingUser}
         itemContainerStyle={styles().listItemContainer}
         contentContainerStyle={styles().listContentContainer}
         ListEmptyComponent={ListEmptyComponent}
