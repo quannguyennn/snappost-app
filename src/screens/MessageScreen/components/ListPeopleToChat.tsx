@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRecoilValue } from 'recoil';
+import UserRowPlaceholder from '../../../components/placeholders/UserRow.Placeholder';
 import NativeImage from '../../../components/shared/NativeImage';
 import { useCreateChatMutation } from '../../../graphql/mutations/createChat.generated';
 import { useGetExistChatLazyQuery } from '../../../graphql/queries/getExistChat.generated';
@@ -23,7 +24,7 @@ const ListPeopleToChat: React.FC = () => {
 
   const [target, setTarget] = useState(0);
 
-  const { data } = useGetFollowingUserQuery({
+  const { data, loading } = useGetFollowingUserQuery({
     // fetchPolicy: 'cache-and-network',
     pollInterval: 120000,
   });
@@ -74,30 +75,36 @@ const ListPeopleToChat: React.FC = () => {
   };
 
   return (
-    <FlatList
-      data={data?.getFollowingUser}
-      keyExtractor={(item) => item.id.toString()}
-      horizontal
-      style={{ marginBottom: 20 }}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({ item }) => {
-        const { avatarFilePath, lastSeen, name, id } = item;
-        const isOnline = isUserOnline(lastSeen);
-        const onlineDotColor = OnlineDotColor[isOnline as any];
+    <>
+      {
+        loading ? <View /> : <FlatList
+          data={data?.getFollowingUser}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          style={{ marginBottom: 10 }}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => {
+            const { avatarFilePath, lastSeen, name, id } = item;
+            const isOnline = isUserOnline(lastSeen);
+            const onlineDotColor = OnlineDotColor[isOnline as any];
 
-        return (
-          <TouchableOpacity onPress={() => handleChose(id)} style={{ width: 50 }} activeOpacity={0.95}>
-            <View style={styles().avatar}>
-              <NativeImage uri={avatarFilePath ?? ''} style={styles(theme).avatarImage} />
-              <View style={[styles().onlineDot, { backgroundColor: onlineDotColor }]} />
-            </View>
-            <Text numberOfLines={2} style={styles(theme).handleText}>
-              {name}
-            </Text>
-          </TouchableOpacity>
-        );
-      }}
-    />
+            return (
+              <TouchableOpacity onPress={() => handleChose(id)} style={{ width: 50 }} activeOpacity={0.95}>
+                <View style={styles().avatar}>
+                  <NativeImage uri={avatarFilePath ?? ''} style={styles(theme).avatarImage} />
+                  <View style={[styles().onlineDot, { backgroundColor: onlineDotColor }]} />
+                </View>
+                <Text numberOfLines={2} style={styles(theme).handleText}>
+                  {name}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      }
+    </>
+
+
   );
 };
 

@@ -141,12 +141,16 @@ export const transformMessages = (messages: Message[] | any) =>
       senderInfo: { id: authorId, name, avatarFilePath },
       media,
       mediaType,
+      sent,
+      received
     } = message;
 
     const convertMessage: IMessage = {
       _id: id,
-      text: content,
+      text: content ?? "",
       createdAt,
+      sent,
+      received,
       user: {
         _id: authorId,
         name,

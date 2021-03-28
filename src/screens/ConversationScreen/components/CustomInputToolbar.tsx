@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { InputToolbar } from 'react-native-gifted-chat';
+import { StyleSheet } from 'react-native';
+import { InputToolbar, InputToolbarProps } from 'react-native-gifted-chat';
 import { ThemeStatic } from '../../../theme';
 
-const CustomInputToolbar: React.FC = (inputToolbarProps) => {
-  return <InputToolbar {...inputToolbarProps} containerStyle={styles.container} primaryStyle={styles.primary} />;
+const CustomInputToolbar: React.FC<InputToolbarProps> = (props) => {
+  return <InputToolbar {...props} containerStyle={styles.container} primaryStyle={styles.primary} />
+
 };
 
 const styles = StyleSheet.create({

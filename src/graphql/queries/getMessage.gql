@@ -7,7 +7,9 @@ query getMessage($page: Float!, $limit: Float!, $chatId: Float!) {
       content
       media
       mediaType
-      isRead
+      sent
+      tempId
+      received
       createdAt
       senderInfo {
         id

@@ -11,7 +11,10 @@ export type GetChatsQueryResponse = { __typename?: 'Query' } & {
   getChats: { __typename?: 'ChatConnection' } & {
     items?: Types.Maybe<
       Array<
-        { __typename?: 'Chat' } & Pick<Types.Chat, 'id' | 'participants' | 'isTemp' | 'lastMessage' | 'createdAt'> & {
+        { __typename?: 'Chat' } & Pick<
+          Types.Chat,
+          'id' | 'participants' | 'isTemp' | 'lastMessage' | 'createdAt' | 'unseenMessage'
+        > & {
             participantInfo: Array<
               { __typename?: 'User' } & Pick<
                 Types.User,
@@ -21,7 +24,7 @@ export type GetChatsQueryResponse = { __typename?: 'Query' } & {
             lastMessageData?: Types.Maybe<
               { __typename?: 'Message' } & Pick<
                 Types.Message,
-                'id' | 'content' | 'media' | 'mediaType' | 'isRead' | 'createdAt'
+                'id' | 'content' | 'media' | 'mediaType' | 'sent' | 'received' | 'createdAt'
               > & { senderInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname'> }
             >;
           }
@@ -43,6 +46,7 @@ export const GetChatsDocument = gql`
         isTemp
         lastMessage
         createdAt
+        unseenMessage
         participantInfo {
           id
           name
@@ -56,7 +60,8 @@ export const GetChatsDocument = gql`
           content
           media
           mediaType
-          isRead
+          sent
+          received
           createdAt
           senderInfo {
             id

@@ -1,0 +1,6 @@
+subscription onSeenMessage($chatId: Float!) {
+  onSeenMessage(chatId: $chatId) {
+    chatId
+    userId
+  }
+}

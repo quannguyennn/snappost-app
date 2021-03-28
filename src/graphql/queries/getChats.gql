@@ -6,6 +6,7 @@ query getChats($page: Float!, $limit: Float!) {
       isTemp
       lastMessage
       createdAt
+      unseenMessage
       participantInfo {
         id
         name
@@ -19,7 +20,8 @@ query getChats($page: Float!, $limit: Float!) {
         content
         media
         mediaType
-        isRead
+        sent
+        received
         createdAt
         senderInfo {
           id

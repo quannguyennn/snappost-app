@@ -205,6 +205,7 @@ export type Chat = Node & {
   updatedAt: Scalars['DateTime'];
   participantInfo: Array<User>;
   lastMessageData?: Maybe<Message>;
+  unseenMessage: Scalars['Float'];
 };
 
 export type ChatConnection = {
@@ -218,10 +219,12 @@ export type Message = Node & {
   id: Scalars['Float'];
   sender: Scalars['Float'];
   chatId: Scalars['Float'];
-  content: Scalars['String'];
+  content?: Maybe<Scalars['String']>;
   media?: Maybe<Scalars['String']>;
   mediaType?: Maybe<MediaType>;
-  isRead: Scalars['Boolean'];
+  sent: Scalars['Boolean'];
+  tempId: Scalars['String'];
+  received: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   senderInfo: User;
 };
@@ -235,6 +238,18 @@ export type MessageConnection = {
   __typename?: 'MessageConnection';
   items?: Maybe<Array<Message>>;
   meta: BasePaginationMeta;
+};
+
+export type SeenMessage = {
+  __typename?: 'SeenMessage';
+  chatId: Scalars['Float'];
+  userId: Scalars['Float'];
+};
+
+export type ReceivedMessage = {
+  __typename?: 'ReceivedMessage';
+  chatId: Scalars['Float'];
+  userId: Scalars['Float'];
 };
 
 export type Query = {
@@ -260,6 +275,7 @@ export type Query = {
   getUserPost: PostConnection;
   getChats: ChatConnection;
   getExistChat?: Maybe<Chat>;
+  getChatHasUnseenMessage: Array<Scalars['Float']>;
   getMessage: MessageConnection;
 };
 
@@ -527,10 +543,11 @@ export type UpdatePostInput = {
 };
 
 export type NewMessageInput = {
-  content: Scalars['String'];
+  content?: Maybe<Scalars['String']>;
   chatId: Scalars['Float'];
   media?: Maybe<Scalars['String']>;
   mediaType?: Maybe<MediaType>;
+  tempId: Scalars['String'];
 };
 
 export type Subscription = {
@@ -541,6 +558,8 @@ export type Subscription = {
   onCreateComment: Comments;
   onDeleteComment: CommentDeletePayload;
   onNewMessage: Message;
+  onSeenMessage: SeenMessage;
+  onReceiveMessage: ReceivedMessage;
 };
 
 export type SubscriptionOnNewNotificationArgs = {
@@ -565,4 +584,12 @@ export type SubscriptionOnDeleteCommentArgs = {
 
 export type SubscriptionOnNewMessageArgs = {
   chatId: Scalars['Float'];
+};
+
+export type SubscriptionOnSeenMessageArgs = {
+  chatId: Scalars['Float'];
+};
+
+export type SubscriptionOnReceiveMessageArgs = {
+  userId: Scalars['Float'];
 };

@@ -18,7 +18,7 @@ import type { ThemeColors } from '../../types/theme';
 import { GetNewFeedQueryResponse, useGetNewFeedLazyQuery } from '../../graphql/queries/getNewFeed.generated';
 import type { Post } from '../../graphql/type.interface';
 import { somethingWentWrongErrorNotification } from '../../helpers/notifications';
-import { newFeedState } from '../../recoil/app/atoms';
+import { countMessageState, newFeedState } from '../../recoil/app/atoms';
 import { useNavigation } from '@react-navigation/core';
 import { AppRoutes } from '../../navigator/app-routes';
 
@@ -28,6 +28,7 @@ const HomeScreen = React.memo(() => {
   const [refresh, setRefresh] = useState(false);
   const [init, setInit] = useState(true);
   const [posts, setPosts] = useRecoilState(newFeedState);
+  const unseenChat = useRecoilValue(countMessageState)
 
   const [getNewFeed, { data: fetchNewFeed, loading, fetchMore }] = useGetNewFeedLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -118,12 +119,10 @@ const HomeScreen = React.memo(() => {
   );
 
   const IconRight = () => {
-    const unreadMessages = Math.floor(Math.random() * 10);
-    const hasBadge = unreadMessages !== 0;
     return (
       <IconButton
-        hasBadge={hasBadge}
-        badgeCount={unreadMessages}
+        hasBadge={unseenChat.length !== 0}
+        badgeCount={unseenChat.length}
         onPress={() => {
           navigate(AppRoutes.MESSAGE_SCREEN);
         }}

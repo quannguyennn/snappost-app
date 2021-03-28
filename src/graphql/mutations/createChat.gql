@@ -13,15 +13,5 @@ mutation createChat($participants: [Float!]!) {
       avatarFilePath
       isBlockMe
     }
-    lastMessageData {
-      id
-      sender
-      chatId
-      content
-      media
-      mediaType
-      isRead
-      createdAt
-    }
   }
 }

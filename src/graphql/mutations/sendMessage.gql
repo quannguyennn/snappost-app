@@ -6,7 +6,9 @@ mutation sendMessage($input: NewMessageInput!) {
     content
     media
     mediaType
-    isRead
+    sent
+    tempId
+    received
     createdAt
     senderInfo {
       id

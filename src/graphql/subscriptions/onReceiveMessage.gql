@@ -1,0 +1,6 @@
+subscription onReceiveMessage($userId: Float!) {
+  onReceiveMessage(userId: $userId) {
+    chatId
+    userId
+  }
+}

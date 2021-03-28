@@ -9,7 +9,7 @@ export type OnNewMessageSubscriptionVariables = Types.Exact<{
 export type OnNewMessageSubscriptionResponse = { __typename?: 'Subscription' } & {
   onNewMessage: { __typename?: 'Message' } & Pick<
     Types.Message,
-    'id' | 'sender' | 'chatId' | 'content' | 'media' | 'mediaType' | 'isRead' | 'createdAt'
+    'id' | 'sender' | 'chatId' | 'content' | 'media' | 'mediaType' | 'sent' | 'tempId' | 'received' | 'createdAt'
   > & { senderInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'nickname' | 'avatarFilePath'> };
 };
 
@@ -22,7 +22,9 @@ export const OnNewMessageDocument = gql`
       content
       media
       mediaType
-      isRead
+      sent
+      tempId
+      received
       createdAt
       senderInfo {
         id

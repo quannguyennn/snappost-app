@@ -180,6 +180,7 @@ type Chat implements Node {
   updatedAt: DateTime!
   participantInfo: [User!]!
   lastMessageData: Message
+  unseenMessage: Float!
 }
 
 type ChatConnection {
@@ -191,10 +192,12 @@ type Message implements Node {
   id: Float!
   sender: Float!
   chatId: Float!
-  content: String!
+  content: String
   media: String
   mediaType: MediaType
-  isRead: Boolean!
+  sent: Boolean!
+  tempId: String!
+  received: Boolean!
   createdAt: DateTime!
   senderInfo: User!
 }
@@ -207,6 +210,16 @@ enum MediaType {
 type MessageConnection {
   items: [Message!]
   meta: BasePaginationMeta!
+}
+
+type SeenMessage {
+  chatId: Float!
+  userId: Float!
+}
+
+type ReceivedMessage {
+  chatId: Float!
+  userId: Float!
 }
 
 type Query {
@@ -231,6 +244,7 @@ type Query {
   getUserPost(page: Float!, limit: Float!, userId: Float!): PostConnection!
   getChats(page: Float!, limit: Float!): ChatConnection!
   getExistChat(participants: [Float!]!): Chat
+  getChatHasUnseenMessage: [Float!]!
   getMessage(page: Float!, limit: Float!, chatId: Float!): MessageConnection!
 }
 
@@ -319,10 +333,11 @@ input UpdatePostInput {
 }
 
 input NewMessageInput {
-  content: String!
+  content: String
   chatId: Float!
   media: String
   mediaType: MediaType
+  tempId: String!
 }
 
 type Subscription {
@@ -332,4 +347,6 @@ type Subscription {
   onCreateComment(postId: Float!): Comments!
   onDeleteComment(postId: Float!): CommentDeletePayload!
   onNewMessage(chatId: Float!): Message!
+  onSeenMessage(chatId: Float!): SeenMessage!
+  onReceiveMessage(userId: Float!): ReceivedMessage!
 }

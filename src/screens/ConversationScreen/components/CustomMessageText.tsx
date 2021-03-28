@@ -6,7 +6,6 @@ import { ThemeStatic, Typography } from '../../../theme';
 const { FontWeights, FontSizes } = Typography;
 
 const CustomMessageText: React.FC = (messageTextProps) => {
-  console.log(messageTextProps);
 
   return (
     <MessageText

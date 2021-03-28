@@ -20,7 +20,7 @@ import CustomScrollToBottom from './components/CustomScrollToBottom';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
 import { transformMessages } from '../../utils/shared';
 import ConversationScreenPlaceholder from '../../components/placeholders/ConversationScreen.Placeholder';
@@ -38,31 +38,32 @@ import { ThemeStatic } from '../../theme';
 import { Modalize } from 'react-native-modalize';
 import CameraRoll, { PhotoIdentifier } from '@react-native-community/cameraroll';
 import { useFileUpload } from '../../hooks/useFileUpload';
+import Entypo from 'react-native-vector-icons/Entypo';
+import { MediaType, NewMessageInput } from '../../graphql/type.interface';
+import { useOnSeenMessageSubscription } from '../../graphql/subscriptions/onSeenMessage.generated';
+import { countMessageState } from '../../recoil/app/atoms';
 
 const ConversationScreen: React.FC = () => {
   const {
     params: { chatId, handle, avatar, targetId },
   } = useRoute<RouteProp<AppStackParamList, AppRoutes.CONVERSATION_SCREEN>>();
-  const upload = useFileUpload({
-    onUploadProgress: (progressEvent) => {
-      console.log(progressEvent);
-    },
-  });
+  const [upload] = useFileUpload();
   const isFocused = useIsFocused();
 
   const { navigate } = useNavigation();
   const user = useCurrentUser();
   const theme = useRecoilValue(themeState);
+  const [unseenChat, setUnseenChat] = useRecoilState(countMessageState);
 
   const [messages, setMessages] = useState<GetMessageQueryResponse['getMessage']['items']>([]);
   const [loadEarlier, setLoadEarlier] = useState(false);
 
-  const albumnRef = useRef<Modalize>(null);
-
   const [loading, setLoading] = useState(false);
   const [medias, setMedias] = useState<PhotoIdentifier[]>([]);
   const [page, setPage] = useState(1);
-  const [selectedImage, setSelectedImage] = useState<PhotoIdentifier['node']['image']>();
+  const [openMedia, setOpenMedia] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [init, setInit] = useState(true);
 
   async function hasAndroidPermission() {
     const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -77,28 +78,34 @@ const ConversationScreen: React.FC = () => {
   }
 
   useEffect(() => {
-    const getMedia = async () => {
-      setLoading(true);
-      if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
-        noPermissionNotification();
-        return;
-      }
-      CameraRoll.getPhotos({ first: page * 50, assetType: 'Photos' }).then((res) => {
-        setMedias(res.edges);
-        setLoading(false);
-      });
-    };
-    getMedia();
-  }, [isFocused, page]);
+    if (openMedia) {
+      //@ts-ignore
+      albumRef?.current?.open();
+      const getMedia = async () => {
+        setLoading(true);
+        if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+          noPermissionNotification();
+          return;
+        }
+        CameraRoll.getPhotos({ first: page * 50, assetType: 'Photos' }).then((res) => {
+          setMedias(res.edges);
+          setLoading(false);
+        });
+      };
+      getMedia();
+    }
+  }, [isFocused, page, openMedia]);
 
   const [
     queryChat,
     { called: chatQueryCalled, data: chatQueryData, loading: chatQueryLoading, error: chatQueryError, fetchMore },
   ] = useGetMessageLazyQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     onCompleted: (res) => {
       setMessages(res.getMessage.items ?? []);
       setLoadEarlier(false);
+      setInit(false);
+      setUnseenChat([...unseenChat].filter(item => item !== chatId))
     },
     onError: (err) => {
       console.log('list message', err);
@@ -135,18 +142,51 @@ const ConversationScreen: React.FC = () => {
     }
   };
 
+
   useOnNewMessageSubscription({
     variables: { chatId },
     onSubscriptionData: ({ subscriptionData }) => {
       if (subscriptionData.error) {
         console.log('on new Message', subscriptionData.error);
       } else {
-        // @ts-ignore
-        setMessages([subscriptionData.data?.onNewMessage, ...messages]);
+        if (subscriptionData.data?.onNewMessage.senderInfo.id !== user?.id) {
+          // @ts-ignore
+          setMessages([subscriptionData.data?.onNewMessage, ...messages]);
+        } else {
+          const index = messages?.findIndex(item => item.tempId === subscriptionData.data?.onNewMessage?.tempId);
+          if (index !== -1) {
+            const temp = [...messages];
+            temp[index ?? 0].sent = true;
+            setMessages(temp)
+          }
+        }
       }
     },
   });
-  const [addMessage] = useSendMessageMutation();
+
+  useOnSeenMessageSubscription({
+    variables: { chatId },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log('on seen Message', subscriptionData.error);
+      } else {
+        const seenId = subscriptionData.data?.onSeenMessage.userId;
+        const temp = [...messages].map(item => {
+          if (item.senderInfo.id !== seenId) {
+            return { ...item, received: true }
+          }
+          return item
+        });
+        setMessages(temp)
+      }
+    }
+  })
+
+  const [addMessage] = useSendMessageMutation({
+    onError: (err) => {
+      console.log("send message", err)
+    },
+  });
 
   useEffect(() => {
     queryChat({
@@ -160,12 +200,40 @@ const ConversationScreen: React.FC = () => {
 
   const onSend = async (updatedMessages: any) => {
     const [updatedMessage] = updatedMessages;
+    const newMessage = {
+      id: updatedMessage._id,
+      content: updatedMessage.text,
+      createdAt: updatedMessage.createdAt,
+      senderInfo: {
+        id: user?.id ?? 0,
+        name: user?.name,
+        avatarFilePath: user?.avatarFilePath ?? ""
+      },
+      media: selectedIndex !== -1 ? medias[selectedIndex].node.image.uri : null,
+      mediaType: selectedIndex !== -1 ? MediaType.IMAGE : null,
+      sent: false,
+      received: false,
+      pending: false,
+      tempId: updatedMessage._id
+    }
+    setMessages([newMessage, ...messages])
+    setSelectedIndex(-1)
+
+    const input: NewMessageInput = {
+      chatId,
+      content: updatedMessage.text,
+      tempId: updatedMessage._id
+    }
+
+    if (selectedIndex !== -1) {
+      const resMedia = await upload(medias[selectedIndex].node.image);
+      input.media = resMedia.filePath
+      input.mediaType = MediaType.IMAGE
+    }
+
     addMessage({
       variables: {
-        input: {
-          chatId,
-          content: updatedMessage.text,
-        },
+        input
       },
     });
   };
@@ -174,27 +242,27 @@ const ConversationScreen: React.FC = () => {
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId: targetId });
   };
 
-  let content = <ConversationScreenPlaceholder />;
+  let content = init ? <ConversationScreenPlaceholder /> : null
 
-  if (chatQueryCalled && !chatQueryLoading && !chatQueryError) {
+  if (!init) {
     const transform = transformMessages(messages);
 
     content = (
       <GiftedChat
-        isCustomViewBottom
+        isTyping
         scrollToBottom
         alwaysShowSend
         inverted
         maxInputLength={200}
         messages={transform}
-        timeFormat="A h:mm"
+        // timeFormat="A h:mm"
         scrollToBottomComponent={CustomScrollToBottom}
         textInputProps={{ disable: true }}
         renderComposer={(composerProps) => <CustomComposer {...composerProps} />}
         renderMessageText={CustomMessageText}
-        renderBubble={CustomBubble}
+        renderBubble={(props) => <CustomBubble {...props} />}
         renderSend={CustomSend}
-        renderInputToolbar={CustomInputToolbar}
+        renderInputToolbar={(props) => <CustomInputToolbar {...props} />}
         onSend={onSend}
         onPressAvatar={navigateToProfile}
         user={{ _id: user?.id ?? 0, avatar: user?.avatarFilePath ?? '', name: user?.name }}
@@ -204,7 +272,9 @@ const ConversationScreen: React.FC = () => {
         infiniteScroll
         loadEarlier={loadEarlier}
         isLoadingEarlier={loadEarlier}
-        onPressActionButton={() => albumnRef.current?.open()}
+        onPressActionButton={() => {
+          setOpenMedia(true);
+        }}
         renderLoadEarlier={() => (
           <View style={{ paddingVertical: 5 }}>
             <ActivityIndicator />
@@ -229,8 +299,15 @@ const ConversationScreen: React.FC = () => {
     );
   }
 
-  const handleSelectImage = async (image: PhotoIdentifier['node']['image']) => {
-    setSelectedImage(image);
+  const albumRef = useRef(null);
+
+  const handleSelectImage = async (index: number) => {
+    if (index !== selectedIndex) {
+      setSelectedIndex(index);
+    } else {
+      setSelectedIndex(-1);
+    }
+
   };
 
   return (
@@ -244,31 +321,47 @@ const ConversationScreen: React.FC = () => {
         notSpaceBetween
       />
       {content}
-      <Modalize
-        //@ts-ignore
-        ref={albumnRef}
-        scrollViewProps={{ showsVerticalScrollIndicator: false }}
-        modalStyle={styles(theme).modalContainer}>
-        <FlatList
-          data={medias}
-          style={{ flex: 1 }}
-          contentContainerStyle={styles(theme).content}
-          keyExtractor={(item, index) => index.toString() + 'image list'}
-          numColumns={3}
-          horizontal={false}
-          onEndReachedThreshold={0.3}
-          onEndReached={() => setPage(page + 1)}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              style={[styles(theme).image]}
-              onPress={() => {
-                handleSelectImage(item.node.image);
-              }}>
-              <Image source={{ uri: item.node.image.uri }} style={{ height: '100%', width: '100%' }} />
-            </TouchableOpacity>
-          )}
-        />
-      </Modalize>
+      {
+        openMedia ? <View style={{ flex: 0.7, marginTop: 10, backgroundColor: theme.base }}>
+          <Modalize ref={albumRef}
+            scrollViewProps={{ showsVerticalScrollIndicator: false }}
+            modalStyle={styles(theme).pickerContainer}
+            onClose={() => {
+              setOpenMedia(false);
+              setSelectedIndex(-1)
+            }
+            }
+          >
+            <FlatList
+              data={medias}
+              style={{ flex: 1 }}
+              contentContainerStyle={styles(theme).content}
+              keyExtractor={(item, index) => index.toString() + 'image list'}
+              numColumns={4}
+              horizontal={false}
+              onEndReachedThreshold={0.3}
+              onEndReached={() => setPage(page + 1)}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  style={[styles(theme).image]}
+                  onPress={() => {
+                    handleSelectImage(index);
+                  }}>
+                  <Image source={{ uri: item.node.image.uri }} style={{ height: '100%', width: '100%' }} />
+                  {
+                    openMedia && selectedIndex !== -1 && index === selectedIndex ? <View style={styles(theme).selectedContainer}>
+                      <View style={styles(theme).selectedCircle}>
+                        <Entypo name="check" size={IconSizes.x4} color={ThemeStatic.white} />
+                      </View>
+                    </View>
+                      : null}
+                </TouchableOpacity>
+              )}
+            />
+          </Modalize>
+        </View> : null
+      }
+
     </View>
   );
 };
@@ -279,25 +372,44 @@ const styles = (theme = {} as ThemeColors) =>
       flex: 1,
       backgroundColor: theme.base,
     },
-    modalContainer: {
-      flex: 1,
-      marginTop: 30,
+    pickerContainer: {
+      marginTop: 16,
       backgroundColor: theme.base,
-      paddingTop: 40,
+      paddingVertical: 10,
+      flex: 1
     },
     headerTitleStyle: {
       marginLeft: 0,
     },
     image: {
-      width: '32%',
-      marginBottom: 8,
-      marginRight: 8,
+      width: '25%',
       borderRadius: 20,
-      height: 100,
+      aspectRatio: 1,
+      borderWidth: 1,
+      borderColor: theme.base
     },
     content: {
-      paddingHorizontal: 20,
     },
+    selectedContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: theme.base,
+      opacity: 0.7,
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 99
+    },
+    selectedCircle: {
+      backgroundColor: theme.accent,
+      padding: 6,
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 100,
+      borderRadius: 100
+    }
   });
 
 export default ConversationScreen;

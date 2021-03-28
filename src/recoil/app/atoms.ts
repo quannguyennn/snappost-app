@@ -17,3 +17,8 @@ export const countNotificationState = atom<number>({
   key: AppAtoms.CountNotification,
   default: 0,
 });
+
+export const countMessageState = atom<number[]>({
+  key: AppAtoms.CountMessage,
+  default: []
+})

@@ -17,12 +17,6 @@ export type CreateChatMutationResponse = { __typename?: 'Mutation' } & {
           'id' | 'name' | 'nickname' | 'lastSeen' | 'avatarFilePath' | 'isBlockMe'
         >
       >;
-      lastMessageData?: Types.Maybe<
-        { __typename?: 'Message' } & Pick<
-          Types.Message,
-          'id' | 'sender' | 'chatId' | 'content' | 'media' | 'mediaType' | 'isRead' | 'createdAt'
-        >
-      >;
     };
 };
 
@@ -41,16 +35,6 @@ export const CreateChatDocument = gql`
         lastSeen
         avatarFilePath
         isBlockMe
-      }
-      lastMessageData {
-        id
-        sender
-        chatId
-        content
-        media
-        mediaType
-        isRead
-        createdAt
       }
     }
   }

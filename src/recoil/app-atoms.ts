@@ -5,4 +5,5 @@ export enum AppAtoms {
   NEW_FEED = 'NewFeed',
   My_POST = 'MyPost',
   CountNotification = 'CountNotification',
+  CountMessage = "CountMessage"
 }

@@ -1,7 +1,9 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Bubble } from 'react-native-gifted-chat';
+import { StyleSheet, Text, View } from 'react-native';
+import { Bubble, BubbleProps, IMessage } from 'react-native-gifted-chat';
 import posed, { Transition } from 'react-native-pose';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import { themeState } from '../../../recoil/theme/atoms';
 import { ThemeStatic } from '../../../theme';
 
 const TransitionBubble = posed.View({
@@ -9,16 +11,35 @@ const TransitionBubble = posed.View({
   exit: { opacity: 0.5, x: ({ offset }: any) => offset },
 });
 
-const CustomBubble: React.FC = (bubbleProps) => {
+const CustomBubble: React.FC = (bubbleProps: any) => {
+  const user = useCurrentUser();
+
   // @ts-ignore
   const {
     user: { _id: authorId },
     currentMessage: {
       user: { _id: currentId },
+      sent,
+      received
     },
   } = bubbleProps;
 
   const offset = authorId === currentId ? 20 : -20;
+
+  const renderTicks = (currentMessage: IMessage) => {
+    const tickedUser = currentMessage.user._id
+    if (tickedUser === user?.id) {
+      if (received) {
+        return (
+          <Text style={styles.tick}>✓✓</Text>
+        )
+      } else if (sent) {
+        return (
+          <Text style={styles.tick}>✓</Text>
+        )
+      }
+    }
+  }
 
   return (
     <Transition offset={offset} animateOnMount>
@@ -27,6 +48,7 @@ const CustomBubble: React.FC = (bubbleProps) => {
           {...bubbleProps}
           // @ts-ignore
           wrapperStyle={{ right: styles.right }}
+          renderTicks={renderTicks}
         />
       </TransitionBubble>
     </Transition>
@@ -36,6 +58,11 @@ const CustomBubble: React.FC = (bubbleProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  tick: {
+    fontSize: 10,
+    paddingRight: 8,
+    color: ThemeStatic.white
   },
   right: {
     marginVertical: 4,

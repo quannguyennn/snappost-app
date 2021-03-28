@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { moment } from '@ungap/global-this';
 import { OnlineDotColor, Typography } from '../../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { AppRoutes } from '../../../navigator/app-routes';
@@ -12,6 +11,7 @@ import { longPressDeleteNotification } from '../../../helpers/notifications';
 import DeleteCardRightActions from '../../../components/shared/DeleteCardRightActions';
 import NativeImage from '../../../components/shared/NativeImage';
 import type { ThemeColors } from '../../../types/theme';
+import moment from 'moment';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -26,6 +26,7 @@ interface MessageCardProps {
   seen: boolean;
   time: string | undefined;
   isOnline: boolean;
+  unseen: number;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
@@ -39,18 +40,15 @@ const MessageCard: React.FC<MessageCardProps> = ({
   seen,
   time,
   isOnline,
+  unseen
 }) => {
   const user = useCurrentUser();
   const theme = useRecoilValue(themeState);
   const parsedTime = time ? moment(time).fromNow() : '';
   const { navigate } = useNavigation();
-  // const [messageSeen] = useMutation(MUTATION_SEEN_MESSAGE);
   // const [deleteChat, { loading: deleteChatLoading, called: deleteChatCalled }] = useMutation(MUTATION_DELETE_CHAT);
 
   const setSeenAndNavigate = () => {
-    if (authorId !== user?.id) {
-      // messageSeen({ variables: { messageId } });
-    }
     navigate(AppRoutes.CONVERSATION_SCREEN, { chatId, avatar, handle, targetId: participantId });
   };
 
@@ -58,9 +56,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
   const highlightStyle = isHighlighted
     ? {
-        ...FontWeights.Regular,
-        color: theme.text01,
-      }
+      ...FontWeights.Regular,
+      color: theme.text01,
+    }
     : null;
 
   const onlineDotColor = OnlineDotColor[isOnline as any];
@@ -93,11 +91,12 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <Text style={styles(theme).handleText}>{handle} </Text>
           <View style={styles(theme).content}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={[styles(theme).messageText, highlightStyle]}>
-              {messageBody}
+              {authorId === user?.id ? "You: " : null}{messageBody}
             </Text>
             <Text style={[styles(theme).timeText, highlightStyle]}>{` · ${parsedTime}`}</Text>
           </View>
         </View>
+        {unseen ? <View style={styles(theme).unseenContainer}><Text style={{ color: theme.white }}>{unseen}</Text></View> : null}
       </TouchableOpacity>
     </Swipeable>
   );
@@ -151,6 +150,15 @@ const styles = (theme = {} as ThemeColors) =>
       ...FontSizes.Caption,
       color: theme.text02,
     },
+    unseenContainer: {
+      backgroundColor: theme.accent,
+      height: 20,
+      width: 20,
+      borderRadius: 20,
+      justifyContent: "center",
+      alignItems: "center",
+      alignSelf: "center"
+    }
   });
 
 export default MessageCard;

@@ -11,14 +11,17 @@ import { themeState, themeTypeState } from './recoil/theme/atoms';
 import { useMeLazyQuery } from './graphql/queries/me.generated';
 import LoadingIndicator from './components/shared/LoadingIndicator';
 import { isLoginState } from './recoil/auth/atoms';
-import { countNotificationState } from './recoil/app/atoms';
+import { countMessageState, countNotificationState } from './recoil/app/atoms';
 import { useCountUnSeenNotificationQuery } from './graphql/queries/countUnSeenNotification.generated';
 import { useOnNewNotificationSubscription } from './graphql/subscriptions/onNewNotification.generated';
+import { useGetChatHasUnseenMessageLazyQuery } from './graphql/queries/getChatHasUnseenMessage.generated';
+import { useOnReceiveMessageSubscription } from './graphql/subscriptions/onReceiveMessage.generated';
 
 const App = React.memo(() => {
   const [theme, setTheme] = useRecoilState(themeState);
   const [themeType, setThemeType] = useRecoilState(themeTypeState);
   const [countNoti, setCountNotification] = useRecoilState(countNotificationState);
+  const [unseenChat, setUnseenChat] = useRecoilState(countMessageState);
   const { barStyle, backgroundColor } = DynamicStatusBar[themeType];
 
   const setIsLogin = useSetRecoilState(isLoginState);
@@ -32,6 +35,13 @@ const App = React.memo(() => {
       setIsLogin(true);
     },
   });
+
+  const [getChatUnseen] = useGetChatHasUnseenMessageLazyQuery({
+    onCompleted: (res) => {
+      // @ts-ignore
+      setUnseenChat(res.getChatHasUnseenMessage)
+    }
+  })
 
   useCountUnSeenNotificationQuery({
     // pollInterval: 5000,
@@ -51,6 +61,20 @@ const App = React.memo(() => {
     },
   });
 
+  useOnReceiveMessageSubscription({
+    variables: { userId: data?.me.id ?? 0 },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.error) {
+        console.log("receive message sub", subscriptionData.error)
+      } else {
+        const chatId = subscriptionData.data?.onReceiveMessage.chatId;
+        if (!unseenChat.includes(chatId)) {
+          setUnseenChat([...unseenChat, chatId])
+        }
+      }
+    }
+  })
+
   useEffect(() => {
     getMe();
   }, [getMe]);
@@ -59,7 +83,7 @@ const App = React.memo(() => {
     try {
       const themeType = await loadThemeType();
       toggleTheme(themeType || '');
-    } catch ({ message }) {}
+    } catch ({ message }) { }
   };
 
   const initLoginState = () => {
@@ -69,6 +93,7 @@ const App = React.memo(() => {
   React.useEffect(() => {
     initializeTheme();
     initLoginState();
+    getChatUnseen();
   }, []);
 
   const toggleTheme = (type: string) => {
