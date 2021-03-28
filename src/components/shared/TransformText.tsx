@@ -111,7 +111,7 @@ const TransformText: React.FC<TransformTextProps> = ({ text, username }) => {
       style={{
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
         flexWrap: 'wrap',
       }}>
       <Text style={{ ...FontWeights.Regular, ...FontSizes.Body, color: theme.text01, marginRight: 4 }}>{username}</Text>

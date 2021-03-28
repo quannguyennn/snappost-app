@@ -107,6 +107,7 @@ const styles = (theme = {} as ThemeColors) =>
     container: {
       flexDirection: 'row',
       borderRadius: 5,
+      marginBottom: 16
     },
     avatar: {
       height: 50,

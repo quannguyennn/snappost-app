@@ -18,7 +18,6 @@ import {
   tryAgainLaterNotification,
   userBlockedNotification,
 } from '../../helpers/notifications';
-import { sortPostsAscendingTime } from '../../utils/shared';
 import ProfileCard from '../../components/shared/ProfileCard';
 import PostThumbnail from '../../components/shared/PostThumbnail';
 import ListEmptyComponent from '../../components/shared/ListEmptyComponent';
@@ -226,8 +225,6 @@ const ProfileViewScreen: React.FC = () => {
     );
   };
 
-  console.log(data?.getUserInfo?.isBlockMe);
-
   let content = <ProfileScreenPlaceholder viewMode />;
 
   if (!loading && !error && !loadingPost) {
@@ -249,8 +246,8 @@ const ProfileViewScreen: React.FC = () => {
               data?.getUserInfo?.followStatus === 'ACCEPT' ? (
                 <ListEmptyComponent listType="posts" spacing={30} />
               ) : (
-                <ListEmptyComponent listType="posts" spacing={30} private />
-              )
+                  <ListEmptyComponent listType="posts" spacing={30} private />
+                )
             }
             style={styles().postGrid}
             showsVerticalScrollIndicator={false}

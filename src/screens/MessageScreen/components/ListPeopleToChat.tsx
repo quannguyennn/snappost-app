@@ -46,10 +46,15 @@ const ListPeopleToChat: React.FC = () => {
   const [getExist] = useGetExistChatLazyQuery({
     fetchPolicy: 'network-only',
     onCompleted: (res) => {
-      console.log(res);
+      console.log(res.getExistChat)
       if (res.getExistChat) {
         const [participant] = filterChatParticipants(user?.id ?? 0, res.getExistChat.participantInfo);
-
+        // console.log({
+        //   chatId: res.getExistChat.id,
+        //   avatar: participant.avatarFilePath,
+        //   handle: participant.name,
+        //   targetId: participant.id,
+        // })
         navigate(AppRoutes.CONVERSATION_SCREEN, {
           chatId: res.getExistChat.id,
           avatar: participant.avatarFilePath,
@@ -88,7 +93,7 @@ const ListPeopleToChat: React.FC = () => {
         const isOnline = isUserOnline(lastSeen);
         const onlineDotColor = OnlineDotColor[isOnline as any];
         return (
-          <TouchableOpacity onPress={() => handleChose(id)} style={{ width: 50 }} activeOpacity={0.95}>
+          <TouchableOpacity onPress={() => handleChose(id)} style={{ width: 50, marginRight: 20 }} activeOpacity={0.95}>
             <View style={styles().avatar}>
               <NativeImage uri={avatarFilePath ?? ''} style={styles(theme).avatarImage} />
               <View style={[styles().onlineDot, { backgroundColor: onlineDotColor }]} />
