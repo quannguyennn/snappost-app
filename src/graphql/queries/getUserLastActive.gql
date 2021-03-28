@@ -1,0 +1,6 @@
+query getUserLasActive($id: Float!) {
+  getUserInfo(id: $id) {
+    id
+    lastSeen
+  }
+}

@@ -22,7 +22,7 @@ import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigat
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { themeState } from '../../recoil/theme/atoms';
-import { transformMessages } from '../../utils/shared';
+import { isUserOnline, transformMessages } from '../../utils/shared';
 import ConversationScreenPlaceholder from '../../components/placeholders/ConversationScreen.Placeholder';
 import { AppRoutes } from '../../navigator/app-routes';
 import { GetMessageQueryResponse, useGetMessageLazyQuery } from '../../graphql/queries/getMessage.generated';
@@ -42,6 +42,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { MediaType, NewMessageInput } from '../../graphql/type.interface';
 import { useOnSeenMessageSubscription } from '../../graphql/subscriptions/onSeenMessage.generated';
 import { countMessageState } from '../../recoil/app/atoms';
+import { useGetUserLasActiveQuery } from '../../graphql/queries/getUserLastActive.generated';
+import moment from 'moment';
 
 const ConversationScreen: React.FC = () => {
   const {
@@ -54,6 +56,15 @@ const ConversationScreen: React.FC = () => {
   const user = useCurrentUser();
   const theme = useRecoilValue(themeState);
   const [unseenChat, setUnseenChat] = useRecoilState(countMessageState);
+
+  const { data, loading: onlineLoading } = useGetUserLasActiveQuery({
+    pollInterval: 2000,
+    variables: { id: targetId },
+    fetchPolicy: "network-only",
+    onCompleted: (res) => {
+      console.log(res)
+    }
+  })
 
   const [messages, setMessages] = useState<GetMessageQueryResponse['getMessage']['items']>([]);
   const [loadEarlier, setLoadEarlier] = useState(false);
@@ -189,14 +200,16 @@ const ConversationScreen: React.FC = () => {
   });
 
   useEffect(() => {
-    queryChat({
-      variables: {
-        chatId,
-        limit: 20,
-        page: 1,
-      },
-    });
-  }, [chatId, queryChat]);
+    if (init) {
+      queryChat({
+        variables: {
+          chatId,
+          limit: 20,
+          page: 1,
+        },
+      });
+    }
+  }, [chatId, queryChat, init]);
 
   const onSend = async (updatedMessages: any) => {
     const [updatedMessage] = updatedMessages;
@@ -242,12 +255,32 @@ const ConversationScreen: React.FC = () => {
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId: targetId });
   };
 
-  let content = init ? <ConversationScreenPlaceholder /> : null
+  const transform = transformMessages(messages)
 
-  if (!init) {
-    const transform = transformMessages(messages);
+  const albumRef = useRef(null);
 
-    content = (
+  const handleSelectImage = async (index: number) => {
+    if (index !== selectedIndex) {
+      setSelectedIndex(index);
+    } else {
+      setSelectedIndex(-1);
+    }
+
+  };
+
+  return (
+    <View style={styles(theme).container}>
+      <GoBackHeader
+        title={handle}
+        onTitlePress={navigateToProfile}
+        iconSize={IconSizes.x7}
+        ContentLeft={() => <ChatHeaderAvatar isOnline={isUserOnline(data?.getUserInfo?.lastSeen)}
+          avatar={avatar} onPress={navigateToProfile} />}
+        titleStyle={styles().headerTitleStyle}
+        notSpaceBetween
+        subTitle={isUserOnline(data?.getUserInfo?.lastSeen) ? "Active" : moment(data?.getUserInfo?.lastSeen).fromNow()}
+      />
+      {init && chatQueryLoading ? <ConversationScreenPlaceholder /> : null}
       <GiftedChat
         isTyping
         scrollToBottom
@@ -296,31 +329,6 @@ const ConversationScreen: React.FC = () => {
           },
         }}
       />
-    );
-  }
-
-  const albumRef = useRef(null);
-
-  const handleSelectImage = async (index: number) => {
-    if (index !== selectedIndex) {
-      setSelectedIndex(index);
-    } else {
-      setSelectedIndex(-1);
-    }
-
-  };
-
-  return (
-    <View style={styles(theme).container}>
-      <GoBackHeader
-        title={handle}
-        onTitlePress={navigateToProfile}
-        iconSize={IconSizes.x7}
-        ContentLeft={() => <ChatHeaderAvatar avatar={avatar} onPress={navigateToProfile} />}
-        titleStyle={styles().headerTitleStyle}
-        notSpaceBetween
-      />
-      {content}
       {
         openMedia ? <View style={{ flex: 0.7, marginTop: 10, backgroundColor: theme.base }}>
           <Modalize ref={albumRef}

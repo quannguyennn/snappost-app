@@ -18,6 +18,7 @@ interface GoBackHeaderProps {
   titleStyle?: StyleProp<TextStyle>;
   RightComponent?: React.FC;
   notSpaceBetween?: boolean;
+  subTitle?: string
 }
 
 const GoBackHeader: React.FC<GoBackHeaderProps> = ({
@@ -29,6 +30,7 @@ const GoBackHeader: React.FC<GoBackHeaderProps> = ({
   titleStyle,
   RightComponent,
   notSpaceBetween = false,
+  subTitle
 }) => {
   const theme = useRecoilValue(themeState);
   const { goBack } = useNavigation();
@@ -38,11 +40,17 @@ const GoBackHeader: React.FC<GoBackHeaderProps> = ({
     <View style={[styles(theme).container, notSpaceBetween ? { justifyContent: 'flex-start' } : {}]}>
       <Entypo onPress={navigateBack} name="chevron-thin-left" size={iconSize} color={theme.text01} />
       {ContentLeft && <ContentLeft />}
-      {title && (
-        <Text onPress={onTitlePress} style={[styles(theme).title, titleStyle]}>
-          {title}
-        </Text>
-      )}
+      <View>
+        {title && (
+          <Text onPress={onTitlePress} style={[styles(theme).title, titleStyle]}>
+            {title}
+          </Text>
+        )}
+        {subTitle && (
+          <Text style={{ color: theme.text02, ...FontSizes.Caption }}>{subTitle}</Text>
+        )}
+      </View>
+
       {IconRight && (
         <View style={{ alignSelf: 'flex-end' }}>
           <IconRight />

@@ -24,6 +24,7 @@ import UserRowPlaceholder from '../../components/placeholders/UserRow.Placeholde
 const MessageScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
   const user = useCurrentUser();
+  const isFocus = useIsFocused();
 
   const [refresh, setRefresh] = useState(false);
   const [init, setInit] = useState(true);
@@ -73,11 +74,11 @@ const MessageScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    if (refresh || init) {
+    if (refresh || init || isFocus) {
       queryChats({ variables: { limit: 20, page: 1 } });
     }
     setInit(false);
-  }, [queryChats, refresh, init]);
+  }, [queryChats, refresh, init, isFocus]);
 
   const renderItem = ({ item }) => {
     const { id: chatId, participantInfo, lastMessageData, unseenMessage } = item;

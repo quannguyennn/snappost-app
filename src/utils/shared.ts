@@ -6,6 +6,7 @@ import type { ExplorePost } from '../types/utils';
 import { Timeouts } from './constants';
 import { MediaType, Message } from '../graphql/type.interface';
 import type { IMessage } from 'react-native-gifted-chat';
+import moment from 'moment';
 
 export const getImageFromLibrary = async (height: number, width: number, circular: boolean = false) => {
   const options: Options = {
@@ -106,8 +107,7 @@ export const convertToNormalVideoUri = (media: PhotoIdentifier): string => {
 };
 
 export const isUserOnline = (lastSeen: number) => {
-  const now = Date.now() / 1000;
-  return now - lastSeen < Timeouts.online;
+  return moment().subtract(Timeouts.online, "seconds").isBefore(moment(lastSeen));
 };
 
 export const filterChatParticipants = (userId: number, participants: any[]) =>
