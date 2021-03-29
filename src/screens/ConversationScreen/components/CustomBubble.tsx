@@ -20,26 +20,22 @@ const CustomBubble: React.FC = (bubbleProps: any) => {
     currentMessage: {
       user: { _id: currentId },
       sent,
-      received
+      received,
     },
   } = bubbleProps;
 
   const offset = authorId === currentId ? 20 : -20;
 
   const renderTicks = (currentMessage: IMessage) => {
-    const tickedUser = currentMessage.user._id
+    const tickedUser = currentMessage.user._id;
     if (tickedUser === user?.id) {
       if (received) {
-        return (
-          <Text style={styles.tick}>✓✓</Text>
-        )
+        return <Text style={styles.tick}>✓✓</Text>;
       } else if (sent) {
-        return (
-          <Text style={styles.tick}>✓</Text>
-        )
+        return <Text style={styles.tick}>✓</Text>;
       }
     }
-  }
+  };
 
   return (
     <Transition offset={offset} animateOnMount>
@@ -62,7 +58,7 @@ const styles = StyleSheet.create({
   tick: {
     fontSize: 10,
     paddingRight: 8,
-    color: ThemeStatic.white
+    color: ThemeStatic.white,
   },
   right: {
     marginVertical: 4,
