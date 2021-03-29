@@ -44,7 +44,7 @@ const App = React.memo(() => {
   });
 
   useCountUnSeenNotificationQuery({
-    // pollInterval: 5000,
+    pollInterval: 5000,
     fetchPolicy: 'network-only',
     onCompleted: (res) => {
       setCountNotification(res.countUnSeenNotification);
@@ -54,6 +54,7 @@ const App = React.memo(() => {
   useOnNewNotificationSubscription({
     variables: { userId: data?.me.id ?? 0 },
     onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData);
       if (subscriptionData.error) {
         console.log('delete comment sub', subscriptionData.error);
       } else {

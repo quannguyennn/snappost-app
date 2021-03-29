@@ -114,7 +114,7 @@ const TransformText: React.FC<TransformTextProps> = ({ text, username }) => {
         alignItems: 'flex-start',
         flexWrap: 'wrap',
       }}>
-      <Text style={{ ...FontWeights.Regular, ...FontSizes.Body, color: theme.text01, marginRight: 4 }}>{username}</Text>
+      {/* <Text style={{ ...FontWeights.Regular, ...FontSizes.Body, color: theme.text01, marginRight: 4 }}>{username}</Text> */}
 
       {elements.map((item) => item)}
     </View>
