@@ -39,12 +39,13 @@ const App = React.memo(() => {
   const [getChatUnseen] = useGetChatHasUnseenMessageLazyQuery({
     onCompleted: (res) => {
       // @ts-ignore
-      setUnseenChat(res.getChatHasUnseenMessage)
-    }
-  })
+      setUnseenChat(res.getChatHasUnseenMessage);
+    },
+  });
 
   useCountUnSeenNotificationQuery({
     // pollInterval: 5000,
+    fetchPolicy: 'network-only',
     onCompleted: (res) => {
       setCountNotification(res.countUnSeenNotification);
     },
@@ -65,15 +66,15 @@ const App = React.memo(() => {
     variables: { userId: data?.me.id ?? 0 },
     onSubscriptionData: ({ subscriptionData }) => {
       if (subscriptionData.error) {
-        console.log("receive message sub", subscriptionData.error)
+        console.log('receive message sub', subscriptionData.error);
       } else {
         const chatId = subscriptionData.data?.onReceiveMessage.chatId;
         if (!unseenChat.includes(chatId)) {
-          setUnseenChat([...unseenChat, chatId])
+          setUnseenChat([...unseenChat, chatId]);
         }
       }
-    }
-  })
+    },
+  });
 
   useEffect(() => {
     getMe();
@@ -83,7 +84,7 @@ const App = React.memo(() => {
     try {
       const themeType = await loadThemeType();
       toggleTheme(themeType || '');
-    } catch ({ message }) { }
+    } catch ({ message }) {}
   };
 
   const initLoginState = () => {

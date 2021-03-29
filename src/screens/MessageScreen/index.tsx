@@ -19,7 +19,6 @@ import type { ThemeColors } from '../../types/theme';
 import { GetChatsQueryResponse, useGetChatsLazyQuery } from '../../graphql/queries/getChats.generated';
 import ListPeopleToChat from './components/ListPeopleToChat';
 import GoBackHeader from '../../components/shared/layout/headers/GoBackHeader';
-import UserRowPlaceholder from '../../components/placeholders/UserRow.Placeholder';
 
 const MessageScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
@@ -39,7 +38,7 @@ const MessageScreen: React.FC = () => {
       if (refresh) {
         setRefresh(false);
       }
-      setInit(false)
+      setInit(false);
     },
   });
 
@@ -77,14 +76,12 @@ const MessageScreen: React.FC = () => {
     if (refresh || init || isFocus) {
       queryChats({ variables: { limit: 20, page: 1 } });
     }
-    setInit(false);
   }, [queryChats, refresh, init, isFocus]);
 
   const renderItem = ({ item }) => {
     const { id: chatId, participantInfo, lastMessageData, unseenMessage } = item;
     const [participant] = filterChatParticipants(user?.id ?? 0, participantInfo);
     const { id, avatarFilePath, name, lastSeen } = participant;
-
 
     const isOnline = isUserOnline(lastSeen);
     return (
@@ -104,40 +101,37 @@ const MessageScreen: React.FC = () => {
     );
   };
 
+  console.log(loading && init);
+
   return (
     <View style={styles(theme).container}>
-      <GoBackHeader
-        title="Messages"
-        notSpaceBetween
-        iconSize={IconSizes.x7}
-      />
+      <GoBackHeader title="Messages" notSpaceBetween iconSize={IconSizes.x7} />
       {/* <SearchBar value={chatSearch} onChangeText={setChatSearch} placeholder="Search for chats..." /> */}
 
       {loading && init ? (
         <MessageScreenPlaceholder />
       ) : (
-          <FlatList
-            onRefresh={() => {
-              setRefresh(true);
-            }}
-            ListHeaderComponent={<ListPeopleToChat />
-            }
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-            showsVerticalScrollIndicator={false}
-            data={data}
-            ListEmptyComponent={() => (
-              <SvgBanner Svg={<Image source={Images.emptyMessage} />} spacing={16} placeholder="No messages" />
-            )}
-            style={styles().messagesList}
-            renderItem={renderItem}
-            refreshing={refresh}
-            onEndReached={() => {
-              loadMore();
-            }}
-            onEndReachedThreshold={0.1}
-          />
-        )}
+        <FlatList
+          onRefresh={() => {
+            setRefresh(true);
+          }}
+          ListHeaderComponent={<ListPeopleToChat />}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          showsVerticalScrollIndicator={false}
+          data={data}
+          ListEmptyComponent={() => (
+            <SvgBanner Svg={<Image source={Images.emptyMessage} />} spacing={16} placeholder="No messages" />
+          )}
+          style={styles().messagesList}
+          renderItem={renderItem}
+          refreshing={refresh}
+          onEndReached={() => {
+            loadMore();
+          }}
+          onEndReachedThreshold={0.1}
+        />
+      )}
     </View>
   );
 };

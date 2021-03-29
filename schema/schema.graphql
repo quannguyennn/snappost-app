@@ -128,6 +128,7 @@ type Post implements Node {
   medias: [Float!]
   caption: String
   rawCaption: String
+  actualLike: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
   totalLike: Float!
@@ -274,6 +275,7 @@ type Mutation {
   createChat(participants: [Float!]!): Chat!
   deleteChat(id: Float!): Float!
   sendMessage(input: NewMessageInput!): Message!
+  setSeenMessage(chatId: Float!): Boolean!
 }
 
 input UpdateUserInput {

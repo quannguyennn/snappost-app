@@ -44,6 +44,7 @@ import { useOnSeenMessageSubscription } from '../../graphql/subscriptions/onSeen
 import { countMessageState } from '../../recoil/app/atoms';
 import { useGetUserLasActiveQuery } from '../../graphql/queries/getUserLastActive.generated';
 import moment from 'moment';
+import { useSetSeenMessageMutation } from '../../graphql/mutations/setSeenMessage.generated';
 
 const ConversationScreen: React.FC = () => {
   const {
@@ -60,11 +61,11 @@ const ConversationScreen: React.FC = () => {
   const { data, loading: onlineLoading } = useGetUserLasActiveQuery({
     pollInterval: 2000,
     variables: { id: targetId },
-    fetchPolicy: "network-only",
+    fetchPolicy: 'network-only',
     onCompleted: (res) => {
-      console.log(res)
-    }
-  })
+      console.log(res);
+    },
+  });
 
   const [messages, setMessages] = useState<GetMessageQueryResponse['getMessage']['items']>([]);
   const [loadEarlier, setLoadEarlier] = useState(false);
@@ -72,7 +73,7 @@ const ConversationScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [medias, setMedias] = useState<PhotoIdentifier[]>([]);
   const [page, setPage] = useState(1);
-  const [openMedia, setOpenMedia] = useState(false)
+  const [openMedia, setOpenMedia] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [init, setInit] = useState(true);
 
@@ -116,7 +117,7 @@ const ConversationScreen: React.FC = () => {
       setMessages(res.getMessage.items ?? []);
       setLoadEarlier(false);
       setInit(false);
-      setUnseenChat([...unseenChat].filter(item => item !== chatId))
+      setUnseenChat([...unseenChat].filter((item) => item !== chatId));
     },
     onError: (err) => {
       console.log('list message', err);
@@ -153,7 +154,6 @@ const ConversationScreen: React.FC = () => {
     }
   };
 
-
   useOnNewMessageSubscription({
     variables: { chatId },
     onSubscriptionData: ({ subscriptionData }) => {
@@ -164,11 +164,14 @@ const ConversationScreen: React.FC = () => {
           // @ts-ignore
           setMessages([subscriptionData.data?.onNewMessage, ...messages]);
         } else {
-          const index = messages?.findIndex(item => item.tempId === subscriptionData.data?.onNewMessage?.tempId);
+          const index = messages?.findIndex((item) => item.tempId === subscriptionData.data?.onNewMessage?.tempId);
           if (index !== -1) {
             const temp = [...messages];
             temp[index ?? 0].sent = true;
-            setMessages(temp)
+            setMessages(temp);
+          }
+          if (subscriptionData.data?.onNewMessage.sender !== user?.id) {
+            seenMessage({ variables: { chatId } });
           }
         }
       }
@@ -182,22 +185,24 @@ const ConversationScreen: React.FC = () => {
         console.log('on seen Message', subscriptionData.error);
       } else {
         const seenId = subscriptionData.data?.onSeenMessage.userId;
-        const temp = [...messages].map(item => {
+        const temp = [...messages].map((item) => {
           if (item.senderInfo.id !== seenId) {
-            return { ...item, received: true }
+            return { ...item, received: true };
           }
-          return item
+          return item;
         });
-        setMessages(temp)
+        setMessages(temp);
       }
-    }
-  })
+    },
+  });
 
   const [addMessage] = useSendMessageMutation({
     onError: (err) => {
-      console.log("send message", err)
+      console.log('send message', err);
     },
   });
+
+  const [seenMessage] = useSetSeenMessageMutation();
 
   useEffect(() => {
     if (init) {
@@ -220,33 +225,33 @@ const ConversationScreen: React.FC = () => {
       senderInfo: {
         id: user?.id ?? 0,
         name: user?.name,
-        avatarFilePath: user?.avatarFilePath ?? ""
+        avatarFilePath: user?.avatarFilePath ?? '',
       },
       media: selectedIndex !== -1 ? medias[selectedIndex].node.image.uri : null,
       mediaType: selectedIndex !== -1 ? MediaType.IMAGE : null,
       sent: false,
       received: false,
       pending: false,
-      tempId: updatedMessage._id
-    }
-    setMessages([newMessage, ...messages])
-    setSelectedIndex(-1)
+      tempId: updatedMessage._id,
+    };
+    setMessages([newMessage, ...messages]);
+    setSelectedIndex(-1);
 
     const input: NewMessageInput = {
       chatId,
       content: updatedMessage.text,
-      tempId: updatedMessage._id
-    }
+      tempId: updatedMessage._id,
+    };
 
     if (selectedIndex !== -1) {
       const resMedia = await upload(medias[selectedIndex].node.image);
-      input.media = resMedia.filePath
-      input.mediaType = MediaType.IMAGE
+      input.media = resMedia.filePath;
+      input.mediaType = MediaType.IMAGE;
     }
 
     addMessage({
       variables: {
-        input
+        input,
       },
     });
   };
@@ -255,7 +260,7 @@ const ConversationScreen: React.FC = () => {
     navigate(AppRoutes.PROFILE_VIEW_SCREEN, { userId: targetId });
   };
 
-  const transform = transformMessages(messages)
+  const transform = transformMessages(messages);
 
   const albumRef = useRef(null);
 
@@ -265,7 +270,6 @@ const ConversationScreen: React.FC = () => {
     } else {
       setSelectedIndex(-1);
     }
-
   };
 
   return (
@@ -274,11 +278,16 @@ const ConversationScreen: React.FC = () => {
         title={handle}
         onTitlePress={navigateToProfile}
         iconSize={IconSizes.x7}
-        ContentLeft={() => <ChatHeaderAvatar isOnline={isUserOnline(data?.getUserInfo?.lastSeen)}
-          avatar={avatar} onPress={navigateToProfile} />}
+        ContentLeft={() => (
+          <ChatHeaderAvatar
+            isOnline={isUserOnline(data?.getUserInfo?.lastSeen)}
+            avatar={avatar}
+            onPress={navigateToProfile}
+          />
+        )}
         titleStyle={styles().headerTitleStyle}
         notSpaceBetween
-        subTitle={isUserOnline(data?.getUserInfo?.lastSeen) ? "Active" : moment(data?.getUserInfo?.lastSeen).fromNow()}
+        subTitle={isUserOnline(data?.getUserInfo?.lastSeen) ? 'Active' : moment(data?.getUserInfo?.lastSeen).fromNow()}
       />
       {init && chatQueryLoading ? <ConversationScreenPlaceholder /> : null}
       <GiftedChat
@@ -329,17 +338,16 @@ const ConversationScreen: React.FC = () => {
           },
         }}
       />
-      {
-        openMedia ? <View style={{ flex: 0.7, marginTop: 10, backgroundColor: theme.base }}>
-          <Modalize ref={albumRef}
+      {openMedia ? (
+        <View style={{ flex: 0.7, marginTop: 10, backgroundColor: theme.base }}>
+          <Modalize
+            ref={albumRef}
             scrollViewProps={{ showsVerticalScrollIndicator: false }}
             modalStyle={styles(theme).pickerContainer}
             onClose={() => {
               setOpenMedia(false);
-              setSelectedIndex(-1)
-            }
-            }
-          >
+              setSelectedIndex(-1);
+            }}>
             <FlatList
               data={medias}
               style={{ flex: 1 }}
@@ -356,20 +364,19 @@ const ConversationScreen: React.FC = () => {
                     handleSelectImage(index);
                   }}>
                   <Image source={{ uri: item.node.image.uri }} style={{ height: '100%', width: '100%' }} />
-                  {
-                    openMedia && selectedIndex !== -1 && index === selectedIndex ? <View style={styles(theme).selectedContainer}>
+                  {openMedia && selectedIndex !== -1 && index === selectedIndex ? (
+                    <View style={styles(theme).selectedContainer}>
                       <View style={styles(theme).selectedCircle}>
                         <Entypo name="check" size={IconSizes.x4} color={ThemeStatic.white} />
                       </View>
                     </View>
-                      : null}
+                  ) : null}
                 </TouchableOpacity>
               )}
             />
           </Modalize>
-        </View> : null
-      }
-
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -384,7 +391,7 @@ const styles = (theme = {} as ThemeColors) =>
       marginTop: 16,
       backgroundColor: theme.base,
       paddingVertical: 10,
-      flex: 1
+      flex: 1,
     },
     headerTitleStyle: {
       marginLeft: 0,
@@ -394,30 +401,29 @@ const styles = (theme = {} as ThemeColors) =>
       borderRadius: 20,
       aspectRatio: 1,
       borderWidth: 1,
-      borderColor: theme.base
+      borderColor: theme.base,
     },
-    content: {
-    },
+    content: {},
     selectedContainer: {
-      position: "absolute",
+      position: 'absolute',
       top: 0,
       left: 0,
-      width: "100%",
-      height: "100%",
+      width: '100%',
+      height: '100%',
       backgroundColor: theme.base,
       opacity: 0.7,
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 99
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 99,
     },
     selectedCircle: {
       backgroundColor: theme.accent,
       padding: 6,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       zIndex: 100,
-      borderRadius: 100
-    }
+      borderRadius: 100,
+    },
   });
 
 export default ConversationScreen;

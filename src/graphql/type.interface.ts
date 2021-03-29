@@ -147,6 +147,7 @@ export type Post = Node & {
   medias?: Maybe<Array<Scalars['Float']>>;
   caption?: Maybe<Scalars['String']>;
   rawCaption?: Maybe<Scalars['String']>;
+  actualLike: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   totalLike: Scalars['Float'];
@@ -391,6 +392,7 @@ export type Mutation = {
   createChat: Chat;
   deleteChat: Scalars['Float'];
   sendMessage: Message;
+  setSeenMessage: Scalars['Boolean'];
 };
 
 export type MutationUpdateUserInfoArgs = {
@@ -489,6 +491,10 @@ export type MutationDeleteChatArgs = {
 
 export type MutationSendMessageArgs = {
   input: NewMessageInput;
+};
+
+export type MutationSetSeenMessageArgs = {
+  chatId: Scalars['Float'];
 };
 
 export type UpdateUserInput = {

@@ -1,0 +1,3 @@
+mutation setSeenMessage($chatId: Float!) {
+  setSeenMessage(chatId: $chatId)
+}
