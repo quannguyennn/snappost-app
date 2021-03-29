@@ -101,8 +101,6 @@ const MessageScreen: React.FC = () => {
     );
   };
 
-  console.log(loading && init);
-
   return (
     <View style={styles(theme).container}>
       <GoBackHeader title="Messages" notSpaceBetween iconSize={IconSizes.x7} />
