@@ -27,7 +27,7 @@ const ListPeopleToChat: React.FC = () => {
   const { data, loading } = useGetFollowingUserQuery({
     fetchPolicy: 'network-only',
     pollInterval: 2000,
-    onCompleted: (res) => { }
+    onCompleted: (res) => {},
   });
 
   const [createTemporaryChat] = useCreateChatMutation({
@@ -46,7 +46,6 @@ const ListPeopleToChat: React.FC = () => {
   const [getExist] = useGetExistChatLazyQuery({
     fetchPolicy: 'network-only',
     onCompleted: (res) => {
-      console.log(res.getExistChat)
       if (res.getExistChat) {
         const [participant] = filterChatParticipants(user?.id ?? 0, res.getExistChat.participantInfo);
         // console.log({
@@ -81,7 +80,6 @@ const ListPeopleToChat: React.FC = () => {
   };
 
   return (
-
     <FlatList
       data={data?.getFollowingUser}
       keyExtractor={(item) => item.id.toString()}
@@ -105,10 +103,6 @@ const ListPeopleToChat: React.FC = () => {
         );
       }}
     />
-
-
-
-
   );
 };
 

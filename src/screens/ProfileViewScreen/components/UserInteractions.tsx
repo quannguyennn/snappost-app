@@ -11,6 +11,10 @@ import { IconSizes } from '../../../theme/Icon';
 import type { FollowStatus, Maybe } from '../../../graphql/type.interface';
 import { useFollowUserMutation } from '../../../graphql/mutations/FollowUser.generated';
 import { useUnFollowUserMutation } from '../../../graphql/mutations/UnFollowUser.generated';
+import { useGetExistChatLazyQuery } from '../../../graphql/queries/getExistChat.generated';
+import { useCreateChatMutation } from '../../../graphql/mutations/createChat.generated';
+import { tryAgainLaterNotification } from '../../../helpers/notifications';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
 
 const { FontWeights, FontSizes } = Typography;
 
@@ -18,11 +22,14 @@ interface UserInteractionsProps {
   targetId: number;
   isFollow: Maybe<FollowStatus> | undefined;
   onInteract: () => void;
+  name?: string;
+  avatar?: string;
 }
 
-const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow, onInteract }) => {
+const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow, onInteract, name, avatar }) => {
   const { navigate } = useNavigation();
   const theme = useRecoilValue(themeState);
+  const user = useCurrentUser();
 
   const [follow, { loading: followLoading }] = useFollowUserMutation({
     onCompleted: () => {
@@ -32,6 +39,38 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow,
   const [unFollow, { loading: unFollowLoading }] = useUnFollowUserMutation({
     onCompleted: () => {
       onInteract();
+    },
+  });
+
+  const [createTemporaryChat] = useCreateChatMutation({
+    onCompleted: (res) => {
+      navigate(AppRoutes.CONVERSATION_SCREEN, {
+        chatId: res.createChat.id,
+        avatar,
+        handle: name,
+        targetId,
+      });
+    },
+  });
+
+  const [getExist] = useGetExistChatLazyQuery({
+    fetchPolicy: 'network-only',
+    onCompleted: (res) => {
+      console.log(res.getExistChat);
+      if (res.getExistChat) {
+        navigate(AppRoutes.CONVERSATION_SCREEN, {
+          chatId: res.getExistChat.id,
+          avatar,
+          handle: name,
+          targetId,
+        });
+      } else {
+        createTemporaryChat({ variables: { participants: [targetId, user?.id ?? 0] } });
+      }
+    },
+    onError: (err) => {
+      console.log('exist chat', err);
+      tryAgainLaterNotification();
     },
   });
 
@@ -57,35 +96,25 @@ const UserInteractions: React.FC<UserInteractionsProps> = ({ targetId, isFollow,
     }
   };
 
-  // const messageInteraction = async () => {
-  //   try {
-  //     const { data: { chatExists } } = await client.query({
-  //       query: QUERY_CHAT_EXISTS,
-  //       variables: { userId: user.id, targetId },
-  //       fetchPolicy: 'no-cache'
-  //     });
-
-  //     if (chatExists) {
-  //       navigate(AppRoutes.ConversationScreen, { chatId: chatExists.id, avatar, name, targetId });
-  //     } else {
-  //       const { data } = await createTemporaryChat();
-  //       navigate(AppRoutes.ConversationScreen, { chatId: data.createTemporaryChat.id, avatar, name, targetId });
-  //     }
-  //   } catch ({ message }) {
-  //     tryAgainLaterNotification();
-  //     // crashlytics.recordCustomError(Errors.INITIALIZE_CHAT, message);
-  //   }
-  // };
+  const messageInteraction = async () => {
+    try {
+      getExist({
+        variables: {
+          participants: [targetId, user?.id ?? 0],
+        },
+      });
+    } catch ({ message }) {
+      tryAgainLaterNotification();
+      // crashlytics.recordCustomError(Errors.INITIALIZE_CHAT, message);
+    }
+  };
 
   return (
     <View style={styles().container}>
       <TouchableOpacity activeOpacity={0.9} onPress={followInteraction} style={styles(theme).followInteraction}>
         {content}
       </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.9}
-        // onPress={messageInteraction}
-        style={styles(theme).messageInteraction}>
+      <TouchableOpacity activeOpacity={0.9} onPress={messageInteraction} style={styles(theme).messageInteraction}>
         <Text style={styles(theme).messageInteractionText}>MESSAGE</Text>
       </TouchableOpacity>
     </View>

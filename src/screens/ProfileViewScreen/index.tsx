@@ -205,7 +205,13 @@ const ProfileViewScreen: React.FC = () => {
           name={name}
           nickname={nickname}
           renderInteractions={() => (
-            <UserInteractions isFollow={followStatus} targetId={id ?? 0} onInteract={() => setUpdate(true)} />
+            <UserInteractions
+              name={name}
+              avatar={avatarFilePath ?? ''}
+              isFollow={followStatus}
+              targetId={id ?? 0}
+              onInteract={() => setUpdate(true)}
+            />
           )}
           about={intro}
         />
@@ -246,8 +252,8 @@ const ProfileViewScreen: React.FC = () => {
               data?.getUserInfo?.followStatus === 'ACCEPT' ? (
                 <ListEmptyComponent listType="posts" spacing={30} />
               ) : (
-                  <ListEmptyComponent listType="posts" spacing={30} private />
-                )
+                <ListEmptyComponent listType="posts" spacing={30} private />
+              )
             }
             style={styles().postGrid}
             showsVerticalScrollIndicator={false}
