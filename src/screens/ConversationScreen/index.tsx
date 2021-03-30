@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Keyboard,
   PermissionsAndroid,
   Platform,
   StyleSheet,
@@ -58,7 +59,7 @@ const ConversationScreen: React.FC = () => {
   const theme = useRecoilValue(themeState);
   const [unseenChat, setUnseenChat] = useRecoilState(countMessageState);
 
-  const { data, loading: onlineLoading } = useGetUserLasActiveQuery({
+  const { data } = useGetUserLasActiveQuery({
     pollInterval: 2000,
     variables: { id: targetId },
     fetchPolicy: 'network-only',
@@ -70,12 +71,25 @@ const ConversationScreen: React.FC = () => {
   const [messages, setMessages] = useState<GetMessageQueryResponse['getMessage']['items']>([]);
   const [loadEarlier, setLoadEarlier] = useState(false);
 
-  const [loading, setLoading] = useState(false);
   const [medias, setMedias] = useState<PhotoIdentifier[]>([]);
   const [page, setPage] = useState(1);
   const [openMedia, setOpenMedia] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [init, setInit] = useState(true);
+  const [isKeyboard, setIsKeyboard] = useState(false);
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardWillShow', keyboardShow);
+    Keyboard.addListener('keyboardDidHide', keyboardHide);
+
+    return () => {
+      Keyboard.removeListener('keyboardWillShow', keyboardShow);
+      Keyboard.removeListener('keyboardDidHide', keyboardHide);
+    };
+  }, []);
+
+  const keyboardShow = () => setIsKeyboard(true);
+  const keyboardHide = () => setIsKeyboard(false);
 
   async function hasAndroidPermission() {
     const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -91,22 +105,36 @@ const ConversationScreen: React.FC = () => {
 
   useEffect(() => {
     if (openMedia) {
-      //@ts-ignore
-      albumRef?.current?.open();
+      setTimeout(() => {
+        //@ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        albumRef?.current?.open();
+      }, 100);
+
       const getMedia = async () => {
-        setLoading(true);
         if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
           noPermissionNotification();
           return;
         }
         CameraRoll.getPhotos({ first: page * 50, assetType: 'Photos' }).then((res) => {
           setMedias(res.edges);
-          setLoading(false);
         });
       };
       getMedia();
     }
   }, [isFocused, page, openMedia]);
+
+  useEffect(() => {
+    if (openMedia && !isKeyboard) {
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        albumRef?.current?.open();
+      }, 100);
+    } else if (openMedia && isKeyboard) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      albumRef?.current?.close();
+    }
+  }, [openMedia, isKeyboard]);
 
   const [
     queryChat,
@@ -338,7 +366,7 @@ const ConversationScreen: React.FC = () => {
           },
         }}
       />
-      {openMedia ? (
+      {openMedia && !isKeyboard ? (
         <View style={{ flex: 0.7, marginTop: 10, backgroundColor: theme.base }}>
           <Modalize
             ref={albumRef}

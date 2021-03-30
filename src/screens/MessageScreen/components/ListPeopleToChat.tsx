@@ -84,7 +84,7 @@ const ListPeopleToChat: React.FC = () => {
       data={data?.getFollowingUser}
       keyExtractor={(item) => item.id.toString()}
       horizontal
-      style={{ marginBottom: 10 }}
+      style={{ marginBottom: 30 }}
       showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => {
         const { avatarFilePath, lastSeen, name, id } = item;
