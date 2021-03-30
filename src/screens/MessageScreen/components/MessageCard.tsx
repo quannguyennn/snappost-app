@@ -40,7 +40,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   seen,
   time,
   isOnline,
-  unseen
+  unseen,
 }) => {
   const user = useCurrentUser();
   const theme = useRecoilValue(themeState);
@@ -56,9 +56,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
   const highlightStyle = isHighlighted
     ? {
-      ...FontWeights.Regular,
-      color: theme.text01,
-    }
+        ...FontWeights.Regular,
+        color: theme.text01,
+      }
     : null;
 
   const onlineDotColor = OnlineDotColor[isOnline as any];
@@ -91,12 +91,17 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <Text style={styles(theme).handleText}>{handle} </Text>
           <View style={styles(theme).content}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={[styles(theme).messageText, highlightStyle]}>
-              {authorId === user?.id ? "You: " : null}{messageBody}
+              {authorId === user?.id ? 'You: ' : null}
+              {messageBody}
             </Text>
             <Text style={[styles(theme).timeText, highlightStyle]}>{` · ${parsedTime}`}</Text>
           </View>
         </View>
-        {unseen ? <View style={styles(theme).unseenContainer}><Text style={{ color: theme.white }}>{unseen}</Text></View> : null}
+        {unseen ? (
+          <View style={styles(theme).unseenContainer}>
+            <Text style={{ color: theme.white }}>{unseen}</Text>
+          </View>
+        ) : null}
       </TouchableOpacity>
     </Swipeable>
   );
@@ -107,7 +112,7 @@ const styles = (theme = {} as ThemeColors) =>
     container: {
       flexDirection: 'row',
       borderRadius: 5,
-      marginBottom: 16
+      marginBottom: 16,
     },
     avatar: {
       height: 50,
@@ -156,10 +161,10 @@ const styles = (theme = {} as ThemeColors) =>
       height: 20,
       width: 20,
       borderRadius: 20,
-      justifyContent: "center",
-      alignItems: "center",
-      alignSelf: "center"
-    }
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
   });
 
 export default MessageCard;

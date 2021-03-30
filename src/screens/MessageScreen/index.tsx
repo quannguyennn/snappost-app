@@ -93,7 +93,7 @@ const MessageScreen: React.FC = () => {
         authorId={lastMessageData ? lastMessageData.senderInfo.id : 0}
         messageId={lastMessageData ? lastMessageData.id : 0}
         messageBody={lastMessageData ? lastMessageData.content : ''}
-        seen={lastMessageData ? lastMessageData.isRead : false}
+        seen={lastMessageData ? lastMessageData.received : false}
         time={lastMessageData ? lastMessageData.createdAt : undefined}
         isOnline={isOnline}
         unseen={unseenMessage}
