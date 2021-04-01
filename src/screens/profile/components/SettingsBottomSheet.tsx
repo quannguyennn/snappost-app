@@ -29,17 +29,16 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = React.forwardRef
   ({ onBlockListPress, onAboutPress }, ref) => {
     const [theme, setTheme] = useRecoilState(themeState);
     const [themeType, setThemeType] = useRecoilState(themeTypeState);
-    const setIsLogin = useSetRecoilState(isLoginState)
+    const setIsLogin = useSetRecoilState(isLoginState);
 
     const [isChecked, setIsChecked] = useState(false);
 
     const [logout, { loading }] = useLogoutMutation({
       onCompleted: async () => {
         await storage.clearStorage();
-        setIsLogin(false)
-      }
-    })
-
+        setIsLogin(false);
+      },
+    });
 
     useEffect(() => {
       setIsChecked(themeType === ThemeVariant.dark);
@@ -61,7 +60,7 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = React.forwardRef
     };
 
     const handleLogout = async () => {
-      longPressLogoutNotification(() => logout())
+      longPressLogoutNotification(() => logout());
     };
 
     return (
@@ -84,7 +83,7 @@ const SettingsBottomSheet: React.FC<SettingsBottomSheetProps> = React.forwardRef
               uncheckedComponent={<MaterialIcons name="done" size={IconSizes.x6} color={ThemeStatic.text02} />}
             />
           </Option>
-          <Option label="About" iconName="ios-information-circle-outline" onPress={onAboutPress} />
+          {/* <Option label="About" iconName="ios-information-circle-outline" onPress={onAboutPress} /> */}
           <Option label="Logout" iconName="ios-log-out" onPress={handleLogout} />
         </View>
       </Modalize>
