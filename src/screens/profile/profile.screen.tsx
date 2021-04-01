@@ -207,7 +207,7 @@ const ProfileScreen: React.FunctionComponent = React.memo(() => {
       <Header title="My Profile" IconRight={IconRight} />
       {content}
       {myPost?.length && loading ? <ActivityIndicator /> : null}
-      <AboutBottomSheet ref={aboutBottomSheetRef} />
+      {/* <AboutBottomSheet ref={aboutBottomSheetRef} /> */}
       <SettingsBottomSheet
         ref={settingsBottomSheetRef}
         onBlockListPress={onBlockListPress}
