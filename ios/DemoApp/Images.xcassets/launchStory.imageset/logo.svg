@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="428" height="926" viewBox="0 0 428 926">
+  <g id="Group_11678" data-name="Group 11678" transform="translate(711 -1664)">
+    <g id="Rectangle_4868" data-name="Rectangle 4868" transform="translate(-711 1664)" fill="#846be2" stroke="#707070" stroke-width="1">
+      <rect width="428" height="926" stroke="none"/>
+      <rect x="0.5" y="0.5" width="427" height="925" fill="none"/>
+    </g>
+    <g id="Group_11677" data-name="Group 11677" transform="translate(-711 1687.5)">
+      <g id="Group_11676" data-name="Group 11676" transform="translate(1124.639 -2685.708)">
+        <g id="Component_5_1" data-name="Component 5 – 1" transform="translate(-988.644 2887.708)">
+          <path id="Path_920" data-name="Path 920" d="M-858.53,2968.229v-32.442l-51.939-48.079-29.73,26.108-22.55-21.808v32.423l4.752,5.012-30.647,27.835,89.2,82.961-11.023,10.7-52.28-49.541v32.73l52.28,48.142,28.9-25.754,23.036,21.278V3046.3l-5.255-6.061,31.152-26.468-89.968-84.328,12.132-10.022Z" transform="translate(988.644 -2887.708)" fill="#fff" stroke="#707070" stroke-width="1"/>
+        </g>
+        <g id="Component_6_1" data-name="Component 6 – 1" transform="translate(-954.407 2945.138)">
+          <path id="Path_921" data-name="Path 921" d="M-954.407,2957.583l14.219-12.445,72.544,67.022-13.679,12.65Z" transform="translate(954.407 -2945.138)" fill="#846be2" stroke="#707070" stroke-width="1"/>
+        </g>
+      </g>
+      <text id="from" transform="translate(194 749)" fill="#fff" font-size="20" font-family="KhmerSangamMN, Khmer Sangam MN"><tspan x="0" y="0">from</tspan></text>
+      <text id="Quan_Nguyen" data-name="Quan Nguyen" transform="translate(149 790)" fill="#fff" font-size="20" font-family="LucidaGrande, Lucida Grande"><tspan x="0" y="0">Quan</tspan><tspan y="0" font-family="KufiStandardGK"> </tspan><tspan y="0">Nguyen</tspan></text>
+    </g>
+  </g>
+</svg>
