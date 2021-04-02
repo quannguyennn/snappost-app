@@ -7,10 +7,8 @@ import type { Modalize } from 'react-native-modalize';
 import Typography from '../../theme/Typography';
 import { Images } from '../../assets1/icons';
 import ConfirmationModal from '../../components/shared/ComfirmationModal';
-import LoadingIndicator from '../../components/shared/LoadingIndicator';
 import type { AuthLoginScreenProp } from '../../navigator/auth.navigator';
 import { ThemeStatic } from '../../theme';
-import { IconSizes } from '../../theme/Icon';
 import type { ThemeColors } from '../../types/theme';
 import Button from '../../components/shared/controls/Button';
 import ZaloKit, { Constants } from 'react-native-zalo-kit';
@@ -21,6 +19,7 @@ import { themeState } from '../../recoil/theme/atoms';
 import { isLoginState } from '../../recoil/auth/atoms';
 import { MeDocument } from '../../graphql/queries/me.generated';
 import { saveToken } from '../../helpers/storage';
+import LottieView from 'lottie-react-native';
 
 const { FontWeights, FontSizes } = Typography;
 type Props = {
@@ -141,7 +140,7 @@ const LoginScreen = memo<Props>(() => {
     }
   };
 
-  let content = <LoadingIndicator color={ThemeStatic.accent} size={IconSizes.x1} />;
+  let content = <LottieView source={require('../../assets1/loading.json')} autoPlay loop />;
 
   if (!initializing) {
     content = (

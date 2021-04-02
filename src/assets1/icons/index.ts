@@ -9,4 +9,5 @@ export const Images = {
   zalo: require('./zalo.png'),
   emptyBlocklist: require('./empty-blocklist.png'),
   emptyMessage: require('./empty-messages.png'),
+  logo: require('./logo.png'),
 };

@@ -9,13 +9,13 @@ import { DynamicStatusBar, Theme, ThemeStatic } from './theme/Colors';
 import FlashMessage from 'react-native-flash-message';
 import { themeState, themeTypeState } from './recoil/theme/atoms';
 import { useMeLazyQuery } from './graphql/queries/me.generated';
-import LoadingIndicator from './components/shared/LoadingIndicator';
 import { isLoginState } from './recoil/auth/atoms';
 import { countMessageState, countNotificationState } from './recoil/app/atoms';
 import { useCountUnSeenNotificationQuery } from './graphql/queries/countUnSeenNotification.generated';
 import { useOnNewNotificationSubscription } from './graphql/subscriptions/onNewNotification.generated';
 import { useGetChatHasUnseenMessageLazyQuery } from './graphql/queries/getChatHasUnseenMessage.generated';
 import { useOnReceiveMessageSubscription } from './graphql/subscriptions/onReceiveMessage.generated';
+import LottieView from 'lottie-react-native';
 
 const App = React.memo(() => {
   const [theme, setTheme] = useRecoilState(themeState);
@@ -113,7 +113,7 @@ const App = React.memo(() => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <LoadingIndicator size={8} color={ThemeStatic.accent} />
+        <LottieView source={require('./assets1/loading.json')} autoPlay loop />
       </SafeAreaView>
     );
   }
