@@ -7,7 +7,12 @@ export type OnReceiveMessageSubscriptionVariables = Types.Exact<{
 }>;
 
 export type OnReceiveMessageSubscriptionResponse = { __typename?: 'Subscription' } & {
-  onReceiveMessage: { __typename?: 'ReceivedMessage' } & Pick<Types.ReceivedMessage, 'chatId' | 'userId'>;
+  onReceiveMessage: { __typename?: 'ReceivedMessage' } & Pick<Types.ReceivedMessage, 'chatId' | 'userId'> & {
+      message: { __typename?: 'Message' } & Pick<
+        Types.Message,
+        'id' | 'sender' | 'chatId' | 'content' | 'media' | 'mediaType'
+      > & { senderInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'avatarFilePath'> };
+    };
 };
 
 export const OnReceiveMessageDocument = gql`
@@ -15,6 +20,19 @@ export const OnReceiveMessageDocument = gql`
     onReceiveMessage(userId: $userId) {
       chatId
       userId
+      message {
+        id
+        sender
+        chatId
+        content
+        media
+        mediaType
+        senderInfo {
+          id
+          name
+          avatarFilePath
+        }
+      }
     }
   }
 `;

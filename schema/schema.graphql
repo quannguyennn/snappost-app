@@ -172,6 +172,19 @@ type Like implements Node {
   postInfo: Post!
 }
 
+type Report implements Node {
+  id: Float!
+  postId: Float!
+  userId: Float!
+  createdAt: DateTime!
+  postInfo: Post
+}
+
+type ReportPostConnection {
+  items: [Report!]
+  meta: BasePaginationMeta!
+}
+
 type Chat implements Node {
   id: Float!
   participants: [Float!]!
@@ -221,6 +234,7 @@ type SeenMessage {
 type ReceivedMessage {
   chatId: Float!
   userId: Float!
+  message: Message!
 }
 
 type Query {
@@ -230,6 +244,7 @@ type Query {
   isAvailable(nickname: String!): Boolean!
   getBlockedUser: [User!]
   getFollowingUser: [User!]!
+  getAllUserList(page: Float!, limit: Float!): UserConnection!
   medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
   media(id: Float!): Media
   getNotification(page: Float!, limit: Float!): NotificationConnection!
@@ -243,6 +258,7 @@ type Query {
   getPostDetail(id: Float!): Post!
   myPost(page: Float!, limit: Float!): PostConnection!
   getUserPost(page: Float!, limit: Float!, userId: Float!): PostConnection!
+  getReportedPost(page: Float!, limit: Float!): ReportPostConnection!
   getChats(page: Float!, limit: Float!): ChatConnection!
   getExistChat(participants: [Float!]!): Chat
   getChatHasUnseenMessage: [Float!]!

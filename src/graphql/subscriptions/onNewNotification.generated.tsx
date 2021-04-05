@@ -10,7 +10,7 @@ export type OnNewNotificationSubscriptionResponse = { __typename?: 'Subscription
   onNewNotification: { __typename?: 'Notification' } & Pick<
     Types.Notification,
     'id' | 'triggerId' | 'userId' | 'content' | 'link' | 'isSeen' | 'createdAt' | 'updatedAt'
-  >;
+  > & { triggerInfo: { __typename?: 'User' } & Pick<Types.User, 'name' | 'avatarFilePath'> };
 };
 
 export const OnNewNotificationDocument = gql`
@@ -24,6 +24,10 @@ export const OnNewNotificationDocument = gql`
       isSeen
       createdAt
       updatedAt
+      triggerInfo {
+        name
+        avatarFilePath
+      }
     }
   }
 `;

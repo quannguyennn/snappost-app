@@ -8,5 +8,9 @@ subscription onNewNotification($userId: Float!) {
     isSeen
     createdAt
     updatedAt
+    triggerInfo {
+      name
+      avatarFilePath
+    }
   }
 }

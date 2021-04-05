@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeNavigator } from './home.navigator';
@@ -14,6 +14,9 @@ import EditCaptionScreen from '../screens/upload/EditCaptionScreen';
 import RequestFollowScreen from '../screens/notificationScreen/request-follow.screen';
 import MessageScreen from '../screens/MessageScreen';
 import ConversationScreen from '../screens/ConversationScreen';
+import { useRecoilState } from 'recoil';
+import { notificationNavigateState } from '../recoil/app/atoms';
+import { useNavigation } from '@react-navigation/core';
 
 export type MainTabParamList = {
   [AppRoutes.HOME_TAB]: undefined;
@@ -47,6 +50,16 @@ export const MainNavigator = () => (
 );
 
 export const AppNavigator = () => {
+  const { navigate } = useNavigation();
+  const [notificationNavigate, setNotificationNavigate] = useRecoilState(notificationNavigateState);
+
+  useEffect(() => {
+    if (notificationNavigate.screen) {
+      navigate(notificationNavigate.screen, { ...notificationNavigate.params });
+      setNotificationNavigate({});
+    }
+  }, [notificationNavigate, navigate, setNotificationNavigate]);
+
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen options={{ headerShown: false }} name={AppRoutes.MAIN_TAB} component={MainNavigator} />

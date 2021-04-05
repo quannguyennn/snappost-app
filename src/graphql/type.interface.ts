@@ -196,6 +196,21 @@ export type Like = Node & {
   postInfo: Post;
 };
 
+export type Report = Node & {
+  __typename?: 'Report';
+  id: Scalars['Float'];
+  postId: Scalars['Float'];
+  userId: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  postInfo?: Maybe<Post>;
+};
+
+export type ReportPostConnection = {
+  __typename?: 'ReportPostConnection';
+  items?: Maybe<Array<Report>>;
+  meta: BasePaginationMeta;
+};
+
 export type Chat = Node & {
   __typename?: 'Chat';
   id: Scalars['Float'];
@@ -251,6 +266,7 @@ export type ReceivedMessage = {
   __typename?: 'ReceivedMessage';
   chatId: Scalars['Float'];
   userId: Scalars['Float'];
+  message: Message;
 };
 
 export type Query = {
@@ -261,6 +277,7 @@ export type Query = {
   isAvailable: Scalars['Boolean'];
   getBlockedUser?: Maybe<Array<User>>;
   getFollowingUser: Array<User>;
+  getAllUserList: UserConnection;
   medias?: Maybe<MediaConnection>;
   media?: Maybe<Media>;
   getNotification: NotificationConnection;
@@ -274,6 +291,7 @@ export type Query = {
   getPostDetail: Post;
   myPost: PostConnection;
   getUserPost: PostConnection;
+  getReportedPost: ReportPostConnection;
   getChats: ChatConnection;
   getExistChat?: Maybe<Chat>;
   getChatHasUnseenMessage: Array<Scalars['Float']>;
@@ -293,6 +311,11 @@ export type QuerySearchUserArgs = {
 
 export type QueryIsAvailableArgs = {
   nickname: Scalars['String'];
+};
+
+export type QueryGetAllUserListArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
 };
 
 export type QueryMediasArgs = {
@@ -348,6 +371,11 @@ export type QueryGetUserPostArgs = {
   page: Scalars['Float'];
   limit: Scalars['Float'];
   userId: Scalars['Float'];
+};
+
+export type QueryGetReportedPostArgs = {
+  page: Scalars['Float'];
+  limit: Scalars['Float'];
 };
 
 export type QueryGetChatsArgs = {

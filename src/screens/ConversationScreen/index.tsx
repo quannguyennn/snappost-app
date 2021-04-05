@@ -42,7 +42,7 @@ import { useFileUpload } from '../../hooks/useFileUpload';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { MediaType, NewMessageInput } from '../../graphql/type.interface';
 import { useOnSeenMessageSubscription } from '../../graphql/subscriptions/onSeenMessage.generated';
-import { countMessageState } from '../../recoil/app/atoms';
+import { countMessageState, currentChatState } from '../../recoil/app/atoms';
 import { useGetUserLasActiveQuery } from '../../graphql/queries/getUserLastActive.generated';
 import moment from 'moment';
 import { useSetSeenMessageMutation } from '../../graphql/mutations/setSeenMessage.generated';
@@ -54,10 +54,11 @@ const ConversationScreen: React.FC = () => {
   const [upload] = useFileUpload();
   const isFocused = useIsFocused();
 
-  const { navigate } = useNavigation();
+  const { navigate, addListener, dispatch } = useNavigation();
   const user = useCurrentUser();
   const theme = useRecoilValue(themeState);
   const [unseenChat, setUnseenChat] = useRecoilState(countMessageState);
+  const setCurrentChat = useSetRecoilState(currentChatState);
 
   const { data } = useGetUserLasActiveQuery({
     pollInterval: 2000,
@@ -81,12 +82,18 @@ const ConversationScreen: React.FC = () => {
   useEffect(() => {
     Keyboard.addListener('keyboardWillShow', keyboardShow);
     Keyboard.addListener('keyboardDidHide', keyboardHide);
+    setCurrentChat(chatId);
 
     return () => {
       Keyboard.removeListener('keyboardWillShow', keyboardShow);
       Keyboard.removeListener('keyboardDidHide', keyboardHide);
+      addListener('beforeRemove', (e) => {
+        e.preventDefault();
+        setCurrentChat(0);
+        dispatch(e.data.action);
+      });
     };
-  }, []);
+  }, [chatId, setCurrentChat, addListener, dispatch]);
 
   const keyboardShow = () => setIsKeyboard(true);
   const keyboardHide = () => setIsKeyboard(false);

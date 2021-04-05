@@ -2,5 +2,18 @@ subscription onReceiveMessage($userId: Float!) {
   onReceiveMessage(userId: $userId) {
     chatId
     userId
+    message {
+      id
+      sender
+      chatId
+      content
+      media
+      mediaType
+      senderInfo {
+        id
+        name
+        avatarFilePath
+      }
+    }
   }
 }

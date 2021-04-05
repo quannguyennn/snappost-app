@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 import type { GetNewFeedQueryResponse } from '../../graphql/queries/getNewFeed.generated';
 import type { MyPostQueryResponse } from '../../graphql/queries/myPost.generated';
+import { AppRoutes } from '../../navigator/app-routes';
 import { AppAtoms } from '../app-atoms';
 
 export const newFeedState = atom<GetNewFeedQueryResponse['getNewFeed']['items']>({
@@ -20,5 +21,15 @@ export const countNotificationState = atom<number>({
 
 export const countMessageState = atom<number[]>({
   key: AppAtoms.CountMessage,
-  default: []
-})
+  default: [],
+});
+
+export const notificationNavigateState = atom<{ screen?: AppRoutes; params?: any }>({
+  key: AppAtoms.NotificationNavigate,
+  default: {},
+});
+
+export const currentChatState = atom<number>({
+  key: AppAtoms.CurrentChat,
+  default: 0,
+});
