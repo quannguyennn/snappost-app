@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LoadingIndicator from '../../../components/shared/LoadingIndicator';
@@ -227,7 +227,8 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
         modalStyle={styles(theme).container}
         adjustToContentHeight>
         <BottomSheetHeader heading="Edit profile" subHeading="Edit your personal information" />
-        <View style={styles(theme).content}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles(theme).content}>
           <ImageBackground
             source={{ uri: editAvatar ? editAvatar : '' }}
             style={styles(theme).avatar}
@@ -268,7 +269,7 @@ const EditProfileBottomSheet: React.FC<EditProfileBottomSheetProps> = React.forw
             loading={isUploading}
             containerStyle={styles(theme).doneButton}
           />
-        </View>
+        </KeyboardAvoidingView>
       </Modalize>
     );
   },

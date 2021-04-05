@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { useRecoilValue } from 'recoil';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useUserInfo } from '../hooks/useUserInfo';
 import { AppRoutes } from '../navigator/app-routes';
 import { themeState } from '../recoil/theme/atoms';
@@ -36,7 +37,7 @@ const UserCard: React.FC<UserCardProps> = ({
 }) => {
   const theme = useRecoilValue(themeState);
   const { navigate } = useNavigation();
-  const user = useUserInfo(userId);
+  const user = useCurrentUser();
 
   const navigateToProfile = () => {
     if (userId === user?.id) {
@@ -55,8 +56,8 @@ const UserCard: React.FC<UserCardProps> = ({
           <View style={[styles().onlineDot, { backgroundColor: onlineDotColor }]} />
         </View>
       ) : (
-        <NativeImage uri={isBlock ? '' : avatar} style={styles(theme).avatarImage} />
-      )}
+          <NativeImage uri={isBlock ? '' : avatar} style={styles(theme).avatarImage} />
+        )}
       <View style={styles().info}>
         <Text style={styles(theme).handleText}>{isBlock ? 'Anonymous' : name} </Text>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles(theme).nameText}>
