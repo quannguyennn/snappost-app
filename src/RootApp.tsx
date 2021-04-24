@@ -154,7 +154,7 @@ const App = React.memo(() => {
     initializeTheme();
     initLoginState();
     getChatUnseen();
-  }, []);
+  }, [getChatUnseen, initLoginState]);
 
   const toggleTheme = (type: string) => {
     setTheme(Theme[type].colors);

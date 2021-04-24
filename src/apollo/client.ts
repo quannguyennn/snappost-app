@@ -3,38 +3,9 @@ import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
-
 import { API_URL, WS_URL } from '../environment/env';
-import { storage, removeToken } from '../helpers/storage';
+import { storage } from '../helpers/storage';
 import possibleTypes from './possibleTypes.json';
-
-const getNewToken = async () => {
-  const refreshToken = await storage.get('refreshToken');
-  if (!refreshToken) {
-    return '';
-  }
-  try {
-    // get new token
-    // const res = await client.mutate<RefreshTokenMutationResponse, RefreshTokenMutationVariables>({
-    //   mutation: RefreshTokenDocument,
-    //   variables: {
-    //     refreshToken: refreshToken,
-    //   },
-    // });
-
-    // if (res.data) {
-    //   await saveToken({
-    //     accessToken: res.data?.refreshToken.accessToken || '',
-    //     refreshToken: res.data?.refreshToken?.refreshToken || '',
-    //   });
-    //   return res.data?.refreshToken?.accessToken;
-    // }
-    return '';
-  } catch (err) {
-    await removeToken();
-    return '';
-  }
-};
 
 let isRefreshing = false;
 let pendingRequests: Function[] = [];
@@ -106,9 +77,7 @@ const httpLink = new HttpLink({
 });
 
 const authMiddleware = setContext(async (_, { headers }) => {
-  // get the authentication token from local storage if it exists
   const token = await storage.get('accessToken');
-  // return the headers to the context so httpLink can read them
   return {
     headers: {
       ...headers,
@@ -116,7 +85,6 @@ const authMiddleware = setContext(async (_, { headers }) => {
     },
   };
 });
-// setup websocket link
 export const wsLink = new WebSocketLink({
   uri: WS_URL,
   options: {
@@ -140,8 +108,6 @@ const splitLink = split(
   wsLink,
   from([errorLink, authMiddleware, httpLink]),
 );
-
-// setup your client
 export const client = new ApolloClient({
   link: splitLink,
   cache: new InMemoryCache({

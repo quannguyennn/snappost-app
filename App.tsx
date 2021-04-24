@@ -18,8 +18,7 @@ const App = () => {
         <SafeAreaProvider>
           <NavigationContainer
             theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-            fallback={<Text>Loading...</Text>}
-          >
+            fallback={<Text>Loading...</Text>}>
             <RootApp />
           </NavigationContainer>
         </SafeAreaProvider>

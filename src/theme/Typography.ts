@@ -7,7 +7,7 @@
 
 const FontWeights = {
   Bold: {
-    fontFamily: 'SFProDisplay-Bold',
+    fontFamily: 'R22',
     color: '#000',
   },
   Regular: {
