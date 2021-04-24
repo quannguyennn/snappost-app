@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { RootNavigator } from './navigator/root.navigator';
 import { loadThemeType, saveThemeType } from './helpers/storage';
-import { SafeAreaView, LogBox, StatusBar, StyleSheet, Image, View, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, LogBox, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import type { ThemeColors } from './types/theme';
 import { Typography } from './theme';
 import { DynamicStatusBar, Theme, ThemeStatic } from './theme/Colors';
-import FlashMessage, { showMessage } from 'react-native-flash-message';
+import FlashMessage from 'react-native-flash-message';
 import { themeState, themeTypeState } from './recoil/theme/atoms';
 import { useMeLazyQuery } from './graphql/queries/me.generated';
 import { isLoginState } from './recoil/auth/atoms';
@@ -106,10 +106,11 @@ const App = React.memo(() => {
         console.log('receive message sub', subscriptionData.error);
       } else {
         const chatId = subscriptionData.data?.onReceiveMessage.chatId;
+        console.log(chatId, currentChat);
         if (currentChat !== chatId) {
           Toast.show({
             type: 'success',
-            text1: subscriptionData.data?.onReceiveMessage.message.senderInfo.name,
+            text1: String(subscriptionData.data?.onReceiveMessage.message.senderInfo.name) + ' send you a message',
             text2: subscriptionData.data?.onReceiveMessage.message.content ?? '',
             props: {
               image: subscriptionData.data?.onReceiveMessage.message.senderInfo.avatarFilePath,
@@ -154,7 +155,7 @@ const App = React.memo(() => {
     initializeTheme();
     initLoginState();
     getChatUnseen();
-  }, [getChatUnseen, initLoginState]);
+  }, []);
 
   const toggleTheme = (type: string) => {
     setTheme(Theme[type].colors);
