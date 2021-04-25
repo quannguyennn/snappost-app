@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, TouchableOpacity, Text } from 'react-native';
+import { useRecoilValue } from 'recoil';
 import ConnectionsPlaceholder from '../../../components/placeholders/Connection.Placeholder';
 import ListEmptyComponent from '../../../components/shared/ListEmptyComponent';
 import {
@@ -9,6 +10,7 @@ import {
 import { useOnCreateCommentSubscription } from '../../../graphql/subscriptions/onCreateComment.generated';
 import { useOnDeleteCommentSubscription } from '../../../graphql/subscriptions/onDeleteComment.generated';
 import { showErrorNotification } from '../../../helpers/notifications';
+import { themeState } from '../../../recoil/theme/atoms';
 import { Typography } from '../../../theme';
 import type { ThemeColors } from '../../../types/theme';
 import CommentCard from './CommentCard';
@@ -20,6 +22,7 @@ interface CommentsProps {
 }
 
 const CommentList: React.FC<CommentsProps> = ({ postId }) => {
+  const theme = useRecoilValue(themeState);
   const [comments, setComments] = useState<GetPostCommentQueryResponse['getPostComment']['items']>([]);
   const [init, setInit] = useState(true);
   const [getPostComment, { data: fetchData, fetchMore, loading }] = useGetPostCommentLazyQuery({
@@ -125,7 +128,7 @@ const CommentList: React.FC<CommentsProps> = ({ postId }) => {
         ListHeaderComponent={
           !init && currentPage < totalPages ? (
             <TouchableOpacity onPress={() => loadMore()} activeOpacity={0.9}>
-              <Text style={{ fontSize: 16, marginBottom: 5 }}>See ealier comments...</Text>
+              <Text style={{ fontSize: 16, marginBottom: 5, color: theme.text01 }}>See ealier comments...</Text>
             </TouchableOpacity>
           ) : null
         }

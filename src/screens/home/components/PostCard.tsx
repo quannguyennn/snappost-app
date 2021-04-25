@@ -91,7 +91,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, time, uri, likes, capti
           <Text style={styles.likesText}>{readableLikes}</Text>
         </View>
 
-        <TransformText text={caption ?? ''} />
+        <TransformText color={ThemeStatic.white} text={caption ?? ''} />
       </TouchableOpacity>
     </TouchableOpacity>
   );

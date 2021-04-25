@@ -11,19 +11,22 @@ const { FontWeights, FontSizes } = Typography;
 export type TransformTextProps = {
   text: string;
   username?: string;
+  color?: string;
 };
 
-const TransformText: React.FC<TransformTextProps> = ({ text, username }) => {
+const TransformText: React.FC<TransformTextProps> = ({ text, username, color }) => {
   const { navigate } = useNavigation();
   const theme = useRecoilValue(themeState);
 
   const [elements, setElements] = useState<Element[]>([]);
   const [init, setInit] = useState(true);
 
+  const textColor = color ? color : theme.text01;
+
   const transformText = (str: string) => {
     const elements: Element[] = [];
     if (!str.includes('@')) {
-      elements.push(<Text style={{ color: theme.text01, marginRight: 4 }}>{str}</Text>);
+      elements.push(<Text style={{ color: textColor, marginRight: 4 }}>{str}</Text>);
     } else {
       const rawWords = str.split(' ');
       const words = [];
@@ -43,7 +46,7 @@ const TransformText: React.FC<TransformTextProps> = ({ text, username }) => {
       while (pointer < words.length) {
         //not a mention
         if (!words[pointer].startsWith('@')) {
-          elements.push(<Text style={{ color: theme.text01, marginRight: 4 }}>{words[pointer]}</Text>);
+          elements.push(<Text style={{ color: textColor, marginRight: 4 }}>{words[pointer]}</Text>);
           pointer++;
         } else {
           //maybe a mention
@@ -88,7 +91,7 @@ const TransformText: React.FC<TransformTextProps> = ({ text, username }) => {
             }
           } else {
             //not a mention
-            elements.push(<Text style={{ color: theme.text01, marginRight: 4 }}>{words[pointer]}</Text>);
+            elements.push(<Text style={{ color: textColor, marginRight: 4 }}>{words[pointer]}</Text>);
             pointer++;
           }
           pointer++;
