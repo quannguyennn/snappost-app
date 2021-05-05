@@ -1,0 +1,15 @@
+query getStreams {
+  getStreams {
+    id
+    streamerId
+    streamUrl
+    viewUrl
+    status
+    createdAt
+    updatedAt
+    streamerInfo {
+      id
+      avatarFilePath
+    }
+  }
+}

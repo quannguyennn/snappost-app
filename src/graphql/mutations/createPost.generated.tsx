@@ -1,4 +1,5 @@
 import type * as Types from '../type.interface';
+
 import type { UserFragmentFragment } from '../fragments/UserFragment.generated';
 import { gql } from '@apollo/client';
 import { UserFragmentFragmentDoc } from '../fragments/UserFragment.generated';
@@ -6,6 +7,7 @@ import * as Apollo from '@apollo/client';
 export type CreatePostMutationVariables = Types.Exact<{
   input: Types.CreatePostInput;
 }>;
+
 export type CreatePostMutationResponse = { __typename?: 'Mutation' } & {
   createPost: { __typename?: 'Post' } & Pick<
     Types.Post,
@@ -15,6 +17,7 @@ export type CreatePostMutationResponse = { __typename?: 'Mutation' } & {
       creatorInfo?: Types.Maybe<{ __typename?: 'User' } & UserFragmentFragment>;
     };
 };
+
 export const CreatePostDocument = gql`
   mutation createPost($input: CreatePostInput!) {
     createPost(input: $input) {

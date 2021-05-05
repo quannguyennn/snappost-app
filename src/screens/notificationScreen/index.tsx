@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
 import EmptyNotifications from '../..//assets/svg/empty-notifications.svg';
@@ -134,7 +134,7 @@ const NotificationScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles(theme).container}>
+    <SafeAreaView style={styles(theme).container}>
       <Header title="Notifications" />
       <TouchableOpacity
         onPress={() => navigate(AppRoutes.REQUEST_FOLLOW)}
@@ -180,7 +180,7 @@ const NotificationScreen: React.FC = () => {
           renderItem={renderItem}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

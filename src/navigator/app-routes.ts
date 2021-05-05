@@ -23,4 +23,5 @@ export enum AppRoutes {
   PROFILE_VIEW_SCREEN = 'ProfileViewScreen',
   POST_VIEW_SCREEN = 'PostViewScreen',
   NOTIFICATION_VIEW_SCREEN = 'NotificationViewScreen',
+  LIVE_STREAM_VIEW_SCREEN = 'LiveStreamViewScreen',
 }

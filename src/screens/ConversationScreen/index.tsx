@@ -46,6 +46,7 @@ import { countMessageState, currentChatState } from '../../recoil/app/atoms';
 import { useGetUserLasActiveQuery } from '../../graphql/queries/getUserLastActive.generated';
 import moment from 'moment';
 import { useSetSeenMessageMutation } from '../../graphql/mutations/setSeenMessage.generated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ConversationScreen: React.FC = () => {
   const {
@@ -308,7 +309,7 @@ const ConversationScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles(theme).container}>
+    <SafeAreaView style={styles(theme).container}>
       <GoBackHeader
         title={handle}
         onTitlePress={navigateToProfile}
@@ -412,7 +413,7 @@ const ConversationScreen: React.FC = () => {
           </Modalize>
         </View>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 };
 

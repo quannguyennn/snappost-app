@@ -1,0 +1,11 @@
+mutation changeStreamStatus($status: LiveStreamStatusEnum!, $id: Float!) {
+  changeStreamStatus(status: $status, id: $id) {
+    id
+    streamerId
+    streamUrl
+    viewUrl
+    status
+    createdAt
+    updatedAt
+  }
+}

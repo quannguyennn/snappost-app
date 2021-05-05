@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { FlatGrid } from 'react-native-super-grid';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -301,7 +301,7 @@ const ProfileViewScreen: React.FC = () => {
   );
 
   return (
-    <View style={styles(theme).container}>
+    <SafeAreaView style={styles(theme).container}>
       <GoBackHeader iconSize={IconSizes.x7} IconRight={IconRight} />
       {content}
       <ProfileOptionsBottomSheet ref={profileOptionsBottomSheetRef} onBlockUser={onBlockUser} />
@@ -314,7 +314,7 @@ const ProfileViewScreen: React.FC = () => {
         toggle={toggleBlockConfirmationModal}
         onConfirm={processBlockUser}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

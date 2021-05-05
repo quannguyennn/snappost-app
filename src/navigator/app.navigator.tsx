@@ -17,6 +17,7 @@ import ConversationScreen from '../screens/ConversationScreen';
 import { useRecoilState } from 'recoil';
 import { notificationNavigateState } from '../recoil/app/atoms';
 import { useNavigation } from '@react-navigation/core';
+import LiveStreamScreen from '../screens/LiveStream';
 
 export type MainTabParamList = {
   [AppRoutes.HOME_TAB]: undefined;
@@ -34,6 +35,7 @@ export type AppStackParamList = {
   [AppRoutes.UPLOAD_STACK]: undefined;
   [AppRoutes.EDIT_CATION_SCREEN]: { postId: number };
   [AppRoutes.REQUEST_FOLLOW]: { postId: number };
+  [AppRoutes.LIVE_STREAM_VIEW_SCREEN]: { streamId: number; isOwner: boolean; streamUrl?: string; viewUrl?: string };
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -70,6 +72,7 @@ export const AppNavigator = () => {
       <Stack.Screen name={AppRoutes.REQUEST_FOLLOW} component={RequestFollowScreen} />
       <Stack.Screen name={AppRoutes.MESSAGE_SCREEN} component={MessageScreen} />
       <Stack.Screen name={AppRoutes.CONVERSATION_SCREEN} component={ConversationScreen} />
+      <Stack.Screen name={AppRoutes.LIVE_STREAM_VIEW_SCREEN} component={LiveStreamScreen} />
     </Stack.Navigator>
   );
 };

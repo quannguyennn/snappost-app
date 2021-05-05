@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
 import ExploreGrid from './components/ExploreGrid';
 import UserSearchResults from './components/UserSearchResults';
 import useDebounce from './hooks/useDebounce';
@@ -123,7 +123,7 @@ const ExploreScreen: React.FC = () => {
       getExplorePost({ variables: { limit: 21, page: 1 } });
     }
     if (refresh) {
-      refetch && refetch()
+      refetch && refetch();
     }
     setInit(false);
   }, [init, refresh, getExplorePost]);
@@ -134,7 +134,6 @@ const ExploreScreen: React.FC = () => {
     Number(fetchPost?.getExplorePost?.meta.totalPages) >= 0 ? Number(fetchPost?.getExplorePost?.meta.totalPages) : 2;
 
   const postsData = fetchPost?.getExplorePost.items;
-
 
   const loadMorePost = () => {
     if (Number(currentPagePost) < Number(totalPagesPost)) {
@@ -176,7 +175,7 @@ const ExploreScreen: React.FC = () => {
   const onRefresh = () => {
     try {
       setRefresh(true);
-    } catch { }
+    } catch {}
   };
 
   const onUserRefresh = () => {
@@ -228,7 +227,7 @@ const ExploreScreen: React.FC = () => {
   }
 
   return (
-    <View style={styles(theme).container}>
+    <SafeAreaView style={styles(theme).container}>
       <Header title="Explore" />
       <AnimatedSearchBar
         onFocus={onFocus}
@@ -238,7 +237,7 @@ const ExploreScreen: React.FC = () => {
         placeholder="Search for users..."
       />
       <View style={styles().content}>{content}</View>
-    </View>
+    </SafeAreaView>
   );
 };
 

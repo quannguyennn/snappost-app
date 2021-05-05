@@ -1,5 +1,5 @@
 import React, { memo, useRef, useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Platform, Image } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Platform, Image, SafeAreaView } from 'react-native';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import TermsAndConditionsBottomSheet from './components/TermsAndConditionsBottomSheet';
@@ -176,7 +176,7 @@ const LoginScreen = memo<Props>(() => {
   }
 
   return (
-    <View style={styles(theme).container}>
+    <SafeAreaView style={styles(theme).container}>
       {content}
       <TermsAndConditionsBottomSheet ref={termsAndConditionsBottomSheetRef} />
       <ConfirmationModal
@@ -188,7 +188,7 @@ const LoginScreen = memo<Props>(() => {
         toggle={termsConfirmationToggle}
         onConfirm={processNewUser}
       />
-    </View>
+    </SafeAreaView>
   );
 });
 

@@ -15,6 +15,14 @@ export type Scalars = {
   Upload: any;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  startCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']>;
+  hasPrevPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean'];
+};
+
 export type BasePaginationMeta = {
   __typename?: 'BasePaginationMeta';
   itemCount: Scalars['Float'];
@@ -148,6 +156,8 @@ export type Post = Node & {
   caption?: Maybe<Scalars['String']>;
   rawCaption?: Maybe<Scalars['String']>;
   actualLike: Scalars['Float'];
+  isPublic: Scalars['Boolean'];
+  score: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   totalLike: Scalars['Float'];
@@ -160,6 +170,20 @@ export type PostConnection = {
   __typename?: 'PostConnection';
   items?: Maybe<Array<Post>>;
   meta: BasePaginationMeta;
+};
+
+export type PostEdge = {
+  __typename?: 'PostEdge';
+  cursor: Scalars['String'];
+  node: Post;
+};
+
+export type PostCursorConnection = {
+  __typename?: 'PostCursorConnection';
+  edges?: Maybe<Array<PostEdge>>;
+  nodes?: Maybe<Array<Post>>;
+  totalCount: Scalars['Int'];
+  pageInfo: PageInfo;
 };
 
 export type Comments = Node & {
@@ -269,6 +293,24 @@ export type ReceivedMessage = {
   message: Message;
 };
 
+export type LiveStream = Node & {
+  __typename?: 'LiveStream';
+  id: Scalars['Float'];
+  streamerId: Scalars['Float'];
+  streamUrl: Scalars['String'];
+  viewUrl: Scalars['String'];
+  status: LiveStreamStatusEnum;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  streamerInfo: User;
+};
+
+export enum LiveStreamStatusEnum {
+  IDLE = 'IDLE',
+  ACTIVE = 'ACTIVE',
+  STOP = 'STOP',
+}
+
 export type Query = {
   __typename?: 'Query';
   me: User;
@@ -287,6 +329,7 @@ export type Query = {
   getUserLikePost: Array<User>;
   getPostComment: CommentConnection;
   getNewFeed: PostConnection;
+  test: PostCursorConnection;
   getExplorePost: PostConnection;
   getPostDetail: Post;
   myPost: PostConnection;
@@ -296,6 +339,8 @@ export type Query = {
   getExistChat?: Maybe<Chat>;
   getChatHasUnseenMessage: Array<Scalars['Float']>;
   getMessage: MessageConnection;
+  getStreams: Array<LiveStream>;
+  getStreamDetail: LiveStream;
 };
 
 export type QueryGetUserInfoArgs = {
@@ -353,6 +398,14 @@ export type QueryGetNewFeedArgs = {
   page?: Maybe<Scalars['Int']>;
 };
 
+export type QueryTestArgs = {
+  first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
+  validateCursor?: Maybe<Scalars['Boolean']>;
+  cursorKey: Scalars['String'];
+};
+
 export type QueryGetExplorePostArgs = {
   page: Scalars['Float'];
   limit: Scalars['Float'];
@@ -393,6 +446,10 @@ export type QueryGetMessageArgs = {
   chatId: Scalars['Float'];
 };
 
+export type QueryGetStreamDetailArgs = {
+  id: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   updateUserInfo: User;
@@ -417,10 +474,13 @@ export type Mutation = {
   removePost: Scalars['Boolean'];
   reactToPost: Scalars['Boolean'];
   reportPost: Scalars['Boolean'];
+  removeReportedPost: Scalars['Boolean'];
   createChat: Chat;
   deleteChat: Scalars['Float'];
   sendMessage: Message;
   setSeenMessage: Scalars['Boolean'];
+  createLiveStream: LiveStream;
+  changeStreamStatus: LiveStream;
 };
 
 export type MutationUpdateUserInfoArgs = {
@@ -509,6 +569,10 @@ export type MutationReportPostArgs = {
   postId: Scalars['Float'];
 };
 
+export type MutationRemoveReportedPostArgs = {
+  id: Scalars['Float'];
+};
+
 export type MutationCreateChatArgs = {
   participants: Array<Scalars['Float']>;
 };
@@ -523,6 +587,11 @@ export type MutationSendMessageArgs = {
 
 export type MutationSetSeenMessageArgs = {
   chatId: Scalars['Float'];
+};
+
+export type MutationChangeStreamStatusArgs = {
+  status: LiveStreamStatusEnum;
+  id: Scalars['Float'];
 };
 
 export type UpdateUserInput = {
@@ -567,12 +636,14 @@ export type CreatePostInput = {
   medias?: Maybe<Array<Scalars['Float']>>;
   caption?: Maybe<Scalars['String']>;
   rawCaption?: Maybe<Scalars['String']>;
+  isPublic?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdatePostInput = {
   medias?: Maybe<Array<Scalars['Float']>>;
   caption?: Maybe<Scalars['String']>;
   rawCaption?: Maybe<Scalars['String']>;
+  isPublic?: Maybe<Scalars['Boolean']>;
   id: Scalars['Float'];
 };
 

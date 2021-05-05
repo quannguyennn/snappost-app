@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, View } from 'react-native';
+import { FlatList, Image, SafeAreaView, StyleSheet, View } from 'react-native';
 import MessageCard from './components/MessageCard';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -102,7 +102,7 @@ const MessageScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles(theme).container}>
+    <SafeAreaView style={styles(theme).container}>
       <GoBackHeader title="Messages" notSpaceBetween iconSize={IconSizes.x7} />
       {/* <SearchBar value={chatSearch} onChangeText={setChatSearch} placeholder="Search for chats..." /> */}
 
@@ -130,7 +130,7 @@ const MessageScreen: React.FC = () => {
           onEndReachedThreshold={0.1}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

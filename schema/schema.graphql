@@ -1,3 +1,10 @@
+type PageInfo {
+  startCursor: String
+  endCursor: String
+  hasPrevPage: Boolean!
+  hasNextPage: Boolean!
+}
+
 type BasePaginationMeta {
   itemCount: Float!
   totalItems: Float!
@@ -129,6 +136,8 @@ type Post implements Node {
   caption: String
   rawCaption: String
   actualLike: Float!
+  isPublic: Boolean!
+  score: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
   totalLike: Float!
@@ -140,6 +149,18 @@ type Post implements Node {
 type PostConnection {
   items: [Post!]
   meta: BasePaginationMeta!
+}
+
+type PostEdge {
+  cursor: String!
+  node: Post!
+}
+
+type PostCursorConnection {
+  edges: [PostEdge!]
+  nodes: [Post!]
+  totalCount: Int!
+  pageInfo: PageInfo!
 }
 
 type Comments implements Node {
@@ -237,6 +258,23 @@ type ReceivedMessage {
   message: Message!
 }
 
+type LiveStream implements Node {
+  id: Float!
+  streamerId: Float!
+  streamUrl: String!
+  viewUrl: String!
+  status: LiveStreamStatusEnum!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  streamerInfo: User!
+}
+
+enum LiveStreamStatusEnum {
+  IDLE
+  ACTIVE
+  STOP
+}
+
 type Query {
   me: User!
   getUserInfo(id: Float!): User
@@ -254,6 +292,21 @@ type Query {
   getUserLikePost(postId: Float!): [User!]!
   getPostComment(page: Float!, limit: Float!, postId: Float!): CommentConnection!
   getNewFeed(limit: Int = 15, page: Int = 1): PostConnection!
+  test(
+    first: Int = 10
+    after: String
+
+    """
+    Pass input type of search value
+    """
+    type: String!
+    validateCursor: Boolean = false
+
+    """
+    Pass the key value to search and sort data
+    """
+    cursorKey: String!
+  ): PostCursorConnection!
   getExplorePost(page: Float!, limit: Float!): PostConnection!
   getPostDetail(id: Float!): Post!
   myPost(page: Float!, limit: Float!): PostConnection!
@@ -263,6 +316,8 @@ type Query {
   getExistChat(participants: [Float!]!): Chat
   getChatHasUnseenMessage: [Float!]!
   getMessage(page: Float!, limit: Float!, chatId: Float!): MessageConnection!
+  getStreams: [LiveStream!]!
+  getStreamDetail(id: Float!): LiveStream!
 }
 
 type Mutation {
@@ -288,10 +343,13 @@ type Mutation {
   removePost(id: Float!): Boolean!
   reactToPost(postId: Float!): Boolean!
   reportPost(postId: Float!): Boolean!
+  removeReportedPost(id: Float!): Boolean!
   createChat(participants: [Float!]!): Chat!
   deleteChat(id: Float!): Float!
   sendMessage(input: NewMessageInput!): Message!
   setSeenMessage(chatId: Float!): Boolean!
+  createLiveStream: LiveStream!
+  changeStreamStatus(status: LiveStreamStatusEnum!, id: Float!): LiveStream!
 }
 
 input UpdateUserInput {
@@ -341,12 +399,14 @@ input CreatePostInput {
   medias: [Float!] = []
   caption: String = ""
   rawCaption: String = ""
+  isPublic: Boolean = true
 }
 
 input UpdatePostInput {
   medias: [Float!] = []
   caption: String = ""
   rawCaption: String = ""
+  isPublic: Boolean = true
   id: Float!
 }
 

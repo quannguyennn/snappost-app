@@ -9092,6 +9092,11 @@ react-native-modest-checkbox@^3.3.0:
   dependencies:
     prop-types "^15.7.2"
 
+react-native-nodemediaclient@^0.2.15:
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/react-native-nodemediaclient/-/react-native-nodemediaclient-0.2.15.tgz#a4472be6e485a9dd60177b7e712615c1721b005d"
+  integrity sha512-1B6vIq3D/GI1S0uaNJhC3pyqVVhpM6uhWbboH6UynYT+F4NpgJ3kYbGo1aHoBxW+moLEMpITLtxYa0+YkKCuuQ==
+
 react-native-parsed-text@0.0.22:
   version "0.0.22"
   resolved "https://registry.yarnpkg.com/react-native-parsed-text/-/react-native-parsed-text-0.0.22.tgz#a23c756eaa5d6724296814755085127f9072e5f5"

@@ -178,7 +178,7 @@ const App = React.memo(() => {
   }
 
   return (
-    <SafeAreaView style={styles(theme).container}>
+    <View style={styles(theme).container}>
       <StatusBar animated barStyle={barStyle} backgroundColor={backgroundColor} />
       <RootNavigator />
       <Toast
@@ -212,7 +212,7 @@ const App = React.memo(() => {
         }}
       />
       <FlashMessage textStyle={styles(theme).flashMessageTitle} position="bottom" />
-    </SafeAreaView>
+    </View>
   );
 });
 

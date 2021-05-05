@@ -1,0 +1,11 @@
+mutation createLiveStream {
+  createLiveStream {
+    id
+    streamerId
+    streamUrl
+    viewUrl
+    status
+    createdAt
+    updatedAt
+  }
+}

@@ -33,6 +33,7 @@ PODS:
   - lottie-react-native (3.5.0):
     - lottie-ios (~> 3.1.8)
     - React
+  - NodeMediaClient (2.9.4)
   - RCTRequired (0.63.3)
   - RCTTypeSafety (0.63.3):
     - FBLazyVector (= 0.63.3)
@@ -204,6 +205,13 @@ PODS:
   - react-native-image-filter-kit (0.7.3):
     - Bolts/Tasks (= 1.9.0)
     - React
+  - react-native-nodemediaclient (0.2.15):
+    - NodeMediaClient (= 2.9.4)
+    - React
+    - react-native-nodemediaclient/RCTNodeMediaClient (= 0.2.15)
+  - react-native-nodemediaclient/RCTNodeMediaClient (0.2.15):
+    - NodeMediaClient (= 2.9.4)
+    - React
   - react-native-safe-area-context (3.1.9):
     - React-Core
   - react-native-video (5.1.1):
@@ -344,6 +352,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-image-filter-kit (from `../node_modules/react-native-image-filter-kit`)
+  - react-native-nodemediaclient (from `../node_modules/react-native-nodemediaclient`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
   - react-native-zalo-kit (from `../node_modules/react-native-zalo-kit`)
@@ -376,6 +385,7 @@ SPEC REPOS:
     - Bolts
     - boost-for-react-native
     - libwebp
+    - NodeMediaClient
     - SDWebImage
     - SDWebImageWebPCoder
     - TOCropViewController
@@ -420,6 +430,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/cameraroll"
   react-native-image-filter-kit:
     :path: "../node_modules/react-native-image-filter-kit"
+  react-native-nodemediaclient:
+    :path: "../node_modules/react-native-nodemediaclient"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -484,6 +496,7 @@ SPEC CHECKSUMS:
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
+  NodeMediaClient: 588fe0f1e023a60c61a9d9ce6e602eb5806f8308
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
   RCTTypeSafety: edf4b618033c2f1c5b7bc3d90d8e085ed95ba2ab
   React: f36e90f3ceb976546e97df3403e37d226f79d0e3
@@ -496,6 +509,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-cameraroll: 1965db75c851b15e77a22ca0ac78e32af6b571ae
   react-native-image-filter-kit: 2513a9f5d67d35aa7b72a7a31e2123d7b1b3cf33
+  react-native-nodemediaclient: 6edfb967a99ae8229c96f02316a3ab91b50267ec
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
   react-native-zalo-kit: 96847dbe1a3b8f855be5715ef9bada72b22b88d6

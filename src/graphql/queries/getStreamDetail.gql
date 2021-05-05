@@ -1,0 +1,11 @@
+query getStreamDetail($id: Float!) {
+  getStreamDetail(id: $id) {
+    id
+    streamerId
+    streamUrl
+    viewUrl
+    status
+    createdAt
+    updatedAt
+  }
+}

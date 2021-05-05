@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, useColorScheme } from 'react-native';
+import { StatusBar, Text, useColorScheme } from 'react-native';
 import { ApolloProvider } from '@apollo/client';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ const App = () => {
     <ApolloProvider client={client}>
       <RecoilRoot>
         <SafeAreaProvider>
+          <StatusBar backgroundColor="transparent" />
           <NavigationContainer
             theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
             fallback={<Text>Loading...</Text>}>

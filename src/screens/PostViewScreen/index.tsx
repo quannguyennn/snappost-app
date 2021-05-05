@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, { createRef, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import CommentInput from './components/CommentInput';
@@ -310,18 +319,20 @@ const PostViewScreen: React.FC = () => {
   const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : undefined;
 
   return (
-    <KeyboardAvoidingView behavior={keyboardBehavior} keyboardVerticalOffset={20} style={styles(theme).container}>
-      <GoBackHeader iconSize={IconSizes.x7} />
-      <ScrollView
-        // @ts-ignore
-        ref={scrollViewRef}
-        showsVerticalScrollIndicator={false}
-        style={styles().content}>
-        {content}
-      </ScrollView>
-      <CommentInput postId={postId} scrollViewRef={scrollViewRef} />
-      {bottomSheets}
-    </KeyboardAvoidingView>
+    <SafeAreaView style={styles(theme).container}>
+      <KeyboardAvoidingView behavior={keyboardBehavior} keyboardVerticalOffset={20} style={styles(theme).container}>
+        <GoBackHeader iconSize={IconSizes.x7} />
+        <ScrollView
+          // @ts-ignore
+          ref={scrollViewRef}
+          showsVerticalScrollIndicator={false}
+          style={styles().content}>
+          {content}
+        </ScrollView>
+        <CommentInput postId={postId} scrollViewRef={scrollViewRef} />
+        {bottomSheets}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

@@ -49,8 +49,8 @@ const styles = (theme = {} as ThemeColors) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: 12,
       paddingHorizontal: 10,
+      paddingVertical: 12,
       backgroundColor: theme.base,
     },
     icon: {
