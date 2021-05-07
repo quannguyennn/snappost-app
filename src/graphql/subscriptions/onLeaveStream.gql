@@ -1,0 +1,8 @@
+subscription onLeaveStream($streamId: Float!) {
+  onLeaveStream(streamId: $streamId) {
+    id
+    userId
+    name
+    avatar
+  }
+}

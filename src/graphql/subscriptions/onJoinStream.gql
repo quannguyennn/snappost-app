@@ -1,0 +1,8 @@
+subscription onJoinStream($streamId: Float!) {
+  onJoinStream(streamId: $streamId) {
+    id
+    userId
+    name
+    avatar
+  }
+}

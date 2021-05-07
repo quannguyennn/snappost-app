@@ -23,9 +23,9 @@ import { countMessageState, newFeedState } from '../../recoil/app/atoms';
 import { useNavigation } from '@react-navigation/core';
 import { AppRoutes } from '../../navigator/app-routes';
 import { useCreateLiveStreamMutation } from '../../graphql/mutations/createLiveStream.generated';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image';
 import { useGetStreamsQuery } from '../../graphql/queries/getStreams.generated';
+import LottieView from 'lottie-react-native';
 
 const HomeScreen = React.memo(() => {
   const theme = useRecoilValue(themeState);
@@ -127,8 +127,6 @@ const HomeScreen = React.memo(() => {
     );
   };
 
-  console.log(fetchStream?.getStreams);
-
   const content = (
     <FlatGrid
       onRefresh={() => {
@@ -162,10 +160,19 @@ const HomeScreen = React.memo(() => {
                       streamUrl: item.streamUrl,
                     })
                   }>
-                  <FastImage
-                    source={{ uri: item?.streamerInfo?.avatarFilePath ?? '' }}
-                    style={styles(theme).liveItem}
-                  />
+                  <FastImage source={{ uri: item?.previewUrl ?? '' }} style={styles(theme).liveItem} />
+                  <View style={styles(theme).liveItemAbsolute}>
+                    <FastImage
+                      source={{ uri: item.streamerInfo.avatarFilePath ?? '' }}
+                      style={styles(theme).liveAvatar}
+                    />
+                    <LottieView
+                      style={{ height: 100, marginRight: -20 }}
+                      source={require('../../assets1/live.json')}
+                      autoPlay
+                      loop
+                    />
+                  </View>
                 </TouchableOpacity>
               );
             }}
@@ -205,7 +212,7 @@ const HomeScreen = React.memo(() => {
   };
 
   return (
-    <SafeAreaView style={styles(theme).container}>
+    <View style={styles(theme).container}>
       <Modal animationType="fade" visible={createStreamLoad} transparent>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.4)' }}>
           <ActivityIndicator size="large" />
@@ -216,7 +223,7 @@ const HomeScreen = React.memo(() => {
 
       {content}
       {loading && !posts?.length ? <PostCardPlaceholder /> : null}
-    </SafeAreaView>
+    </View>
   );
 });
 
@@ -229,7 +236,7 @@ const styles = (theme = {} as ThemeColors) =>
       paddingBottom: 0,
     },
     liveContainer: {
-      height: 62,
+      height: 150,
       width: '100%',
       margin: 0,
       alignItems: 'center',
@@ -237,9 +244,26 @@ const styles = (theme = {} as ThemeColors) =>
       marginBottom: 20,
     },
     liveItem: {
-      height: 60,
-      width: 60,
-      borderRadius: 60,
+      height: 150,
+      aspectRatio: 4 / 2,
+      borderRadius: 8,
+      backgroundColor: theme.text01,
+    },
+    liveItemAbsolute: {
+      position: 'absolute',
+      width: '100%',
+      height: '40%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 12,
+    },
+    liveAvatar: {
+      height: 40,
+      width: 40,
+      borderRadius: 40,
+      borderColor: theme.white,
+      borderWidth: 2,
     },
     postList: {
       marginBottom: 0,

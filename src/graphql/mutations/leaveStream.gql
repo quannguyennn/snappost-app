@@ -1,0 +1,3 @@
+mutation leaveStream($id: Float!) {
+  leaveStream(id: $id)
+}

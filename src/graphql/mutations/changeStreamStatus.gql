@@ -5,7 +5,15 @@ mutation changeStreamStatus($status: LiveStreamStatusEnum!, $id: Float!) {
     streamUrl
     viewUrl
     status
+    previewUrl
+    muxStreamId
+    muxPlaybackId
     createdAt
     updatedAt
+    streamerInfo {
+      id
+      name
+      avatarFilePath
+    }
   }
 }

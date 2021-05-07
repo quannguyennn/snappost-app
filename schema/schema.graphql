@@ -264,6 +264,9 @@ type LiveStream implements Node {
   streamUrl: String!
   viewUrl: String!
   status: LiveStreamStatusEnum!
+  previewUrl: String
+  muxStreamId: String!
+  muxPlaybackId: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   streamerInfo: User!
@@ -273,6 +276,28 @@ enum LiveStreamStatusEnum {
   IDLE
   ACTIVE
   STOP
+}
+
+type StreamUser {
+  """
+  stream id
+  """
+  id: Float!
+  userId: Float
+  name: String
+  avatar: String
+}
+
+type StreamChat {
+  """
+  stream id
+  """
+  id: Float!
+  userId: Float
+  name: String
+  avatar: String
+  chat: String!
+  isSystem: Boolean!
 }
 
 type Query {
@@ -350,6 +375,9 @@ type Mutation {
   setSeenMessage(chatId: Float!): Boolean!
   createLiveStream: LiveStream!
   changeStreamStatus(status: LiveStreamStatusEnum!, id: Float!): LiveStream!
+  joinStream(id: Float!): Boolean!
+  leaveStream(id: Float!): Boolean!
+  sendStreamChat(isSystem: Boolean!, chat: String!, streamId: Float!): StreamChat!
 }
 
 input UpdateUserInput {
@@ -427,4 +455,8 @@ type Subscription {
   onNewMessage(chatId: Float!): Message!
   onSeenMessage(chatId: Float!): SeenMessage!
   onReceiveMessage(userId: Float!): ReceivedMessage!
+  onJoinStream(streamId: Float!): StreamUser!
+  onTest: Float!
+  onLeaveStream(streamId: Float!): StreamUser!
+  onNewStreamChat(streamId: Float!): StreamChat!
 }

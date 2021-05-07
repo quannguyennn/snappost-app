@@ -300,6 +300,9 @@ export type LiveStream = Node & {
   streamUrl: Scalars['String'];
   viewUrl: Scalars['String'];
   status: LiveStreamStatusEnum;
+  previewUrl?: Maybe<Scalars['String']>;
+  muxStreamId: Scalars['String'];
+  muxPlaybackId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   streamerInfo: User;
@@ -310,6 +313,26 @@ export enum LiveStreamStatusEnum {
   ACTIVE = 'ACTIVE',
   STOP = 'STOP',
 }
+
+export type StreamUser = {
+  __typename?: 'StreamUser';
+  /** stream id */
+  id: Scalars['Float'];
+  userId?: Maybe<Scalars['Float']>;
+  name?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+};
+
+export type StreamChat = {
+  __typename?: 'StreamChat';
+  /** stream id */
+  id: Scalars['Float'];
+  userId?: Maybe<Scalars['Float']>;
+  name?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+  chat: Scalars['String'];
+  isSystem: Scalars['Boolean'];
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -481,6 +504,9 @@ export type Mutation = {
   setSeenMessage: Scalars['Boolean'];
   createLiveStream: LiveStream;
   changeStreamStatus: LiveStream;
+  joinStream: Scalars['Boolean'];
+  leaveStream: Scalars['Boolean'];
+  sendStreamChat: StreamChat;
 };
 
 export type MutationUpdateUserInfoArgs = {
@@ -594,6 +620,20 @@ export type MutationChangeStreamStatusArgs = {
   id: Scalars['Float'];
 };
 
+export type MutationJoinStreamArgs = {
+  id: Scalars['Float'];
+};
+
+export type MutationLeaveStreamArgs = {
+  id: Scalars['Float'];
+};
+
+export type MutationSendStreamChatArgs = {
+  isSystem: Scalars['Boolean'];
+  chat: Scalars['String'];
+  streamId: Scalars['Float'];
+};
+
 export type UpdateUserInput = {
   zaloId?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -665,6 +705,10 @@ export type Subscription = {
   onNewMessage: Message;
   onSeenMessage: SeenMessage;
   onReceiveMessage: ReceivedMessage;
+  onJoinStream: StreamUser;
+  onTest: Scalars['Float'];
+  onLeaveStream: StreamUser;
+  onNewStreamChat: StreamChat;
 };
 
 export type SubscriptionOnNewNotificationArgs = {
@@ -697,4 +741,16 @@ export type SubscriptionOnSeenMessageArgs = {
 
 export type SubscriptionOnReceiveMessageArgs = {
   userId: Scalars['Float'];
+};
+
+export type SubscriptionOnJoinStreamArgs = {
+  streamId: Scalars['Float'];
+};
+
+export type SubscriptionOnLeaveStreamArgs = {
+  streamId: Scalars['Float'];
+};
+
+export type SubscriptionOnNewStreamChatArgs = {
+  streamId: Scalars['Float'];
 };

@@ -1,0 +1,10 @@
+subscription onNewStreamChat($streamId: Float!) {
+  onNewStreamChat(streamId: $streamId) {
+    id
+    userId
+    name
+    avatar
+    chat
+    isSystem
+  }
+}

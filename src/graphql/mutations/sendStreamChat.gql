@@ -1,0 +1,10 @@
+mutation sendStreamChat($isSystem: Boolean!, $chat: String!, $streamId: Float!) {
+  sendStreamChat(isSystem: $isSystem, chat: $chat, streamId: $streamId) {
+    id
+    userId
+    name
+    avatar
+    chat
+    isSystem
+  }
+}

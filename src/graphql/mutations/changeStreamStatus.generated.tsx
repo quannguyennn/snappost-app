@@ -10,8 +10,17 @@ export type ChangeStreamStatusMutationVariables = Types.Exact<{
 export type ChangeStreamStatusMutationResponse = { __typename?: 'Mutation' } & {
   changeStreamStatus: { __typename?: 'LiveStream' } & Pick<
     Types.LiveStream,
-    'id' | 'streamerId' | 'streamUrl' | 'viewUrl' | 'status' | 'createdAt' | 'updatedAt'
-  >;
+    | 'id'
+    | 'streamerId'
+    | 'streamUrl'
+    | 'viewUrl'
+    | 'status'
+    | 'previewUrl'
+    | 'muxStreamId'
+    | 'muxPlaybackId'
+    | 'createdAt'
+    | 'updatedAt'
+  > & { streamerInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'avatarFilePath'> };
 };
 
 export const ChangeStreamStatusDocument = gql`
@@ -22,8 +31,16 @@ export const ChangeStreamStatusDocument = gql`
       streamUrl
       viewUrl
       status
+      previewUrl
+      muxStreamId
+      muxPlaybackId
       createdAt
       updatedAt
+      streamerInfo {
+        id
+        name
+        avatarFilePath
+      }
     }
   }
 `;

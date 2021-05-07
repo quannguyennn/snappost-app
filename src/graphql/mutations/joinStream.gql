@@ -1,0 +1,3 @@
+mutation joinStream($id: Float!) {
+  joinStream(id: $id)
+}

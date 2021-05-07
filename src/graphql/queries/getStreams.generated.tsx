@@ -8,8 +8,17 @@ export type GetStreamsQueryResponse = { __typename?: 'Query' } & {
   getStreams: Array<
     { __typename?: 'LiveStream' } & Pick<
       Types.LiveStream,
-      'id' | 'streamerId' | 'streamUrl' | 'viewUrl' | 'status' | 'createdAt' | 'updatedAt'
-    > & { streamerInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'avatarFilePath'> }
+      | 'id'
+      | 'streamerId'
+      | 'streamUrl'
+      | 'viewUrl'
+      | 'status'
+      | 'previewUrl'
+      | 'muxStreamId'
+      | 'muxPlaybackId'
+      | 'createdAt'
+      | 'updatedAt'
+    > & { streamerInfo: { __typename?: 'User' } & Pick<Types.User, 'id' | 'name' | 'avatarFilePath'> }
   >;
 };
 
@@ -21,10 +30,14 @@ export const GetStreamsDocument = gql`
       streamUrl
       viewUrl
       status
+      previewUrl
+      muxStreamId
+      muxPlaybackId
       createdAt
       updatedAt
       streamerInfo {
         id
+        name
         avatarFilePath
       }
     }
